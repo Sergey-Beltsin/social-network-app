@@ -1,11 +1,11 @@
-interface IDevices {
-  mobile: string
-  tablet: string
-  desktop: string
+export interface IDevices {
+  mobile: string;
+  tablet: string;
+  desktop: string;
 }
 
 export const devices: IDevices = {
-  mobile: '320px',
-  tablet: '768px',
-  desktop: '1200px',
+  mobile: "320px",
+  tablet: "768px",
+  desktop: "1200px",
 };

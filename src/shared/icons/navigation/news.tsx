@@ -10,6 +10,7 @@ export const NewsIcon: FC = () => (
     xmlSpace="preserve"
     width="20"
     height="20"
+    fill="currentColor"
   >
     <g>
       <g>

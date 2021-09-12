@@ -1,10 +1,3 @@
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { News } from "@/pages/news";
-
-export const getStaticProps = async ({ locale }) => ({
-  props: {
-    ...(await serverSideTranslations(locale, ["common", "footer"])),
-  },
-});
+import { News } from "@/pagesLayout/news";
 
 export default News;

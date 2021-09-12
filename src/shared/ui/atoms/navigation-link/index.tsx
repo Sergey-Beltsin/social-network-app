@@ -1,17 +1,22 @@
-import Link from "next/link";
 import { FC, ReactElement } from "react";
+import Link from "next/link";
 import styled from "styled-components";
 
 type Props = {
   href: string;
   title: string;
   icon: ReactElement;
+  isActive: boolean;
 };
 
-export const NavigationLink: FC<Props> = ({ href, icon, title }) => (
+type LinksProps = {
+  isActive: boolean;
+};
+
+export const NavigationLink: FC<Props> = ({ href, icon, title, isActive }) => (
   <Item>
     <Link href={href} passHref>
-      <LinkItem>
+      <LinkItem isActive={isActive}>
         {icon}
         <Title>{title}</Title>
       </LinkItem>
@@ -19,8 +24,52 @@ export const NavigationLink: FC<Props> = ({ href, icon, title }) => (
   </Item>
 );
 
-const Item = styled.li``;
+const Item = styled.li`
+  display: flex;
+  flex-grow: 1;
 
-const LinkItem = styled.a``;
+  &:not(:last-child) {
+    margin-bottom: 4px;
+  }
+`;
 
-const Title = styled.span``;
+const LinkItem = styled.a<LinksProps>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+
+  padding: 6px 14px;
+
+  border-radius: 4px;
+
+  color: ${({ theme, isActive }) =>
+    isActive ? theme.colors.primary : theme.colors.text};
+  text-decoration: none;
+
+  transition: 0.2s ease;
+
+  @media (min-width: ${({ theme }) => theme.devices.desktop}) {
+    justify-content: flex-start;
+
+    background-color: ${({ theme, isActive }) =>
+      isActive ? theme.colors.tertiaryLight : "transparent"};
+
+    &:hover {
+      ${({ theme, isActive }) =>
+        isActive ? "" : `background-color: ${theme.colors.secondary}`}
+    }
+  }
+`;
+
+const Title = styled.span`
+  display: none;
+
+  margin-left: 10px;
+
+  font-size: 13px;
+
+  @media (min-width: ${({ theme }) => theme.devices.desktop}) {
+    display: block;
+  }
+`;

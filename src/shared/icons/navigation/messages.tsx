@@ -10,6 +10,7 @@ export const MessagesIcon: FC = () => (
     xmlSpace="preserve"
     width="20"
     height="20"
+    fill="currentColor"
   >
     <g>
       <g>
