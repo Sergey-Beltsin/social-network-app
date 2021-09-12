@@ -2,14 +2,14 @@
   "compilerOptions": {
     "baseUrl": "./src",
     "paths": {
-      "@/lib/*": [
-        "lib/*"
+      "@/shared/*": [
+        "shared/*"
       ],
       "@/features/*": [
         "features/*"
       ],
-      "@/UI/*": [
-        "UI/*"
+      "@/entities/*": [
+        "entities/*"
       ]
     },
     "target": "es6",
