@@ -1,3 +1,3 @@
 import { FC } from "react";
 
-export const News: FC = () => <></>;
+export const News: FC = () => <>example text</>;

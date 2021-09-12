@@ -1,13 +1,15 @@
 import { FC } from "react";
 import type { AppProps } from "next/app";
 
-import { ThemeProvider } from "@/shared/lib/theme";
+import { appWithTranslation } from "next-i18next";
+
+import { App } from "@/app/index";
 
 const MyApp: FC<AppProps> = ({ Component, pageProps }) => (
-  <ThemeProvider>
+  <App>
     {/* eslint-disable-next-line react/jsx-props-no-spreading */}
     <Component {...pageProps} />
-  </ThemeProvider>
+  </App>
 );
 
-export default MyApp;
+export default appWithTranslation(MyApp);

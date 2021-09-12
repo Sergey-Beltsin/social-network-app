@@ -10,6 +10,15 @@
       ],
       "@/entities/*": [
         "entities/*"
+      ],
+      "@/pages/*": [
+        "pages/*"
+      ],
+      "@/widgets/*": [
+        "widgets/*"
+      ],
+      "@/app/*": [
+        "app/*"
       ]
     },
     "target": "es6",

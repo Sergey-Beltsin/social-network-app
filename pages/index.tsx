@@ -1,5 +1,3 @@
-import { FC } from "react";
+import { News } from "@/pages/news";
 
-const Home: FC = () => (<></>);
-
-export default Home;
+export default News;

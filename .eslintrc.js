@@ -1,4 +1,4 @@
-const path = require('path');
+const path = require("path");
 
 module.exports = {
   env: {
@@ -29,12 +29,13 @@ module.exports = {
       2,
       { extensions: [".js", ".jsx", ".ts", ".tsx"] },
     ],
+    "no-use-before-define": ["error", { variables: false }],
   },
   settings: {
-    'import/resolver': {
+    "import/resolver": {
       alias: {
-        map: [['@', path.resolve(__dirname, 'src')]],
-        extensions: ['.ts', '.js', '.jsx', '.json', '.tsx'],
+        map: [["@", path.resolve(__dirname, "src")]],
+        extensions: [".ts", ".js", ".jsx", ".json", ".tsx"],
       },
     },
   },

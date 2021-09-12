@@ -1,5 +1,7 @@
-const nextTranslate = require('next-translate');
+const { i18n } = require("./next-i18next.config");
 
-module.exports = nextTranslate({
+module.exports = {
   reactStrictMode: true,
-});
+  webpack5: false,
+  i18n,
+};

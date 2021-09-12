@@ -1,10 +1,9 @@
+const path = require("path");
+
 module.exports = {
-  locales: ["en", "ru"],
-  defaultLocale: "ru",
-  pages: {
-    "*": ["common"],
+  i18n: {
+    locales: ["en", "ru"],
+    defaultLocale: "ru",
+    localePath: path.resolve("./src/shared/lib/lang/translations"),
   },
-  logger: true,
-  loadLocaleFrom: (lang, ns) =>
-    import(`./public/translations/${lang}/${ns}.json`).then((m) => m.default),
 };
