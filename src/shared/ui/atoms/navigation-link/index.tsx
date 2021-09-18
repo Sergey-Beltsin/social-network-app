@@ -55,7 +55,8 @@ const LinkItem = styled.a<LinksProps>`
     background-color: ${({ theme, isActive }) =>
       isActive ? theme.colors.tertiaryLight : "transparent"};
 
-    &:hover {
+    &:hover,
+    &:focus {
       ${({ theme, isActive }) =>
         isActive ? "" : `background-color: ${theme.colors.secondary}`}
     }

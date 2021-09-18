@@ -3,10 +3,11 @@ import styled from "styled-components";
 
 import { ThemeProvider } from "@/shared/lib/theme";
 
-import { Navigation } from "@/shared/ui/molecules";
+import { Header, Navigation } from "@/shared/ui/molecules";
 
 export const App: FC = ({ children }) => (
   <ThemeProvider>
+    <Header />
     <MainWrapper>
       <Wrapper>
         <Navigation />
@@ -24,12 +25,13 @@ const Main = styled.main`
 
   @media (min-width: ${({ theme }) => theme.devices.desktop}) {
     width: 100%;
-    min-height: 100vh;
+    min-height: calc(100vh - 68px);
     margin: 0;
   }
 `;
 
 const MainWrapper = styled.div`
+  padding-top: 20px;
   background-color: ${({ theme }) => theme.colors.background};
 `;
 

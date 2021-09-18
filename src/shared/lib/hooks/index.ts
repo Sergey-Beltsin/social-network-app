@@ -1,0 +1,1 @@
+export { useOutsideAlerter } from "./useOutsideAlerter";
