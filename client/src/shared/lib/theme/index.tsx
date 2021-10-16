@@ -11,6 +11,7 @@ interface IThemeColors {
   tertiaryLight: string;
   background: string;
   text: string;
+  textSecondary: string;
   border: string;
 }
 
@@ -34,6 +35,7 @@ const tertiaryLightWhite: string = "#e0e0e0";
 const tertiaryLight: string = "#4d4d4d";
 const text: string = "#333333";
 const textWhite: string = "#CCCCCC";
+const textSecondary: string = "#AAAAAA";
 const borderWhite: string = "#CECECE";
 const border: string = "#333333";
 const backgroundWhite: string = "#EEEEEE";
@@ -47,6 +49,7 @@ const themes: IThemes = {
       tertiary,
       tertiaryLight,
       text: textWhite,
+      textSecondary,
       border,
       background,
     },
@@ -59,6 +62,7 @@ const themes: IThemes = {
       tertiary: tertiaryWhite,
       tertiaryLight: tertiaryLightWhite,
       text,
+      textSecondary,
       border: borderWhite,
       background: backgroundWhite,
     },

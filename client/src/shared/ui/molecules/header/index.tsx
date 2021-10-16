@@ -39,7 +39,7 @@ const dropdownItems: Array<IDropdownItem> = [
 export const Header: FC = () => (
   <HeaderComponent>
     <Container>
-      <img src="https://place-hold.it/100x30" alt="" />
+      <Title>My Social Network =)</Title>
       <Dropdown items={dropdownItems}>
         <DropdownTrigger>
           <DropdownTriggerImg src="https://place-hold.it/30x30" alt="" />
@@ -56,6 +56,7 @@ const HeaderComponent = styled.header`
   height: 48px;
 
   background-color: ${({ theme }) => theme.colors.secondary};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
 
   & > ${Container} {
     display: flex;
@@ -73,4 +74,8 @@ const DropdownTriggerImg = styled.img`
   display: block;
   margin-right: 10px;
   border-radius: 50%;
+`;
+
+const Title = styled.span`
+  color: ${({ theme }) => theme.colors.text};
 `;

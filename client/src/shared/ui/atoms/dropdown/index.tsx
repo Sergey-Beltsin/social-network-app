@@ -25,6 +25,10 @@ type TriggerIconProps = {
   isOpen: boolean;
 };
 
+type DropdownTriggerProps = {
+  isOpen: boolean;
+};
+
 export const Dropdown: FC<Props> = ({ items, children }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -53,6 +57,7 @@ export const Dropdown: FC<Props> = ({ items, children }) => {
   return (
     <MainWrapper ref={dropdownRef}>
       <Trigger
+        isOpen={isOpen}
         onClick={handleOpen}
         aria-label={isOpen ? t("closeMenu") : t("openMenu")}
       >
@@ -177,7 +182,7 @@ const DropdownButtonTitle = styled.span`
   margin-left: 6px;
 `;
 
-const Trigger = styled.button`
+const Trigger = styled.button<DropdownTriggerProps>`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -188,9 +193,15 @@ const Trigger = styled.button`
 
   background-color: ${({ theme }) => theme.colors.secondary};
   border: none;
+  border-radius: 4px;
   cursor: pointer;
 
   color: ${({ theme }) => theme.colors.text};
+
+  transition: 0.2s ease;
+
+  ${({ isOpen, theme }) =>
+    isOpen ? `background-color: ${theme.colors.tertiary}` : ""}
 `;
 
 const TriggerContent = styled.span`
