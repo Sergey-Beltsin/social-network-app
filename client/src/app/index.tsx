@@ -18,14 +18,14 @@ export const App: FC = ({ children }) => (
 );
 
 const Main = styled.main`
-  min-height: calc(100vh - 48px);
+  min-height: calc(100vh - 116px);
   margin: 0 auto;
 
   color: ${({ theme }) => theme.colors.text};
 
   @media (min-width: ${({ theme }) => theme.devices.desktop}) {
     width: 100%;
-    min-height: calc(100vh - 68px);
+    min-height: calc(100vh - 69px);
     margin: 0;
   }
 `;
