@@ -1,4 +1,4 @@
 import type { NextPage } from "next";
-import { NewsList } from "@/features/news";
+import { PostsList } from "@/features/post";
 
-export const News: NextPage = () => <NewsList />;
+export const News: NextPage = () => <PostsList />;

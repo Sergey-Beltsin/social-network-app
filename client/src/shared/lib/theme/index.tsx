@@ -10,6 +10,8 @@ interface IThemeColors {
   tertiary: string;
   tertiaryLight: string;
   background: string;
+  lightRed: string;
+  red: string;
   text: string;
   textSecondary: string;
   border: string;
@@ -40,6 +42,8 @@ const borderWhite: string = "#CECECE";
 const border: string = "#333333";
 const backgroundWhite: string = "#EEEEEE";
 const background: string = "#151515";
+const lightRed: string = "rgb(255, 237, 237)";
+const red: string = "rgb(255, 51, 71)";
 
 const themes: IThemes = {
   dark: {
@@ -52,6 +56,8 @@ const themes: IThemes = {
       textSecondary,
       border,
       background,
+      red,
+      lightRed,
     },
     devices,
   },
@@ -65,13 +71,15 @@ const themes: IThemes = {
       textSecondary,
       border: borderWhite,
       background: backgroundWhite,
+      red,
+      lightRed,
     },
     devices,
   },
 };
 
 export const ThemeProvider: FC = ({ children }) => {
-  const currentTheme: string = "dark";
+  const currentTheme: string = "light";
 
   return (
     // @ts-ignore
