@@ -1,2 +1,2 @@
-export { PostCard } from "./ui/post-card";
-export type { Posts } from "./lib/model.types";
+export { PostCard } from "./ui";
+export type { Posts } from "./model/model.types";

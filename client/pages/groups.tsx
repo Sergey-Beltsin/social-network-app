@@ -1,3 +1,3 @@
-import { Groups } from "@/pagesLayout/groups";
+import { GroupsPage } from "@/pagesLayout/groups";
 
-export default Groups;
+export default GroupsPage;

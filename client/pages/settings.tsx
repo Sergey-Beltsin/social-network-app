@@ -1,3 +1,3 @@
-import { Settings } from "@/pagesLayout/settings";
+import { SettingsPage } from "@/pagesLayout/settings";
 
-export default Settings;
+export default SettingsPage;

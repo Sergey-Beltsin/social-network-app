@@ -1,1 +1,1 @@
-export { Settings } from "./ui";
+export { SettingsPage } from "./ui";

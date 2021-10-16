@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "paths": {
+      "@/controllers": [
+        "controllers/*"
+      ],
+      "@/routes": [
+        "routes/*"
+      ],
+      "@/models": [
+        "models/*"
+      ],
+      "@/lib": [
+        "lib/*"
+      ]
+    },
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "target": "es6",
+    "noImplicitAny": true,
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "outDir": "dist"
+  },
+  "exclude": [
+    "node_modules"
+  ],
+  "include": [
+    "**/*.ts"
+  ]
+}

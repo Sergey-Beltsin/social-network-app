@@ -1,3 +1,3 @@
-import { Messages } from "@/pagesLayout/messages";
+import { MessagesPage } from "@/pagesLayout/messages";
 
-export default Messages;
+export default MessagesPage;

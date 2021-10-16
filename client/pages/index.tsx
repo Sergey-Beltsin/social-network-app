@@ -1,3 +1,3 @@
-import { News } from "@/pagesLayout/news";
+import { NewsPage } from "@/pagesLayout/news";
 
-export default News;
+export default NewsPage;

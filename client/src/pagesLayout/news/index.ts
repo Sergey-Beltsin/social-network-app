@@ -1,1 +1,1 @@
-export { News } from "./ui";
+export { NewsPage } from "./ui";

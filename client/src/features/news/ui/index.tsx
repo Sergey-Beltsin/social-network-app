@@ -5,7 +5,7 @@ import { actions, store } from "../model";
 import { PostCard } from "@/entities/post";
 import { Container } from "@/shared/ui/atoms";
 
-export const PostsList: FC = () => {
+export const NewsList: FC = () => {
   const { useNewsStore } = store;
   const { handleLikeNews } = actions;
   const news = useNewsStore();

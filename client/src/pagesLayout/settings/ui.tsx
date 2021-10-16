@@ -1,3 +1,3 @@
 import { NextPage } from "next";
 
-export const Settings: NextPage = () => <div>Settings page</div>;
+export const SettingsPage: NextPage = () => <div>Settings page</div>;

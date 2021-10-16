@@ -1,3 +1,3 @@
 import { NextPage } from "next";
 
-export const Groups: NextPage = () => <div>groups page</div>;
+export const GroupsPage: NextPage = () => <div>groups page</div>;

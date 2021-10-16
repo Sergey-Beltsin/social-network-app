@@ -2,9 +2,9 @@ import { createEvent, createStore } from "effector";
 import { useStore } from "effector-react";
 
 import { Posts } from "@/entities/post";
-import { IPost } from "@/entities/post/lib";
+import { IPost } from "@/entities/post/model";
 
-const setPosts = createEvent<Posts>();
+const setNews = createEvent<Posts>();
 const handleLikeNews = createEvent<{ postId: string; isLiked: boolean }>();
 
 const $news = createStore<Posts>([
@@ -32,7 +32,7 @@ const $news = createStore<Posts>([
   },
 ]);
 
-$news.on(setPosts, (_, news) => news);
+$news.on(setNews, (_, news) => news);
 $news.on(handleLikeNews, (state, { postId, isLiked }) => {
   const postIndex: number = state.findIndex((item) => item.id === postId);
   const newPost: IPost = {

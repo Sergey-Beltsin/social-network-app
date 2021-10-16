@@ -1,7 +1,7 @@
 import { FC } from "react";
 import styled from "styled-components";
 
-import { IPost } from "../lib";
+import { IPost } from "../model";
 import { AuthorInfo } from "@/shared/ui/atoms/post";
 import { BottomActions } from "@/shared/ui/molecules/post";
 
