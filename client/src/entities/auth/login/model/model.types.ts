@@ -1,4 +1,4 @@
-export type Error = null | "empty" | "invalid" | "length";
+export type Error = null | "empty" | "invalid" | "length" | "invalidEmail";
 
 export type LoginStore = {
   email: string;

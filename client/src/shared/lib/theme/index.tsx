@@ -14,7 +14,9 @@ interface IThemeColors {
   red: string;
   text: string;
   textSecondary: string;
+  textWhite: string;
   border: string;
+  borderSecondary: string;
 }
 
 interface IThemes {
@@ -36,10 +38,11 @@ const tertiary: string = "#555555";
 const tertiaryLightWhite: string = "#e0e0e0";
 const tertiaryLight: string = "#4d4d4d";
 const text: string = "#333333";
-const textWhite: string = "#CCCCCC";
+const textWhite: string = "#e2e2e2";
 const textSecondary: string = "#AAAAAA";
 const borderWhite: string = "#CECECE";
 const border: string = "#333333";
+const borderSecondary: string = "#7f7f7f";
 const backgroundWhite: string = "#EEEEEE";
 const background: string = "#151515";
 const lightRed: string = "rgb(255, 237, 237)";
@@ -53,8 +56,10 @@ const themes: IThemes = {
       tertiary,
       tertiaryLight,
       text: textWhite,
+      textWhite,
       textSecondary,
       border,
+      borderSecondary,
       background,
       red,
       lightRed,
@@ -68,8 +73,10 @@ const themes: IThemes = {
       tertiary: tertiaryWhite,
       tertiaryLight: tertiaryLightWhite,
       text,
+      textWhite,
       textSecondary,
       border: borderWhite,
+      borderSecondary,
       background: backgroundWhite,
       red,
       lightRed,

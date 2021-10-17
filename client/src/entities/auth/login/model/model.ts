@@ -13,11 +13,11 @@ const handleBlurPassword = createEvent<string>();
 
 const handleCheckEmail = createEffect((email: string) => {
   if (!email.length) {
-    handleEmailError("length");
+    handleEmailError("empty");
     return;
   }
   if (!validateEmail(email)) {
-    handleEmailError("invalid");
+    handleEmailError("invalidEmail");
     return;
   }
 
@@ -25,7 +25,11 @@ const handleCheckEmail = createEffect((email: string) => {
 });
 
 const handleCheckPassword = createEffect((password: string) => {
-  if (!password.length || password.length < 8) {
+  if (!password.length) {
+    handlePasswordError("empty");
+    return;
+  }
+  if (password.length < 8) {
     handlePasswordError("length");
     return;
   }
