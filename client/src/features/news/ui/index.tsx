@@ -26,6 +26,8 @@ export const NewsList: FC = () => {
 };
 
 const Wrapper = styled.div`
+  width: 100%;
+
   @media (min-width: ${({ theme }) => theme.devices.desktop}) {
     & > ${Container} {
       width: 100%;
