@@ -3,7 +3,9 @@ import styled from "styled-components";
 
 import { ThemeProvider } from "@/shared/lib/theme";
 
-import { Header, Navigation } from "@/shared/ui/molecules";
+import { Navigation } from "@/shared/ui/molecules";
+import { Header } from "@/widgets/index";
+import { ProtectedRoute } from "@/shared/lib/hocs";
 
 export const App: FC = ({ children }) => (
   <ThemeProvider>
@@ -18,6 +20,8 @@ export const App: FC = ({ children }) => (
 );
 
 const Main = styled.main`
+  display: flex;
+
   min-height: calc(100vh - 116px);
   margin: 0 auto;
 

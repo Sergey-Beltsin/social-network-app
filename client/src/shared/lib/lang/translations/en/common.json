@@ -1,5 +1,7 @@
 {
   "helloWorld": "Hello, world!",
   "openMenu": "Open menu",
-  "closeMenu": "Close menu"
+  "closeMenu": "Close menu",
+  "signIn": "Sign in",
+  "signUp": "Sign up"
 }

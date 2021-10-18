@@ -39,7 +39,7 @@ const CustomCheckbox = styled.span`
   height: 20px;
   margin-right: 10px;
 
-  border: 1px solid ${({ theme }) => theme.colors.borderSecondary};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 4px;
   overflow: hidden;
 
@@ -62,7 +62,7 @@ const Text = styled.span`
 
 const Input = styled.input`
   &:checked ~ ${CustomCheckbox} {
-    border-color: ${({ theme }) => theme.colors.border};
+    border-color: ${({ theme }) => theme.colors.borderSecondary};
 
     & > svg {
       transform: translateY(0);

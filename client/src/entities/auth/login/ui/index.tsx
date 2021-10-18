@@ -17,6 +17,8 @@ export const LoginForm: FC = () => {
   const { email, password, isRemember, errors } = useLoginStore();
   const { t } = useTranslation("auth");
 
+  const submit = async () => {};
+
   return (
     <Form>
       <Input
@@ -42,13 +44,29 @@ export const LoginForm: FC = () => {
         onChange={handleChangeIsRemember}
         label={t("isRemember")}
       />
-      <Button>{t("signIn")}</Button>
+      <Button disabled={!!errors.email || !!errors.password} onClick={submit}>
+        {t("common:signIn")}
+      </Button>
     </Form>
   );
 };
 
 const Form = styled.form`
+  width: 100%;
+  max-width: 600px;
+  padding: 50px 20px;
+  margin: 0 auto;
+
+  background-color: ${({ theme }) => theme.colors.secondary};
+  border-radius: 8px;
+
   & > button {
     margin: 20px auto 0;
+  }
+
+  & > label {
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
   }
 `;

@@ -11,30 +11,32 @@ const handlePasswordError = createEvent<Error>();
 const handleBlurEmail = createEvent<string>();
 const handleBlurPassword = createEvent<string>();
 
-const handleCheckEmail = createEffect((email: string) => {
+const handleCheckEmail = createEffect((email: string): Error => {
   if (!email.length) {
     handleEmailError("empty");
-    return;
+    return "empty";
   }
   if (!validateEmail(email)) {
     handleEmailError("invalidEmail");
-    return;
+    return "invalidEmail";
   }
 
   handleEmailError(null);
+  return null;
 });
 
-const handleCheckPassword = createEffect((password: string) => {
+const handleCheckPassword = createEffect((password: string): Error => {
   if (!password.length) {
     handlePasswordError("empty");
-    return;
+    return "empty";
   }
   if (password.length < 8) {
     handlePasswordError("length");
-    return;
+    return "length";
   }
 
   handlePasswordError(null);
+  return null;
 });
 
 const $login = createStore<LoginStore>({
