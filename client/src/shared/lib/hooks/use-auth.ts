@@ -1,22 +1,24 @@
-import { useState } from "react";
-
-type AuthManager = {
-  setAuth(auth: boolean): void;
-};
+import { createEvent, createStore, Event } from "effector";
+import { useStore } from "effector-react";
+import { useEffect } from "react";
+import Cookies from "js-cookie";
 
 type AuthResponse = {
   isAuth: boolean;
-  authManager: AuthManager;
 };
 
+export const setIsAuth = createEvent<boolean>();
+
+const $auth = createStore<boolean>(false).on(setIsAuth, (_, isAuth) => isAuth);
+
 export const useAuth = (): AuthResponse => {
-  const [isAuth, setIsAuth] = useState<boolean>(true);
+  useEffect(() => {
+    if (Cookies.get("token")) {
+      setIsAuth(true);
+    }
+  }, []);
 
-  const authManager: AuthManager = {
-    setAuth(auth: boolean) {
-      setIsAuth(auth);
-    },
+  return {
+    isAuth: useStore($auth),
   };
-
-  return { isAuth, authManager };
 };

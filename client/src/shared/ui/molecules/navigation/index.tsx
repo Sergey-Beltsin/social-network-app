@@ -9,7 +9,7 @@ import {
   CommunityIcon,
   MessagesIcon,
   SettingsIcon,
-} from "@/shared/icons/navigation";
+} from "@/shared/lib/icons/navigation";
 
 interface ILink {
   href: string;

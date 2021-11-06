@@ -6,7 +6,7 @@ import {
   HeaderLoginButtons,
 } from "@/shared/ui/molecules";
 import { Dropdown } from "@/shared/ui/atoms";
-import { NewsIcon } from "@/shared/icons/navigation";
+import { NewsIcon } from "@/shared/lib/icons/navigation";
 import { useAuth } from "@/shared/lib/hooks";
 
 interface IDropdownItem {

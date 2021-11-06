@@ -9,3 +9,5 @@ export const devices: IDevices = {
   tablet: "768px",
   desktop: "1200px",
 };
+
+export const publicRoutes: string[] = ["/login", "/register"];

@@ -1,6 +1,6 @@
 import { FC } from "react";
 import styled from "styled-components";
-import { LikeIcon } from "@/shared/icons/post";
+import { LikeIcon } from "@/shared/lib/icons/post";
 
 export type LikesCounterProps = {
   count: number;

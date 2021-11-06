@@ -1,1 +1,1 @@
-export { store, actions } from "./model";
+export { loginModel } from "./model";

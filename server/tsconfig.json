@@ -1,32 +1,21 @@
 {
   "compilerOptions": {
-    "baseUrl": "./src",
-    "paths": {
-      "@/controllers": [
-        "controllers/*"
-      ],
-      "@/routes": [
-        "routes/*"
-      ],
-      "@/models": [
-        "models/*"
-      ],
-      "@/lib": [
-        "lib/*"
-      ]
-    },
     "module": "commonjs",
-    "esModuleInterop": true,
-    "target": "es6",
-    "noImplicitAny": true,
-    "moduleResolution": "node",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "es2017",
     "sourceMap": true,
-    "outDir": "dist"
-  },
-  "exclude": [
-    "node_modules"
-  ],
-  "include": [
-    "**/*.ts"
-  ]
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "incremental": true,
+    "skipLibCheck": true,
+    "strictNullChecks": false,
+    "noImplicitAny": false,
+    "strictBindCallApply": false,
+    "forceConsistentCasingInFileNames": false,
+    "noFallthroughCasesInSwitch": false
+  }
 }

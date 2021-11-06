@@ -1,6 +1,6 @@
 import { FC } from "react";
 import styled from "styled-components";
-import { CheckIcon } from "@/shared/icons/common";
+import { CheckIcon } from "@/shared/lib/icons/common";
 
 type CheckboxProps = {
   checked: boolean;

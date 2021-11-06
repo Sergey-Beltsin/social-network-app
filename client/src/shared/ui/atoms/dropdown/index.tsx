@@ -5,7 +5,7 @@ import { CSSTransition } from "react-transition-group";
 
 import useTranslation from "next-translate/useTranslation";
 import { useOutsideAlerter } from "@/shared/lib/hooks";
-import { ArrowIcon } from "@/shared/icons/common";
+import { ArrowIcon } from "@/shared/lib/icons/common";
 
 interface IDropdownItem {
   icon?: ReactElement;

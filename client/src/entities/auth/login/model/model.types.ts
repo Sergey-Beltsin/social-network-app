@@ -1,3 +1,5 @@
+import { FormEvent } from "react";
+
 export type Error = null | "empty" | "invalid" | "length" | "invalidEmail";
 
 export type LoginStore = {
@@ -8,4 +10,10 @@ export type LoginStore = {
     email: Error;
     password: Error;
   };
+};
+
+export type SubmitPayload = {
+  email: string;
+  password: string;
+  event: FormEvent;
 };

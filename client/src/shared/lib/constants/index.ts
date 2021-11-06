@@ -1,2 +1,2 @@
 export type { IDevices } from "./common";
-export { devices } from "./common";
+export { devices, publicRoutes } from "./common";

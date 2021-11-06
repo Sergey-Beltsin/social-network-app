@@ -1,41 +1,39 @@
 import { FC, ReactElement, useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import Cookies from "js-cookie";
+
+import { publicRoutes } from "@/shared/lib/constants";
 
 export const ProtectedRoute: FC = ({ children }) => {
-  const [isAuth, setIsAuth] = useState<boolean>(false);
+  const [isPageAccessed, setIsPageAccessed] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
     authCheck(router.asPath);
 
-    const hideContent = () => setIsAuth(false);
-    router.events.on("routeChangeStart", hideContent);
     router.events.on("routeChangeComplete", authCheck);
-    router.events.on("routeChangeComplete", (params) => console.log(params));
 
     return () => {
-      router.events.off("routeChangeStart", hideContent);
       router.events.off("routeChangeComplete", authCheck);
     };
   }, []);
 
   const authCheck = (url: string) => {
-    const publicRoutes: Array<string> = ["/login", "/register"];
     const path: string = url.split("?")[0];
-    console.log(path, publicRoutes.includes(path));
 
-    if (!publicRoutes.includes(path)) {
-      setIsAuth(false);
-      router.push({
-        pathname: "/login",
-        query: {
-          returnUrl: router.asPath,
-        },
-      });
+    if (!publicRoutes.includes(path) && !Cookies.get("token")) {
+      setIsPageAccessed(false);
+      localStorage.setItem("returningUrl", JSON.stringify(path));
+
+      router.push("/login");
+    } else if (publicRoutes.includes(path) && Cookies.get("token")) {
+      setIsPageAccessed(false);
+
+      router.push("/");
     } else {
-      setIsAuth(true);
+      setIsPageAccessed(true);
     }
   };
 
-  return (isAuth && (children as ReactElement)) || <></>;
+  return (isPageAccessed && (children as ReactElement)) || <></>;
 };

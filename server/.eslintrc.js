@@ -1,27 +1,24 @@
-const path = require("path");
-
 module.exports = {
-  env: {
-    es2021: true,
-    node: true,
-  },
-  extends: ["airbnb-base", "prettier"],
-  parser: "@typescript-eslint/parser",
+  parser: '@typescript-eslint/parser',
   parserOptions: {
-    ecmaVersion: 13,
-    sourceType: "module",
+    project: 'tsconfig.json',
+    sourceType: 'module',
   },
-  plugins: ["@typescript-eslint"],
-  settings: {
-    "import/resolver": {
-      alias: {
-        map: [["@", path.resolve(__dirname, "src")]],
-        extensions: [".ts", ".js", ".jsx", ".json", ".tsx"],
-      },
-    },
+  plugins: ['@typescript-eslint/eslint-plugin'],
+  extends: [
+    'plugin:@typescript-eslint/recommended',
+    'plugin:prettier/recommended',
+  ],
+  root: true,
+  env: {
+    node: true,
+    jest: true,
   },
+  ignorePatterns: ['.eslintrc.js'],
   rules: {
-    "import/prefer-default-export": 0,
-    "import/extensions": 0,
+    '@typescript-eslint/interface-name-prefix': 'off',
+    '@typescript-eslint/explicit-function-return-type': 'off',
+    '@typescript-eslint/explicit-module-boundary-types': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
   },
 };
