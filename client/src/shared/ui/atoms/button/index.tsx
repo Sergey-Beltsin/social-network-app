@@ -5,11 +5,13 @@ type ButtonProps = {
   onClick?: () => void;
   type?: "button" | "submit" | "reset";
   secondary?: boolean;
+  center?: boolean;
   disabled?: boolean;
 };
 
 type ContainerProps = {
   secondary?: boolean;
+  center?: boolean;
 };
 
 export const Button: FC<ButtonProps> = ({
@@ -17,12 +19,14 @@ export const Button: FC<ButtonProps> = ({
   children,
   onClick,
   secondary,
+  center,
   disabled,
 }) => (
   <Container
     type={type}
     onClick={onClick}
     secondary={secondary}
+    center={center}
     disabled={disabled}
   >
     {children}
@@ -33,6 +37,12 @@ const Container = styled.button<ContainerProps>`
   display: block;
 
   padding: 10px 24px;
+  ${({ center }) =>
+    center &&
+    `
+    margin-left: auto;
+    margin-right: auto;
+  `}
 
   background-color: transparent;
   border: 1px solid ${({ theme }) => theme.colors.primary};

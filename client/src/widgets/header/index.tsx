@@ -1,13 +1,13 @@
 import { FC, ReactElement } from "react";
 
 import styled from "styled-components";
+import Cookies from "js-cookie";
 import {
   Header as HeaderComponent,
   HeaderLoginButtons,
 } from "@/shared/ui/molecules";
 import { Dropdown } from "@/shared/ui/atoms";
 import { NewsIcon } from "@/shared/lib/icons/navigation";
-import { useAuth } from "@/shared/lib/hooks";
 
 interface IDropdownItem {
   icon?: ReactElement;
@@ -42,9 +42,7 @@ const dropdownItems: Array<IDropdownItem> = [
 ];
 
 export const Header: FC = () => {
-  const { isAuth } = useAuth();
-
-  const rightElement = isAuth ? (
+  const rightElement = Cookies.get("token") ? (
     <Dropdown items={dropdownItems}>
       <DropdownTrigger>
         <DropdownTriggerImg src="https://place-hold.it/30x30" alt="" />

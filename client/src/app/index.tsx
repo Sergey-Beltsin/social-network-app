@@ -1,29 +1,25 @@
 import { FC } from "react";
 import styled from "styled-components";
 
+import Cookies from "js-cookie";
 import { ThemeProvider } from "@/shared/lib/theme";
 import { Navigation } from "@/shared/ui/molecules";
 import { Header } from "@/widgets";
 import { ProtectedRoute } from "@/shared/lib/hocs";
-import { useAuth } from "@/shared/lib/hooks";
 
-export const App: FC = ({ children }) => {
-  const { isAuth } = useAuth();
-
-  return (
-    <ThemeProvider>
-      <ProtectedRoute>
-        <Header />
-        <MainWrapper>
-          <Wrapper>
-            {isAuth && <Navigation />}
-            <Main>{children}</Main>
-          </Wrapper>
-        </MainWrapper>
-      </ProtectedRoute>
-    </ThemeProvider>
-  );
-};
+export const App: FC = ({ children }) => (
+  <ThemeProvider>
+    <ProtectedRoute>
+      <Header />
+      <MainWrapper>
+        <Wrapper>
+          {Cookies.get("token") && <Navigation />}
+          <Main>{children}</Main>
+        </Wrapper>
+      </MainWrapper>
+    </ProtectedRoute>
+  </ThemeProvider>
+);
 
 const Main = styled.main`
   display: flex;

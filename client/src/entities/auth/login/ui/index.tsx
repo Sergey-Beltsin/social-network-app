@@ -8,11 +8,9 @@ import { AuthBottomLink, Button, Checkbox, Input } from "@/shared/ui/atoms";
 export const LoginForm: FC = () => {
   const { useLoginStore } = loginModel.store;
   const {
-    handleChangeEmail,
-    handleChangePassword,
+    handleChangeValue,
     handleChangeIsRemember,
-    handleBlurEmail,
-    handleBlurPassword,
+    handleBlur,
     handleSubmit,
   } = loginModel.actions;
   const { email, password, isRemember, errors } = useLoginStore();
@@ -24,22 +22,22 @@ export const LoginForm: FC = () => {
         <Wrapper>
           <Input
             value={email}
-            onChange={handleChangeEmail}
+            onChange={(value) => handleChangeValue({ field: "email", value })}
             label={t("email")}
-            onBlur={handleBlurEmail}
+            onBlur={(value) => handleBlur({ field: "email", value })}
             error={errors.email ? t(`errors.${errors.email}`) : ""}
+            type="email"
             required
           />
           <Input
             value={password}
-            onChange={handleChangePassword}
-            label={t("password")}
-            onBlur={handleBlurPassword}
-            error={
-              errors.password
-                ? t(`errors.${errors.password}`, { count: 8 })
-                : ""
+            onChange={(value) =>
+              handleChangeValue({ field: "password", value })
             }
+            label={t("password")}
+            onBlur={(value) => handleBlur({ field: "password", value })}
+            error={errors.password ? t(`errors.${errors.password}`) : ""}
+            type="password"
             required
           />
           <Checkbox
@@ -52,7 +50,11 @@ export const LoginForm: FC = () => {
             linkText={t("haveNotAccount.title")}
             text={t("haveNotAccount.text")}
           />
-          <Button disabled={!!errors.email || !!errors.password} type="submit">
+          <Button
+            disabled={!!errors.email || !!errors.password}
+            type="submit"
+            center
+          >
             {t("common:signIn")}
           </Button>
         </Wrapper>
@@ -87,6 +89,7 @@ const MainWrapper = styled.div`
   align-items: center;
 
   width: 100%;
+  margin-bottom: 20px;
 `;
 
 const Wrapper = styled.div`

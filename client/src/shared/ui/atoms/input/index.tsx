@@ -1,5 +1,6 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import styled from "styled-components";
+import { EyeIcon, EyeOffIcon } from "@/shared/lib/icons/auth";
 
 type InputProps = {
   value: string;
@@ -8,6 +9,7 @@ type InputProps = {
   label: string;
   required?: boolean;
   error?: string;
+  type?: "text" | "password" | "email";
 };
 
 type ContainerProps = {
@@ -21,23 +23,47 @@ export const Input: FC<InputProps> = ({
   onBlur,
   required,
   error,
-}) => (
-  <Container isError={!!error}>
-    <InputWrapper>
-      <StyledInput
-        type="text"
-        value={value}
-        onChange={({ target }) => onChange(target.value)}
-        onBlur={() => onBlur && onBlur(value)}
-        required={required}
-      />
-      <Label>{label}</Label>
-      <Bar />
-    </InputWrapper>
+  type = "text",
+}) => {
+  const [isPasswordType, setIsPasswordType] = useState<boolean>(
+    type === "password",
+  );
 
-    {error && <ErrorText>{error}</ErrorText>}
-  </Container>
-);
+  const handleChangePasswordType = () => {
+    setIsPasswordType((prevState) => !prevState);
+  };
+
+  const getType = (): "text" | "password" | "email" => {
+    if (type === "password") {
+      return "text";
+    }
+
+    return type;
+  };
+
+  return (
+    <Container isError={!!error}>
+      <InputWrapper>
+        <StyledInput
+          type={isPasswordType ? "password" : getType()}
+          value={value}
+          onChange={({ target }) => onChange(target.value)}
+          onBlur={() => onBlur && onBlur(value)}
+          required={required}
+        />
+        {type === "password" && (
+          <IconWrapper type="button" onClick={handleChangePasswordType}>
+            {isPasswordType ? <EyeOffIcon /> : <EyeIcon />}
+          </IconWrapper>
+        )}
+        <Label>{label}</Label>
+        <Bar />
+      </InputWrapper>
+
+      {error && <ErrorText>{error}</ErrorText>}
+    </Container>
+  );
+};
 
 const Container = styled.label<ContainerProps>`
   display: block;
@@ -64,7 +90,11 @@ const Container = styled.label<ContainerProps>`
 `;
 
 const InputWrapper = styled.div`
+  display: flex;
+
   position: relative;
+
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
 `;
 
 const Label = styled.span`
@@ -83,7 +113,7 @@ const Label = styled.span`
 const Bar = styled.div`
   position: absolute;
   right: 0;
-  bottom: 0;
+  bottom: -1px;
   left: 0;
 
   height: 2px;
@@ -111,7 +141,6 @@ const StyledInput = styled.input`
 
   background-color: transparent;
   border: none;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   outline: none;
 
   font-size: 16px;
@@ -130,5 +159,18 @@ const StyledInput = styled.input`
     & ~ ${Bar} {
       transform: scaleX(1);
     }
+  }
+`;
+
+const IconWrapper = styled.button`
+  padding: 0;
+
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+
+  & > svg {
+    width: 20px;
+    height: 20px;
   }
 `;

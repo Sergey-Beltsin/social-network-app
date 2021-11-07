@@ -6,7 +6,7 @@ import { registerModel } from "../model";
 
 export const RegisterForm: FC = () => {
   const { useRegisterStore } = registerModel.store;
-  const { handleChangeField, handleSubmit } = registerModel.events;
+  const { handleChangeField, handleSubmit, handleBlur } = registerModel.events;
   const store = useRegisterStore();
   const { errors } = store;
   const { t } = useTranslation("auth");
@@ -18,21 +18,25 @@ export const RegisterForm: FC = () => {
           <Input
             value={store.email}
             onChange={(value) => handleChangeField({ field: "email", value })}
+            onBlur={(value) => handleBlur({ field: "email", value })}
+            error={errors.email ? t(`errors.${errors.email}`) : ""}
             label={t("email")}
-            error={errors.email ? t(errors.email) : ""}
+            type="email"
             required
           />
           <Input
             value={store.name}
             onChange={(value) => handleChangeField({ field: "name", value })}
-            error={errors.name ? t(errors.name) : ""}
+            onBlur={(value) => handleBlur({ field: "name", value })}
+            error={errors.name ? t(`errors.${errors.name}`) : ""}
             label={t("name")}
             required
           />
           <Input
             value={store.surname}
             onChange={(value) => handleChangeField({ field: "surname", value })}
-            error={errors.surname ? t(errors.surname) : ""}
+            onBlur={(value) => handleBlur({ field: "surname", value })}
+            error={errors.surname ? t(`errors.${errors.surname}`) : ""}
             label={t("surname")}
             required
           />
@@ -41,7 +45,8 @@ export const RegisterForm: FC = () => {
             onChange={(value) =>
               handleChangeField({ field: "username", value })
             }
-            error={errors.username ? t(errors.username) : ""}
+            onBlur={(value) => handleBlur({ field: "username", value })}
+            error={errors.username ? t(`errors.${errors.username}`) : ""}
             label={t("username")}
             required
           />
@@ -50,8 +55,25 @@ export const RegisterForm: FC = () => {
             onChange={(value) =>
               handleChangeField({ field: "password", value })
             }
-            error={errors.password ? t(errors.password) : ""}
+            onBlur={(value) => handleBlur({ field: "password", value })}
+            error={errors.password ? t(`errors.${errors.password}`) : ""}
             label={t("password")}
+            type="password"
+            required
+          />
+          <Input
+            value={store.repeatedPassword}
+            onChange={(value) =>
+              handleChangeField({ field: "repeatedPassword", value })
+            }
+            onBlur={(value) => handleBlur({ field: "repeatedPassword", value })}
+            error={
+              errors.repeatedPassword
+                ? t(`errors.${errors.repeatedPassword}`)
+                : ""
+            }
+            label={t("repeatPassword")}
+            type="password"
             required
           />
           <AuthBottomLink
@@ -62,6 +84,7 @@ export const RegisterForm: FC = () => {
           <Button
             disabled={!!Object.values(errors).find((error) => error)}
             type="submit"
+            center
           >
             {t("common:signUp")}
           </Button>
@@ -80,10 +103,6 @@ const Form = styled.form`
   background-color: ${({ theme }) => theme.colors.secondary};
   border-radius: 8px;
 
-  & > button {
-    margin: 20px auto 0;
-  }
-
   & > label {
     max-width: 400px;
     margin-left: auto;
@@ -97,6 +116,7 @@ const MainWrapper = styled.div`
   align-items: center;
 
   width: 100%;
+  margin-bottom: 20px;
 `;
 
 const Wrapper = styled.div`

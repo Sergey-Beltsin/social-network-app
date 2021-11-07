@@ -9,67 +9,76 @@ import { useStore } from "effector-react";
 import { FormEvent } from "react";
 import Cookies from "js-cookie";
 import Router from "next/router";
-import { LoginStore, Error, SubmitPayload } from "./model.types";
+import {
+  LoginStore,
+  Error,
+  SubmitPayload,
+  LoginStoreField,
+} from "./model.types";
 import { validateEmail } from "@/shared/lib/utils";
 import { login } from "@/shared/api";
-import { useAuth } from "@/shared/lib/hooks";
-import { setIsAuth } from "@/shared/lib/hooks/use-auth";
 
-const handleChangeEmail = createEvent<string>();
-const handleChangePassword = createEvent<string>();
+const handleChangeValue =
+  createEvent<{ field: LoginStoreField; value: string }>();
 const handleChangeIsRemember = createEvent<boolean>();
-const handleEmailError = createEvent<Error>();
-const handlePasswordError = createEvent<Error>();
-const handleBlurEmail = createEvent<string>();
-const handleBlurPassword = createEvent<string>();
+const handleChangeError =
+  createEvent<{ field: LoginStoreField; value: Error }>();
+const handleBlur = createEvent<{ field: LoginStoreField; value: string }>();
 const handleSubmit = createEvent<FormEvent>();
 
-const handleCheckEmailFx = createEffect((email: string): Error => {
-  if (!email.length) {
-    handleEmailError("empty");
+const handleCheckValue = (field: LoginStoreField, value: string): Error => {
+  if (!value.length) {
     return "empty";
   }
-  if (!validateEmail(email)) {
-    handleEmailError("invalidEmail");
+  if (field === "email" && !validateEmail(value)) {
     return "invalidEmail";
   }
 
-  handleEmailError(null);
   return null;
-});
+};
+const handleChangeFx = createEffect(
+  ({ field, value }: { field: LoginStoreField; value: string }): Error => {
+    const error = handleCheckValue(field, value);
 
-const handleCheckPasswordFx = createEffect((password: string): Error => {
-  if (!password.length) {
-    handlePasswordError("empty");
-    return "empty";
-  }
-  if (password.length < 8) {
-    handlePasswordError("length");
-    return "length";
-  }
+    handleChangeError({ field, value: error });
+    return error;
+  },
+);
 
-  handlePasswordError(null);
-  return null;
-});
+const handleCheckValueError = createEffect(
+  ({
+    field,
+    value,
+    error,
+  }: {
+    field: LoginStoreField;
+    value: string;
+    error: Error;
+  }) => {
+    const currentError = handleCheckValue(field, value);
+
+    if (error && currentError !== error) {
+      handleChangeError({ field, value: currentError });
+    }
+  },
+);
 
 const handleSubmitFx = createEffect(
-  async ({ email, password, event }: SubmitPayload) => {
-    event.preventDefault();
-
+  async ({ email, password }: SubmitPayload) => {
     if (
-      !(await handleCheckEmailFx(email)) &&
-      !(await handleCheckPasswordFx(password))
+      !(await handleChangeFx({ field: "email", value: email })) &&
+      !(await handleChangeFx({ field: "password", value: password }))
     ) {
       try {
         const response = await login({ email, password });
 
-        setIsAuth(true);
         Cookies.set("token", response.data.message.access_token);
 
         const returningUrl = localStorage.getItem("returningUrl");
 
         if (returningUrl) {
           Router.push(JSON.parse(returningUrl));
+          localStorage.removeItem("returningUrl");
         } else {
           Router.push("/");
         }
@@ -89,39 +98,44 @@ const $login = createStore<LoginStore>({
     password: null,
   },
 })
-  .on(handleChangeEmail, (state, email) => ({ ...state, email }))
-  .on(handleChangePassword, (state, password) => ({ ...state, password }))
+  .on(handleChangeValue, (state, { field, value }) => ({
+    ...state,
+    [field]: value,
+  }))
   .on(handleChangeIsRemember, (state, isRemember) => ({
     ...state,
     isRemember,
   }))
-  .on(handleEmailError, (state, email) => ({
+  .on(handleChangeError, (state, { field, value }) => ({
     ...state,
-    errors: { ...state.errors, email },
-  }))
-  .on(handlePasswordError, (state, password) => ({
-    ...state,
-    errors: { ...state.errors, password },
+    errors: { ...state.errors, [field]: value },
   }));
 
 forward({
-  from: handleBlurEmail,
-  to: handleCheckEmailFx,
-});
-forward({
-  from: handleBlurPassword,
-  to: handleCheckPasswordFx,
+  from: handleBlur,
+  to: handleChangeFx,
 });
 sample({
   clock: handleSubmit,
   source: $login,
-  fn: (store, event) => ({
+  fn: (store) => ({
     email: store.email,
     password: store.password,
-    event,
   }),
   target: handleSubmitFx,
 });
+sample({
+  clock: handleChangeValue,
+  source: $login,
+  fn: (store, { field, value }) => ({
+    field,
+    value,
+    error: store.errors[field],
+  }),
+  target: handleCheckValueError,
+});
+
+handleSubmit.watch((event) => event.preventDefault());
 
 const useLoginStore = (): LoginStore => useStore($login);
 
@@ -129,11 +143,9 @@ const store = {
   useLoginStore,
 };
 const actions = {
-  handleChangeEmail,
-  handleChangePassword,
+  handleChangeValue,
   handleChangeIsRemember,
-  handleBlurEmail,
-  handleBlurPassword,
+  handleBlur,
   handleSubmit,
 };
 

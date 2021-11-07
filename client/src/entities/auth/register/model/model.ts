@@ -1,16 +1,41 @@
 import { createEffect, createEvent, createStore, sample } from "effector";
 import { useStore } from "effector-react";
 import { FormEvent } from "react";
-import { RegisterStore, SubmitPayload } from "./model.types";
+import {
+  Error,
+  RegisterStore,
+  RegisterStoreField,
+  SubmitPayload,
+} from "./model.types";
 import { register } from "@/shared/api";
+import { validateEmail } from "@/shared/lib/utils";
 
-const handleChangeField = createEvent<{ field: string; value: string }>();
-const handleChangeError = createEvent<{ field: string; value: Error }>();
+const validateValue = (
+  field: RegisterStoreField,
+  value: string,
+  password?: string,
+): Error => {
+  if (!value) {
+    return "empty";
+  }
+  if (field === "email" && !validateEmail(value)) {
+    return "invalidEmail";
+  }
+  if (field === "repeatedPassword" && value !== password) {
+    return "passwordMismatch";
+  }
+
+  return null;
+};
+
+const handleChangeField =
+  createEvent<{ field: RegisterStoreField; value: string }>();
+const handleChangeError =
+  createEvent<{ field: RegisterStoreField; value: Error }>();
+const handleBlur = createEvent<{ field: RegisterStoreField; value: string }>();
 const handleSubmit = createEvent<FormEvent>();
 
 const handleSubmitFx = createEffect(async (payload: SubmitPayload) => {
-  payload.event.preventDefault();
-
   try {
     const response = await register({
       email: payload.email,
@@ -25,15 +50,51 @@ const handleSubmitFx = createEffect(async (payload: SubmitPayload) => {
   }
 });
 
+const handleValidateValuesFx = createEffect(
+  ({
+    field,
+    value,
+    error,
+    password,
+  }: {
+    field: RegisterStoreField;
+    value: string;
+    error: Error;
+    password: string;
+  }) => {
+    const currentError = validateValue(field, value, password);
+
+    if (error && currentError !== error) {
+      handleChangeError({ field, value: currentError });
+    }
+  },
+);
+
+const handleBlurFx = createEffect(
+  ({
+    field,
+    value,
+    password,
+  }: {
+    field: RegisterStoreField;
+    value: string;
+    password: string;
+  }) => {
+    handleChangeError({ field, value: validateValue(field, value, password) });
+  },
+);
+
 const $register = createStore<RegisterStore>({
   email: "",
   password: "",
+  repeatedPassword: "",
   username: "",
   name: "",
   surname: "",
   errors: {
     email: null,
     password: null,
+    repeatedPassword: null,
     username: null,
     name: null,
     surname: null,
@@ -51,25 +112,46 @@ const $register = createStore<RegisterStore>({
 sample({
   clock: handleSubmit,
   source: $register,
-  fn: (store, event) => ({
+  fn: (store) => ({
     email: store.email,
     name: store.name,
     surname: store.surname,
     username: store.username,
     password: store.password,
-    event,
   }),
   target: handleSubmitFx,
 });
+sample({
+  clock: handleChangeField,
+  source: $register,
+  fn: (store, { field, value }) => ({
+    value,
+    field,
+    password: store.password,
+    error: store.errors[field],
+  }),
+  target: handleValidateValuesFx,
+});
+sample({
+  clock: handleBlur,
+  source: $register,
+  fn: (store, { field, value }) => ({
+    field,
+    value,
+    password: store.password,
+  }),
+  target: handleBlurFx,
+});
+
+handleSubmit.watch((event) => event.preventDefault());
 
 const useRegisterStore = (): RegisterStore => useStore($register);
 
-const events = {
-  handleChangeField,
-  handleSubmit,
+export const registerModel = {
+  events: {
+    handleChangeField,
+    handleSubmit,
+    handleBlur,
+  },
+  store: { useRegisterStore },
 };
-const store = {
-  useRegisterStore,
-};
-
-export const registerModel = { events, store };
