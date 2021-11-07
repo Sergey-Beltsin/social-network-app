@@ -21,6 +21,7 @@ declare module "styled-components" {
       tertiaryLight: string;
       border: string;
       borderSecondary: string;
+      background: string;
       red: string;
       lightRed: string;
     };
