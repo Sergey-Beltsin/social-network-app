@@ -1,14 +1,15 @@
 import { createEffect, createEvent, createStore, sample } from "effector";
 import { useStore } from "effector-react";
 import { FormEvent } from "react";
+import Router from "next/router";
 import {
   Error,
   RegisterStore,
   RegisterStoreField,
   SubmitPayload,
 } from "./model.types";
-import { register } from "@/shared/api";
-import { validateEmail } from "@/shared/lib/utils";
+import { login, register } from "@/shared/api";
+import { Auth, validateEmail } from "@/shared/lib/utils";
 
 const validateValue = (
   field: RegisterStoreField,
@@ -37,14 +38,29 @@ const handleSubmit = createEvent<FormEvent>();
 
 const handleSubmitFx = createEffect(async (payload: SubmitPayload) => {
   try {
-    const response = await register({
+    await register({
       email: payload.email,
       name: payload.name,
       surname: payload.surname,
       username: payload.username,
       password: payload.password,
     });
-    console.log(response.data);
+
+    const response = await login({
+      email: payload.email,
+      password: payload.password,
+    });
+
+    Auth.setAuth(response.data.message.access_token, true);
+
+    const returningUrl = localStorage.getItem("returningUrl");
+
+    if (returningUrl) {
+      Router.push(JSON.parse(returningUrl));
+      localStorage.removeItem("returningUrl");
+    } else {
+      Router.push("/profile");
+    }
   } catch (e) {
     console.log(e);
   }

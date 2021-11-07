@@ -1,8 +1,8 @@
 import { FC, ReactElement, useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import Cookies from "js-cookie";
 
 import { publicRoutes } from "@/shared/lib/constants";
+import { Auth } from "@/shared/lib/utils";
 
 export const ProtectedRoute: FC = ({ children }) => {
   const [isPageAccessed, setIsPageAccessed] = useState(false);
@@ -19,17 +19,27 @@ export const ProtectedRoute: FC = ({ children }) => {
   }, []);
 
   const authCheck = (url: string) => {
-    const path: string = url.split("?")[0];
+    let path: string = url.split("?")[0];
 
-    if (!publicRoutes.includes(path) && !Cookies.get("token")) {
+    if (router.locales?.find((locale) => path.includes(locale))) {
+      path = path.slice(3);
+    }
+
+    console.log(
+      path,
+      publicRoutes.find((route) => route.includes(path)),
+      router.locale,
+      router.locales?.find((locale) => path.includes(locale)),
+    );
+    if (!publicRoutes.includes(path) && !Auth.getIsAuth()) {
       setIsPageAccessed(false);
       localStorage.setItem("returningUrl", JSON.stringify(path));
 
       router.push("/login");
-    } else if (publicRoutes.includes(path) && Cookies.get("token")) {
+    } else if (publicRoutes.includes(path) && Auth.getIsAuth()) {
       setIsPageAccessed(false);
 
-      router.push("/");
+      router.push("/profile");
     } else {
       setIsPageAccessed(true);
     }

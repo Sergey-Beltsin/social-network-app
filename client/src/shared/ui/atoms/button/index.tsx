@@ -49,6 +49,7 @@ const Container = styled.button<ContainerProps>`
   border-radius: 6px;
   cursor: pointer;
 
+  color: ${({ theme }) => theme.colors.text.primary};
   text-decoration: none;
 
   transition: 0.2s ease-in-out;
@@ -56,7 +57,7 @@ const Container = styled.button<ContainerProps>`
   &:hover {
     background-color: ${({ theme }) => theme.colors.primary};
 
-    color: ${({ theme }) => theme.colors.textWhite};
+    color: ${({ theme }) => theme.colors.common.light};
   }
 
   ${({ secondary, theme }) =>
@@ -68,7 +69,7 @@ const Container = styled.button<ContainerProps>`
       background-color: transparent;
       border-color: ${theme.colors.primary};
       
-      color: ${theme.colors.text};
+      color: ${theme.colors.text.primary};
     }
   `}
 
@@ -81,7 +82,7 @@ const Container = styled.button<ContainerProps>`
       background-color: transparent;
       border-color: ${({ theme }) => theme.colors.border};
 
-      color: ${({ theme }) => theme.colors.text};
+      color: ${({ theme }) => theme.colors.text.primary};
     }
   }
 `;

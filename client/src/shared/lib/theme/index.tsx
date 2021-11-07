@@ -1,37 +1,11 @@
 import { FC } from "react";
 import { ThemeProvider as ThemeProviderInstance } from "styled-components";
 
-import type { IDevices } from "@/shared/lib/constants";
 import { devices } from "@/shared/lib/constants";
-
-interface IThemeColors {
-  primary: string;
-  secondary: string;
-  tertiary: string;
-  tertiaryLight: string;
-  background: string;
-  lightRed: string;
-  red: string;
-  text: string;
-  textSecondary: string;
-  textWhite: string;
-  border: string;
-  borderSecondary: string;
-}
-
-interface IThemes {
-  dark: {
-    colors: IThemeColors;
-    devices: IDevices;
-  };
-  light: {
-    colors: IThemeColors;
-    devices: IDevices;
-  };
-}
+import { useTheme } from "@/shared/lib/hooks";
 
 const primary: string = "#3788E0";
-const secondaryWhite: string = "#E8E8E8";
+const secondaryWhite: string = "#eeeeee";
 const secondary: string = "#222222";
 const tertiaryWhite: string = "#C7C7C7";
 const tertiary: string = "#555555";
@@ -43,21 +17,31 @@ const textSecondary: string = "#AAAAAA";
 const borderWhite: string = "#CECECE";
 const border: string = "#333333";
 const borderSecondary: string = "#7f7f7f";
-const backgroundWhite: string = "#EEEEEE";
+const backgroundWhite: string = "#f6f6f6";
 const background: string = "#151515";
 const lightRed: string = "rgb(255, 237, 237)";
 const red: string = "rgb(255, 51, 71)";
+const likesCounterBgWhite: string = "#dedede";
+const likesCounterBg: string = "#363636";
 
-const themes: IThemes = {
+const themes = {
   dark: {
     colors: {
+      common: {
+        dark: "#000000",
+        light: "#FFFFFF",
+      },
+      text: {
+        primary: textWhite,
+        secondary: textSecondary,
+      },
+      components: {
+        likesCounterBg,
+      },
       primary,
       secondary,
       tertiary,
       tertiaryLight,
-      text: textWhite,
-      textWhite,
-      textSecondary,
       border,
       borderSecondary,
       background,
@@ -68,13 +52,21 @@ const themes: IThemes = {
   },
   light: {
     colors: {
+      common: {
+        dark: "#000000",
+        light: "#FFFFFF",
+      },
+      text: {
+        primary: text,
+        secondary: textSecondary,
+      },
+      components: {
+        likesCounterBg: likesCounterBgWhite,
+      },
       primary,
       secondary: secondaryWhite,
       tertiary: tertiaryWhite,
       tertiaryLight: tertiaryLightWhite,
-      text,
-      textWhite,
-      textSecondary,
       border: borderWhite,
       borderSecondary,
       background: backgroundWhite,
@@ -86,11 +78,11 @@ const themes: IThemes = {
 };
 
 export const ThemeProvider: FC = ({ children }) => {
-  const currentTheme: string = "light";
+  const { providedValue } = useTheme();
 
   return (
     // @ts-ignore
-    <ThemeProviderInstance theme={themes[currentTheme]}>
+    <ThemeProviderInstance theme={themes[providedValue]}>
       {children}
     </ThemeProviderInstance>
   );

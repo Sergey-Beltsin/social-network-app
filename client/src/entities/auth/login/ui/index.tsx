@@ -27,6 +27,7 @@ export const LoginForm: FC = () => {
             onBlur={(value) => handleBlur({ field: "email", value })}
             error={errors.email ? t(`errors.${errors.email}`) : ""}
             type="email"
+            autocomplete
             required
           />
           <Input
@@ -38,6 +39,7 @@ export const LoginForm: FC = () => {
             onBlur={(value) => handleBlur({ field: "password", value })}
             error={errors.password ? t(`errors.${errors.password}`) : ""}
             type="password"
+            autocomplete
             required
           />
           <Checkbox

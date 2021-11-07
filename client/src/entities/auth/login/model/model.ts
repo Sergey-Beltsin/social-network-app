@@ -7,7 +7,6 @@ import {
 } from "effector";
 import { useStore } from "effector-react";
 import { FormEvent } from "react";
-import Cookies from "js-cookie";
 import Router from "next/router";
 import {
   LoginStore,
@@ -15,7 +14,7 @@ import {
   SubmitPayload,
   LoginStoreField,
 } from "./model.types";
-import { validateEmail } from "@/shared/lib/utils";
+import { Auth, validateEmail } from "@/shared/lib/utils";
 import { login } from "@/shared/api";
 
 const handleChangeValue =
@@ -64,7 +63,7 @@ const handleCheckValueError = createEffect(
 );
 
 const handleSubmitFx = createEffect(
-  async ({ email, password }: SubmitPayload) => {
+  async ({ email, password, isRemember }: SubmitPayload) => {
     if (
       !(await handleChangeFx({ field: "email", value: email })) &&
       !(await handleChangeFx({ field: "password", value: password }))
@@ -72,7 +71,7 @@ const handleSubmitFx = createEffect(
       try {
         const response = await login({ email, password });
 
-        Cookies.set("token", response.data.message.access_token);
+        Auth.setAuth(response.data.message.access_token, isRemember);
 
         const returningUrl = localStorage.getItem("returningUrl");
 
@@ -80,7 +79,7 @@ const handleSubmitFx = createEffect(
           Router.push(JSON.parse(returningUrl));
           localStorage.removeItem("returningUrl");
         } else {
-          Router.push("/");
+          Router.push("/profile");
         }
       } catch (e) {
         console.log(e);
@@ -121,6 +120,7 @@ sample({
   fn: (store) => ({
     email: store.email,
     password: store.password,
+    isRemember: store.isRemember,
   }),
   target: handleSubmitFx,
 });

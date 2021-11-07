@@ -1,24 +1,27 @@
-import { FC, ReactElement, useRef, useState } from "react";
+/* eslint-disable react/no-array-index-key */
+import { FC, KeyboardEvent, ReactElement, useRef, useState } from "react";
 import styled from "styled-components";
-// @ts-ignore
 import { CSSTransition } from "react-transition-group";
 
 import useTranslation from "next-translate/useTranslation";
+import { useRouter } from "next/router";
 import { useOutsideAlerter } from "@/shared/lib/hooks";
 import { ArrowIcon } from "@/shared/lib/icons/common";
 
 interface IDropdownItem {
   icon?: ReactElement;
-  title: string;
+  title: string | ReactElement;
   onClick?: () => void;
-  isClosable?: boolean;
-  endOfType?: boolean;
+  link?: string;
+  lastOfType?: boolean;
 }
 
-type DropdownItems = Array<IDropdownItem>;
+export type DropdownItems = Array<IDropdownItem>;
 
-type Props = {
+type DropdownProps = {
   items: DropdownItems;
+  trigger?: "click" | "hover";
+  selectedItem?: number;
 };
 
 type TriggerIconProps = {
@@ -29,36 +32,59 @@ type DropdownTriggerProps = {
   isOpen: boolean;
 };
 
-export const Dropdown: FC<Props> = ({ items, children }) => {
+type DropdownItemProps = {
+  isSelected: boolean;
+  lastOfType: boolean;
+};
+
+export const Dropdown: FC<DropdownProps> = ({
+  items,
+  trigger = "click",
+  selectedItem,
+  children,
+}) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation("common");
+  const router = useRouter();
 
-  const handleClose = () => {
-    setIsOpen(false);
+  const handleChangeOpen = (isCurrentOpen: boolean) => {
+    setIsOpen(isCurrentOpen);
   };
 
-  const handleOpen = () => {
-    setIsOpen((prevState) => !prevState);
-  };
-
-  const handleClickItem = (onClick?: () => void, isClosable?: boolean) => {
+  const handleClickItem = (onClick?: () => void, link?: string) => {
     if (onClick) {
       onClick();
     }
 
-    if (isClosable) {
-      handleClose();
+    if (link) {
+      router.push(link);
+      handleChangeOpen(false);
     }
   };
 
-  useOutsideAlerter(dropdownRef, handleClose);
+  const handleKeyUp = (event: KeyboardEvent<HTMLButtonElement>) => {
+    if (event.code === "Space" || event.code === "Enter") {
+      handleChangeOpen(!isOpen);
+    }
+  };
+
+  useOutsideAlerter(dropdownRef, () => handleChangeOpen(false));
 
   return (
     <MainWrapper ref={dropdownRef}>
       <Trigger
         isOpen={isOpen}
-        onClick={handleOpen}
+        onClick={
+          trigger === "click" ? () => handleChangeOpen(!isOpen) : undefined
+        }
+        onMouseEnter={
+          trigger === "hover" ? () => handleChangeOpen(true) : undefined
+        }
+        onMouseLeave={
+          trigger === "hover" ? () => handleChangeOpen(false) : undefined
+        }
+        onKeyUp={handleKeyUp}
         aria-label={isOpen ? t("closeMenu") : t("openMenu")}
       >
         <TriggerContent>{children}</TriggerContent>
@@ -72,22 +98,38 @@ export const Dropdown: FC<Props> = ({ items, children }) => {
         unmountOnExit
         classNames="dropdown-content"
       >
-        <DropdownContent>
-          <DropdownList>
-            {items.map((item) => (
-              <DropdownItem key={item.title}>
-                <DropdownButton
-                  onClick={() => handleClickItem(item.onClick, item.isClosable)}
-                >
-                  <DropdownButtonInfo>
-                    {item.icon}
-                    <DropdownButtonTitle>{item.title}</DropdownButtonTitle>
-                  </DropdownButtonInfo>
-                </DropdownButton>
-              </DropdownItem>
-            ))}
-          </DropdownList>
-        </DropdownContent>
+        <DropdownWrapper
+          onMouseEnter={
+            trigger === "hover" ? () => handleChangeOpen(true) : undefined
+          }
+          onMouseLeave={
+            trigger === "hover" ? () => handleChangeOpen(false) : undefined
+          }
+        >
+          <DropdownContent>
+            <DropdownList>
+              {items.map(
+                ({ title, lastOfType, onClick, icon, link }, index) => (
+                  <DropdownItem
+                    key={`${index}-${link}-${lastOfType}-dropdown`}
+                    isSelected={selectedItem === index}
+                    lastOfType={lastOfType || false}
+                  >
+                    <DropdownButton
+                      onClick={() => handleClickItem(onClick, link)}
+                      aria-label={link ? t("goToLink", { link }) : ""}
+                    >
+                      <DropdownButtonInfo>
+                        {icon}
+                        <DropdownButtonTitle>{title}</DropdownButtonTitle>
+                      </DropdownButtonInfo>
+                    </DropdownButton>
+                  </DropdownItem>
+                ),
+              )}
+            </DropdownList>
+          </DropdownContent>
+        </DropdownWrapper>
       </CSSTransition>
     </MainWrapper>
   );
@@ -97,20 +139,12 @@ const MainWrapper = styled.div`
   position: relative;
 `;
 
-const DropdownContent = styled.div`
-  min-width: 200px;
-  padding: 10px;
-
+const DropdownWrapper = styled.div`
   position: absolute;
   z-index: 100;
-  top: calc(100% + 6px);
+  top: 100%;
   right: 0;
   opacity: 1;
-
-  background-color: ${({ theme }) => theme.colors.secondary};
-  border-radius: 4px;
-  box-shadow: 0 4px 20px -5px rgba(34, 60, 80, 0.4);
-  overflow: hidden;
 
   transition: 0.2s ease;
 
@@ -137,6 +171,19 @@ const DropdownContent = styled.div`
   }
 `;
 
+const DropdownContent = styled.div`
+  min-width: 200px;
+  padding: 10px;
+
+  position: relative;
+  top: 6px;
+
+  background-color: ${({ theme }) => theme.colors.secondary};
+  border-radius: 4px;
+  box-shadow: 0 4px 20px -5px rgba(34, 60, 80, 0.4);
+  overflow: hidden;
+`;
+
 const DropdownList = styled.ul`
   margin: 0;
   padding: 0;
@@ -144,10 +191,32 @@ const DropdownList = styled.ul`
   list-style: none;
 `;
 
-const DropdownItem = styled.li`
-  &:not(:last-child) {
-    margin-bottom: 4px;
+const DropdownItem = styled.li<DropdownItemProps>`
+  &:not(:first-child) {
+    padding-top: 4px;
   }
+
+  &:not(:last-child) {
+    padding-bottom: 4px;
+  }
+
+  ${({ isSelected, theme }) =>
+    isSelected &&
+    `
+    & ${DropdownButton} {
+      background-color: ${theme.colors.tertiaryLight};
+    }
+
+    & ${DropdownButtonTitle} {
+      color: ${theme.colors.primary};
+    }
+  `}
+
+  ${({ lastOfType, theme }) =>
+    lastOfType &&
+    `
+    border-bottom: 1px solid ${theme.colors.border};
+  `}
 `;
 
 const DropdownButton = styled.button`
@@ -159,7 +228,7 @@ const DropdownButton = styled.button`
   border-radius: 4px;
   cursor: pointer;
 
-  color: ${({ theme }) => theme.colors.text};
+  color: ${({ theme }) => theme.colors.text.primary};
 
   transition: 0.2s ease;
 
@@ -174,6 +243,11 @@ const DropdownButtonInfo = styled.span`
   align-items: center;
 
   margin-right: 20px;
+
+  & > svg {
+    width: 20px;
+    height: 20px;
+  }
 `;
 
 const DropdownButtonTitle = styled.span`
@@ -196,7 +270,7 @@ const Trigger = styled.button<DropdownTriggerProps>`
   border-radius: 4px;
   cursor: pointer;
 
-  color: ${({ theme }) => theme.colors.text};
+  color: ${({ theme }) => theme.colors.text.primary};
 
   transition: 0.2s ease;
 

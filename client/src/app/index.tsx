@@ -1,11 +1,11 @@
 import { FC } from "react";
 import styled from "styled-components";
 
-import Cookies from "js-cookie";
 import { ThemeProvider } from "@/shared/lib/theme";
 import { Navigation } from "@/shared/ui/molecules";
 import { Header } from "@/widgets";
 import { ProtectedRoute } from "@/shared/lib/hocs";
+import { Auth } from "@/shared/lib/utils";
 
 export const App: FC = ({ children }) => (
   <ThemeProvider>
@@ -13,7 +13,7 @@ export const App: FC = ({ children }) => (
       <Header />
       <MainWrapper>
         <Wrapper>
-          {Cookies.get("token") && <Navigation />}
+          {Auth.getIsAuth() && <Navigation />}
           <Main>{children}</Main>
         </Wrapper>
       </MainWrapper>
@@ -27,7 +27,7 @@ const Main = styled.main`
   min-height: calc(100vh - 116px);
   margin: 0 auto;
 
-  color: ${({ theme }) => theme.colors.text};
+  color: ${({ theme }) => theme.colors.text.primary};
 
   @media (min-width: ${({ theme }) => theme.devices.desktop}) {
     width: 100%;

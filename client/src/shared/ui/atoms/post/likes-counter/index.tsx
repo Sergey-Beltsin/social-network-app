@@ -35,13 +35,20 @@ const Container = styled.button<ContainerProps>`
 
   padding: 6px 14px;
 
+  background-color: ${({ theme }) => theme.colors.components.likesCounterBg};
   border: none;
   border-radius: 100px;
   cursor: pointer;
 
   transition: 0.2s ease;
 
+  &:hover {
+    opacity: 0.6;
+  }
+
   & > svg {
+    fill: ${({ theme }) => theme.colors.text.primary};
+
     transition: 0.2s ease;
   }
 

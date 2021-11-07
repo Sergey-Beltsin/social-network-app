@@ -65,5 +65,5 @@ const AuthorCreated = styled.span`
   display: block;
 
   font-size: 12px;
-  color: ${({ theme }) => theme.colors.textSecondary};
+  color: ${({ theme }) => theme.colors.text.secondary};
 `;

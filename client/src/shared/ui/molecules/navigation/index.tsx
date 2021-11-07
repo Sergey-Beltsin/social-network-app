@@ -9,6 +9,7 @@ import {
   CommunityIcon,
   MessagesIcon,
   SettingsIcon,
+  ProfileIcon,
 } from "@/shared/lib/icons/navigation";
 
 interface ILink {
@@ -23,7 +24,12 @@ export const Navigation = () => {
 
   const links: Array<ILink> = [
     {
-      href: "/",
+      href: "/profile",
+      title: t("profile"),
+      icon: <ProfileIcon />,
+    },
+    {
+      href: "/news",
       title: t("news"),
       icon: <NewsIcon />,
     },
@@ -66,6 +72,7 @@ const Nav = styled.nav`
   right: 0;
   bottom: 0;
   left: 0;
+  z-index: 10;
 
   background-color: ${({ theme }) => theme.colors.secondary};
   border-top: 1px solid ${({ theme }) => theme.colors.border};

@@ -44,10 +44,15 @@ const LinkItem = styled.a<LinksProps>`
   border-radius: 4px;
 
   color: ${({ theme, isActive }) =>
-    isActive ? theme.colors.primary : theme.colors.text};
+    isActive ? theme.colors.primary : theme.colors.text.primary};
   text-decoration: none;
 
   transition: 0.2s ease;
+
+  & > svg {
+    width: 20px;
+    height: 20px;
+  }
 
   @media (min-width: ${({ theme }) => theme.devices.desktop}) {
     justify-content: flex-start;
@@ -69,6 +74,7 @@ const Title = styled.span`
   margin-left: 10px;
 
   font-size: 13px;
+  white-space: nowrap;
 
   @media (min-width: ${({ theme }) => theme.devices.desktop}) {
     display: block;

@@ -14,4 +14,5 @@ export type LoginStore = {
 export type SubmitPayload = {
   email: string;
   password: string;
+  isRemember: boolean;
 };

@@ -1,60 +1,69 @@
-import { FC, ReactElement } from "react";
+import { FC } from "react";
 
-import styled from "styled-components";
-import Cookies from "js-cookie";
+import styled, { useTheme } from "styled-components";
+import useTranslation from "next-translate/useTranslation";
 import {
   Header as HeaderComponent,
   HeaderLoginButtons,
 } from "@/shared/ui/molecules";
-import { Dropdown } from "@/shared/ui/atoms";
-import { NewsIcon } from "@/shared/lib/icons/navigation";
+import { Dropdown, DropdownItems } from "@/shared/ui/atoms";
+import { ProfileIcon, SettingsIcon } from "@/shared/lib/icons/navigation";
+import { Auth } from "@/shared/lib/utils";
+import { LangPicker } from "@/features/lang-picker";
+import { ThemeSwitcher } from "@/features/theme-switcher";
 
-interface IDropdownItem {
-  icon?: ReactElement;
-  title: string;
-  onClick?: () => void;
-  isClosable?: boolean;
-  endOfType?: boolean;
-}
-
-const dropdownItems: Array<IDropdownItem> = [
-  {
-    icon: <NewsIcon />,
-    title: "Example title 1",
-    onClick: () => {
-      console.log("example 1 clicked");
-    },
-  },
-  {
-    icon: <NewsIcon />,
-    title: "Example title 2",
-    onClick: () => {
-      console.log("example 2 clicked");
-    },
-  },
-  {
-    icon: <NewsIcon />,
-    title: "Example title 3",
-    onClick: () => {
-      console.log("example 3 clicked");
-    },
-  },
-];
+const RightElementContainer: FC = ({ children }) => (
+  <Container>
+    <LangPicker />
+    <ThemeSwitcher />
+    {children}
+  </Container>
+);
 
 export const Header: FC = () => {
-  const rightElement = Cookies.get("token") ? (
-    <Dropdown items={dropdownItems}>
-      <DropdownTrigger>
-        <DropdownTriggerImg src="https://place-hold.it/30x30" alt="" />
-        <span>Sergey Beltsin</span>
-      </DropdownTrigger>
-    </Dropdown>
-  ) : (
-    <HeaderLoginButtons />
+  const { t } = useTranslation("common");
+  const theme = useTheme();
+
+  const dropdownItems: DropdownItems = [
+    {
+      icon: <SettingsIcon />,
+      title: t("header.settings"),
+      lastOfType: true,
+      link: "/settings",
+    },
+    {
+      icon: <ProfileIcon fill={theme.colors.red} />,
+      title: <RedText>{t("header.logOut")}</RedText>,
+      onClick: Auth.clear,
+    },
+  ];
+
+  const rightElement = (
+    <RightElementContainer>
+      {Auth.getIsAuth() ? (
+        <Dropdown items={dropdownItems} trigger="hover">
+          <DropdownTrigger>
+            <DropdownTriggerImg src="https://place-hold.it/30x30" alt="" />
+            <span>Sergey Beltsin</span>
+          </DropdownTrigger>
+        </Dropdown>
+      ) : (
+        <HeaderLoginButtons />
+      )}
+    </RightElementContainer>
   );
 
   return <HeaderComponent rightElement={rightElement} />;
 };
+
+const Container = styled.div`
+  display: flex;
+  align-items: center;
+
+  & > div:not(:last-child) {
+    margin-right: 20px;
+  }
+`;
 
 const DropdownTrigger = styled.span`
   display: flex;
@@ -63,6 +72,14 @@ const DropdownTrigger = styled.span`
 
 const DropdownTriggerImg = styled.img`
   display: block;
+
+  width: 30px;
+  height: 30px;
   margin-right: 10px;
+
   border-radius: 50%;
+`;
+
+const RedText = styled.span`
+  color: ${({ theme }) => theme.colors.red};
 `;

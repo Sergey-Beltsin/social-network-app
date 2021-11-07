@@ -32,5 +32,5 @@ const HeaderComponent = styled.header`
 `;
 
 const Title = styled.span`
-  color: ${({ theme }) => theme.colors.text};
+  color: ${({ theme }) => theme.colors.text.primary};
 `;

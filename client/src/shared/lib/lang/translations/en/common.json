@@ -3,5 +3,17 @@
   "openMenu": "Open menu",
   "closeMenu": "Close menu",
   "signIn": "Sign in",
-  "signUp": "Sign up"
+  "signUp": "Sign up",
+  "goToLink": "Go to {{link}} page",
+  "header": {
+    "theme": "Theme",
+    "settings": "Settings",
+    "logOut": "Log out",
+    "themeSwitcher": {
+      "scheme": "Scheme",
+      "light": "Light",
+      "dark": "Dark",
+      "auto": "System"
+    }
+  }
 }

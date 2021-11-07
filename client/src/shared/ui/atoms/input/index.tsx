@@ -10,6 +10,7 @@ type InputProps = {
   required?: boolean;
   error?: string;
   type?: "text" | "password" | "email";
+  autocomplete?: boolean;
 };
 
 type ContainerProps = {
@@ -24,6 +25,7 @@ export const Input: FC<InputProps> = ({
   required,
   error,
   type = "text",
+  autocomplete = false,
 }) => {
   const [isPasswordType, setIsPasswordType] = useState<boolean>(
     type === "password",
@@ -50,6 +52,7 @@ export const Input: FC<InputProps> = ({
           onChange={({ target }) => onChange(target.value)}
           onBlur={() => onBlur && onBlur(value)}
           required={required}
+          autoComplete={autocomplete ? "on" : "new-password"}
         />
         {type === "password" && (
           <IconWrapper type="button" onClick={handleChangePasswordType}>
@@ -104,7 +107,7 @@ const Label = styled.span`
 
   pointer-events: none;
 
-  color: ${({ theme }) => theme.colors.textSecondary};
+  color: ${({ theme }) => theme.colors.text.secondary};
   font-size: 18px;
 
   transition: 0.2s ease-in-out;
@@ -143,6 +146,7 @@ const StyledInput = styled.input`
   border: none;
   outline: none;
 
+  color: ${({ theme }) => theme.colors.text.primary};
   font-size: 16px;
 
   &:focus,
