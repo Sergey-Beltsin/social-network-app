@@ -6,6 +6,7 @@ import "@/app/index.css";
 
 const MyApp = ({ Component, pageProps }: AppProps) => (
   <App>
+    {/* eslint-disable-next-line react/jsx-props-no-spreading */}
     <Component {...pageProps} />
   </App>
 );
