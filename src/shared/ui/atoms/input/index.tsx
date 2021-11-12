@@ -14,7 +14,8 @@ type InputProps = {
 };
 
 type ContainerProps = {
-  isError?: boolean;
+  isError: boolean;
+  isEmpty: boolean;
 };
 
 export const Input: FC<InputProps> = ({
@@ -44,7 +45,7 @@ export const Input: FC<InputProps> = ({
   };
 
   return (
-    <Container isError={!!error}>
+    <Container isError={!!error} isEmpty={!value}>
       <InputWrapper>
         <StyledInput
           type={isPasswordType ? "password" : getType()}
@@ -79,11 +80,18 @@ const Container = styled.label<ContainerProps>`
     margin-bottom: 30px;
   }
 
-  ${({ isError, theme }) =>
+  ${({ isError, isEmpty, theme }) =>
     isError &&
     `
     & ${Label} {
+
+      opacity: 1;
+
       color: ${theme.colors.red} !important;
+      ${!isEmpty && `
+        top: -14px;
+        font-size: 14px;
+      `}
     }
     
     & ${Bar} {
