@@ -1,5 +1,6 @@
 import { AxiosPromise } from "axios";
 import { axios } from "@/shared/api/base";
+import { authRoutes } from "@/shared/api/auth/routes";
 
 type LoginPayload = {
   email: string;
@@ -14,7 +15,7 @@ type RegisterPayload = {
 };
 
 export const login = (payload: LoginPayload): AxiosPromise =>
-  axios.post("/auth/login", payload);
+  axios.post(authRoutes.login, payload);
 
 export const register = (body: RegisterPayload): AxiosPromise =>
-  axios.post("/auth/register", body);
+  axios.post(authRoutes.register, body);

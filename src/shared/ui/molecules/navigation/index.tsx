@@ -10,6 +10,7 @@ import {
   MessagesIcon,
   SettingsIcon,
   ProfileIcon,
+  UsersIcon,
 } from "@/shared/lib/icons/navigation";
 
 interface ILink {
@@ -37,6 +38,11 @@ export const Navigation = () => {
       href: "/messages",
       title: t("messages"),
       icon: <MessagesIcon />,
+    },
+    {
+      href: "/friends",
+      title: t("users"),
+      icon: <UsersIcon />,
     },
     {
       href: "/groups",
