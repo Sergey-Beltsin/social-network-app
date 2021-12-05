@@ -8,8 +8,9 @@ import {
   RegisterStoreField,
   SubmitPayload,
 } from "./model.types";
-import { login, register } from "@/shared/api";
-import { Auth, validateEmail } from "@/shared/lib/utils";
+import { login, register } from "@/shared/api/auth";
+import { validateEmail } from "@/shared/lib/utils";
+import { actions, Auth } from "@/entities/profile";
 
 const validateValue = (
   field: RegisterStoreField,
@@ -33,10 +34,14 @@ const handleChangeField =
   createEvent<{ field: RegisterStoreField; value: string }>();
 const handleChangeError =
   createEvent<{ field: RegisterStoreField; value: Error }>();
+const handleChangeManyErrors =
+  createEvent<{ field: RegisterStoreField; value: Error }[]>();
 const handleBlur = createEvent<{ field: RegisterStoreField; value: string }>();
 const handleSubmit = createEvent<FormEvent>();
 
 const handleSubmitFx = createEffect(async (payload: SubmitPayload) => {
+  const { setProfile } = actions;
+
   try {
     await register({
       email: payload.email,
@@ -46,12 +51,16 @@ const handleSubmitFx = createEffect(async (payload: SubmitPayload) => {
       password: payload.password,
     });
 
-    const response = await login({
+    const {
+      data: { message },
+    } = await login({
       email: payload.email,
       password: payload.password,
     });
 
-    Auth.setAuth(response.data.message.access_token, true);
+    console.log(message);
+    Auth.setAuth(message.access_token, true);
+    setProfile(message.user);
 
     const returningUrl = localStorage.getItem("returningUrl");
 
@@ -63,6 +72,23 @@ const handleSubmitFx = createEffect(async (payload: SubmitPayload) => {
     }
   } catch (e) {
     console.log(e);
+
+    const { message } = e.response.data;
+
+    if (message === "alreadyExists") {
+      handleChangeManyErrors([
+        {
+          field: "email",
+          value: "alreadyExists",
+        },
+        {
+          field: "username",
+          value: "alreadyExists",
+        },
+      ]);
+    } else {
+      handleChangeManyErrors(e.response.data.message);
+    }
   }
 });
 
@@ -123,7 +149,16 @@ const $register = createStore<RegisterStore>({
   .on(handleChangeError, (store, { field, value }) => ({
     ...store,
     errors: { ...store.errors, [field]: value },
-  }));
+  }))
+  .on(handleChangeManyErrors, (store, errors) => {
+    const newStore = { ...store };
+
+    errors.forEach((item) => {
+      newStore.errors[item.field] = item.value;
+    });
+
+    return newStore;
+  });
 
 sample({
   clock: handleSubmit,

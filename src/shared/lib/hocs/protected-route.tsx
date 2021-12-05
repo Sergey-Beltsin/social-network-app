@@ -2,7 +2,7 @@ import { FC, ReactElement, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 import { publicRoutes } from "@/shared/lib/constants";
-import { Auth } from "@/shared/lib/utils";
+import { Auth } from "@/entities/profile";
 
 export const ProtectedRoute: FC = ({ children }) => {
   const [isPageAccessed, setIsPageAccessed] = useState(false);
@@ -21,16 +21,14 @@ export const ProtectedRoute: FC = ({ children }) => {
   const authCheck = (url: string) => {
     let path: string = url.split("?")[0];
 
-    if (router.locales?.find((locale) => path.includes(locale))) {
+    if (
+      router.locales?.find((locale) =>
+        path.split("/").find((item) => item === locale),
+      )
+    ) {
       path = path.slice(3);
     }
 
-    console.log(
-      path,
-      publicRoutes.find((route) => route.includes(path)),
-      router.locale,
-      router.locales?.find((locale) => path.includes(locale)),
-    );
     if (!publicRoutes.includes(path) && !Auth.getIsAuth()) {
       setIsPageAccessed(false);
       localStorage.setItem("returningUrl", JSON.stringify(path));

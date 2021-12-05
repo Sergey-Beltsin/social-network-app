@@ -14,14 +14,17 @@ import {
   SubmitPayload,
   LoginStoreField,
 } from "./model.types";
-import { Auth, validateEmail } from "@/shared/lib/utils";
-import { login } from "@/shared/api";
+import { validateEmail } from "@/shared/lib/utils";
+import { login } from "@/shared/api/auth";
+import { Auth, actions as profileActions } from "@/entities/profile";
 
 const handleChangeValue =
   createEvent<{ field: LoginStoreField; value: string }>();
 const handleChangeIsRemember = createEvent<boolean>();
 const handleChangeError =
   createEvent<{ field: LoginStoreField; value: Error }>();
+const handleChangeManyErrors =
+  createEvent<{ field: LoginStoreField; value: Error }[]>();
 const handleBlur = createEvent<{ field: LoginStoreField; value: string }>();
 const handleSubmit = createEvent<FormEvent>();
 
@@ -44,7 +47,7 @@ const handleChangeFx = createEffect(
   },
 );
 
-const handleCheckValueError = createEffect(
+const handleCheckValueErrorFx = createEffect(
   ({
     field,
     value,
@@ -68,10 +71,15 @@ const handleSubmitFx = createEffect(
       !(await handleChangeFx({ field: "email", value: email })) &&
       !(await handleChangeFx({ field: "password", value: password }))
     ) {
-      try {
-        const response = await login({ email, password });
+      const { setProfile } = profileActions;
 
-        Auth.setAuth(response.data.message.access_token, isRemember);
+      try {
+        const {
+          data: { message },
+        } = await login({ email, password });
+
+        Auth.setAuth(message.access_token, isRemember);
+        setProfile(message.user);
 
         const returningUrl = localStorage.getItem("returningUrl");
 
@@ -83,6 +91,19 @@ const handleSubmitFx = createEffect(
         }
       } catch (e) {
         console.log(e);
+
+        if (e.response.data.message === "incorrectData") {
+          handleChangeManyErrors([
+            {
+              field: "email",
+              value: "incorrectData",
+            },
+            {
+              field: "password",
+              value: "incorrectData",
+            },
+          ]);
+        }
       }
     }
   },
@@ -108,7 +129,16 @@ const $login = createStore<LoginStore>({
   .on(handleChangeError, (state, { field, value }) => ({
     ...state,
     errors: { ...state.errors, [field]: value },
-  }));
+  }))
+  .on(handleChangeManyErrors, (store, errors) => {
+    const newStore = { ...store };
+
+    errors.forEach((item) => {
+      newStore.errors[item.field] = item.value;
+    });
+
+    return newStore;
+  });
 
 forward({
   from: handleBlur,
@@ -132,7 +162,7 @@ sample({
     value,
     error: store.errors[field],
   }),
-  target: handleCheckValueError,
+  target: handleCheckValueErrorFx,
 });
 
 handleSubmit.watch((event) => event.preventDefault());

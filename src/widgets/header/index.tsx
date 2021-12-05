@@ -8,7 +8,7 @@ import {
 } from "@/shared/ui/molecules";
 import { Dropdown, DropdownItems } from "@/shared/ui/atoms";
 import { ProfileIcon, SettingsIcon } from "@/shared/lib/icons/navigation";
-import { Auth } from "@/shared/lib/utils";
+import { Auth, store } from "@/entities/profile";
 import { LangPicker } from "@/features/lang-picker";
 import { ThemeSwitcher } from "@/features/theme-switcher";
 
@@ -21,6 +21,9 @@ const RightElementContainer: FC = ({ children }) => (
 );
 
 export const Header: FC = () => {
+  const { useProfileStore } = store;
+
+  const { name, surname } = useProfileStore();
   const { t } = useTranslation("common");
   const theme = useTheme();
 
@@ -44,7 +47,9 @@ export const Header: FC = () => {
         <Dropdown items={dropdownItems} trigger="hover">
           <DropdownTrigger>
             <DropdownTriggerImg src="https://place-hold.it/30x30" alt="" />
-            <span>Sergey Beltsin</span>
+            <span>
+              {name} {surname}
+            </span>
           </DropdownTrigger>
         </Dropdown>
       ) : (

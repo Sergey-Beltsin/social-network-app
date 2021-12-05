@@ -5,7 +5,8 @@ export type Error =
   | "invalidEmail"
   | "minLength"
   | "passwordMismatch"
-  | "maxLength";
+  | "maxLength"
+  | "alreadyExists";
 
 export type RegisterStoreField =
   | "email"

@@ -1,25 +1,36 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import styled from "styled-components";
+import Cookies from "js-cookie";
 
 import { ThemeProvider } from "@/shared/lib/theme";
 import { Navigation } from "@/shared/ui/molecules";
 import { Header } from "@/widgets";
 import { ProtectedRoute } from "@/shared/lib/hocs";
-import { Auth } from "@/shared/lib/utils";
+import { Auth, actions } from "@/entities/profile";
 
-export const App: FC = ({ children }) => (
-  <ThemeProvider>
-    <ProtectedRoute>
-      <Header />
-      <MainWrapper>
-        <Wrapper>
-          {Auth.getIsAuth() && <Navigation />}
-          <Main>{children}</Main>
-        </Wrapper>
-      </MainWrapper>
-    </ProtectedRoute>
-  </ThemeProvider>
-);
+export const App: FC = ({ children }) => {
+  const { getProfile } = actions;
+
+  useEffect(() => {
+    if (Cookies.get("token")) {
+      getProfile();
+    }
+  }, []);
+
+  return (
+    <ThemeProvider>
+      <ProtectedRoute>
+        <Header />
+        <MainWrapper>
+          <Wrapper>
+            {Auth.getIsAuth() && <Navigation />}
+            <Main>{children}</Main>
+          </Wrapper>
+        </MainWrapper>
+      </ProtectedRoute>
+    </ThemeProvider>
+  );
+};
 
 const Main = styled.main`
   display: flex;
@@ -38,6 +49,8 @@ const Main = styled.main`
 
 const MainWrapper = styled.div`
   padding-top: 20px;
+  padding-bottom: 20px;
+
   background-color: ${({ theme }) => theme.colors.background};
 `;
 

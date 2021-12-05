@@ -8,6 +8,7 @@ module.exports = {
   extends: [
     "plugin:react/recommended",
     "plugin:@next/next/recommended",
+    "plugin:effector/recommended",
     "airbnb",
     "prettier",
   ],

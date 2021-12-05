@@ -1,6 +1,6 @@
 import { AxiosPromise } from "axios";
-import { axios } from "@/shared/api/base";
-import { authRoutes } from "@/shared/api/auth/routes";
+import { axios } from "@/shared/api";
+import { authRoutes } from "./routes";
 
 type LoginPayload = {
   email: string;
@@ -14,8 +14,22 @@ type RegisterPayload = {
   surname: string;
 };
 
-export const login = (payload: LoginPayload): AxiosPromise =>
+type LoginResponse = {
+  message: {
+    // eslint-disable-next-line camelcase
+    access_token: string;
+    user: RegisterPayload & {
+      id: number;
+    };
+  };
+};
+
+export const login = async (
+  payload: LoginPayload,
+): Promise<AxiosPromise<LoginResponse>> =>
   axios.post(authRoutes.login, payload);
 
-export const register = (body: RegisterPayload): AxiosPromise =>
+export const register = async (
+  body: RegisterPayload,
+): Promise<AxiosPromise<LoginResponse>> =>
   axios.post(authRoutes.register, body);

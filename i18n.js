@@ -2,7 +2,7 @@ module.exports = {
   locales: ["ru", "en"],
   defaultLocale: "ru",
   pages: {
-    "*": ["common", "navigation", "languages"],
+    "*": ["common", "navigation", "languages", "users"],
     "/login": ["auth"],
     "/register": ["auth"],
   },
