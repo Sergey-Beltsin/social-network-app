@@ -1,16 +1,21 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import { FC, useState } from "react";
 import styled from "styled-components";
+import { UseFormRegisterReturn } from "react-hook-form";
+
 import { EyeIcon, EyeOffIcon } from "@/shared/lib/icons/auth";
+import { ErrorText } from "@/shared/ui/atoms";
 
 type InputProps = {
-  value: string;
-  onChange: (value: string) => void;
+  value?: string;
+  onChange?: (value: string) => void;
   onBlur?: (value: string) => void;
   label: string;
   required?: boolean;
-  error?: string;
+  error?: string | boolean;
   type?: "text" | "password" | "email";
   autocomplete?: boolean;
+  handleRegister?: () => UseFormRegisterReturn;
 };
 
 type ContainerProps = {
@@ -27,6 +32,7 @@ export const Input: FC<InputProps> = ({
   error,
   type = "text",
   autocomplete = false,
+  handleRegister,
 }) => {
   const [isPasswordType, setIsPasswordType] = useState<boolean>(
     type === "password",
@@ -44,16 +50,25 @@ export const Input: FC<InputProps> = ({
     return type;
   };
 
+  const handleGetRegister = () => {
+    if (handleRegister) {
+      return handleRegister();
+    }
+
+    return {};
+  };
+
   return (
     <Container isError={!!error} isEmpty={!value}>
       <InputWrapper>
         <StyledInput
           type={isPasswordType ? "password" : getType()}
           value={value}
-          onChange={({ target }) => onChange(target.value)}
-          onBlur={() => onBlur && onBlur(value)}
+          onChange={({ target }) => onChange && onChange(target.value)}
+          onBlur={() => onBlur && onBlur(value || "")}
           required={required}
           autoComplete={autocomplete ? "on" : "new-password"}
+          {...handleGetRegister()}
         />
         {type === "password" && (
           <IconWrapper type="button" onClick={handleChangePasswordType}>
@@ -88,10 +103,13 @@ const Container = styled.label<ContainerProps>`
       opacity: 1;
 
       color: ${theme.colors.red} !important;
-      ${!isEmpty && `
+      ${
+        !isEmpty &&
+        `
         top: -14px;
         font-size: 14px;
-      `}
+      `
+      }
     }
     
     & ${Bar} {
@@ -133,16 +151,6 @@ const Bar = styled.div`
   transform: scaleX(0);
 
   transition: 0.2s ease-in-out;
-`;
-
-const ErrorText = styled.span`
-  display: block;
-
-  margin-top: 4px;
-  margin-left: 10px;
-
-  color: ${({ theme }) => theme.colors.red};
-  font-size: 12px;
 `;
 
 const StyledInput = styled.input`

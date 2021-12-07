@@ -6,3 +6,5 @@ export { Input } from "./input";
 export { Checkbox } from "./checkbox";
 export { Button } from "./button";
 export { AuthBottomLink } from "./auth-bottom-link";
+export { Loader } from "./loader";
+export { ErrorText } from "./error-text";

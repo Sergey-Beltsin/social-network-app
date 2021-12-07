@@ -1,20 +1,12 @@
-export type Error =
-  | null
-  | "empty"
-  | "invalid"
-  | "length"
-  | "invalidEmail"
-  | "incorrectData";
-export type LoginStoreField = "email" | "password";
-
 export type LoginStore = {
+  isRemember: boolean;
+  isLoading: boolean;
+  error: string;
+};
+
+export type LoginFormType = {
   email: string;
   password: string;
-  isRemember: boolean;
-  errors: {
-    email: Error;
-    password: Error;
-  };
 };
 
 export type SubmitPayload = {

@@ -1,90 +1,180 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import styled from "styled-components";
 import useTranslation from "next-translate/useTranslation";
-import { AuthBottomLink, Button, Input } from "@/shared/ui/atoms";
+import { useForm } from "react-hook-form";
+
+import { AuthBottomLink, Button, ErrorText, Input } from "@/shared/ui/atoms";
 import { registerModel } from "../model";
+import { RegisterFormType } from "../model/model.types";
+import { validationScheme } from "@/shared/lib/constants";
 
 export const RegisterForm: FC = () => {
   const { useRegisterStore } = registerModel.store;
-  const { handleChangeField, handleSubmit, handleBlur } = registerModel.events;
+  const { handleSubmit, handleChangeError, handleReset } = registerModel.events;
+  const {
+    register,
+    formState: { errors },
+    getValues,
+    handleSubmit: handleFormSubmit,
+    watch,
+  } = useForm<RegisterFormType>({
+    mode: "onBlur",
+  });
+
   const store = useRegisterStore();
-  const { errors } = store;
+  const { isLoading, error } = store;
   const { t } = useTranslation("auth");
+
+  watch((_, { name }) => {
+    if (error && (name === "email" || name === "username")) {
+      handleChangeError("");
+    }
+  });
+
+  useEffect(
+    () => () => {
+      handleReset();
+    },
+    [],
+  );
 
   return (
     <MainWrapper>
-      <Form onSubmit={handleSubmit}>
+      <Form onSubmit={handleFormSubmit((data) => handleSubmit(data))}>
         <Wrapper>
           <Input
-            value={store.email}
-            onChange={(value) => handleChangeField({ field: "email", value })}
-            onBlur={(value) => handleBlur({ field: "email", value })}
-            error={errors.email ? t(`errors.${errors.email}`) : ""}
+            error={
+              errors.email ? t(`errors.${errors.email.type}`) : !!error || ""
+            }
             label={t("email")}
-            type="email"
             required
+            handleRegister={() =>
+              register("email", {
+                required: true,
+                pattern: validationScheme.email.pattern,
+              })
+            }
           />
           <Input
-            value={store.name}
-            onChange={(value) => handleChangeField({ field: "name", value })}
-            onBlur={(value) => handleBlur({ field: "name", value })}
-            error={errors.name ? t(`errors.${errors.name}`) : ""}
+            error={
+              errors.name
+                ? t(`errors.${errors.name.type}`, {
+                    count:
+                      errors.name.type === "minLength"
+                        ? validationScheme.name.minLength || ""
+                        : validationScheme.name.maxLength || "",
+                  })
+                : ""
+            }
             label={t("name")}
             required
+            handleRegister={() =>
+              register("name", {
+                required: true,
+                minLength: validationScheme.name.minLength,
+                maxLength: validationScheme.name.maxLength,
+              })
+            }
           />
           <Input
-            value={store.surname}
-            onChange={(value) => handleChangeField({ field: "surname", value })}
-            onBlur={(value) => handleBlur({ field: "surname", value })}
-            error={errors.surname ? t(`errors.${errors.surname}`) : ""}
+            error={
+              errors.surname
+                ? t(`errors.${errors.surname.type}`, {
+                    count:
+                      errors.surname.type === "minLength"
+                        ? validationScheme.surname.minLength || ""
+                        : validationScheme.surname.maxLength || "",
+                  })
+                : ""
+            }
             label={t("surname")}
             required
+            handleRegister={() =>
+              register("surname", {
+                required: true,
+                minLength: validationScheme.surname.minLength,
+                maxLength: validationScheme.surname.maxLength,
+              })
+            }
           />
           <Input
-            value={store.username}
-            onChange={(value) =>
-              handleChangeField({ field: "username", value })
+            error={
+              errors.username
+                ? t(`errors.${errors.username.type}`, {
+                    count:
+                      errors.username.type === "minLength"
+                        ? validationScheme.username.minLength || ""
+                        : validationScheme.username.maxLength || "",
+                  })
+                : !!error || ""
             }
-            onBlur={(value) => handleBlur({ field: "username", value })}
-            error={errors.username ? t(`errors.${errors.username}`) : ""}
             label={t("username")}
             required
+            handleRegister={() =>
+              register("username", {
+                required: true,
+                minLength: validationScheme.username.minLength,
+                maxLength: validationScheme.username.maxLength,
+              })
+            }
           />
           <Input
-            value={store.password}
-            onChange={(value) =>
-              handleChangeField({ field: "password", value })
+            error={
+              errors.password
+                ? t("errors.passwordPattern", {
+                    count:
+                      errors.password.type === "minLength"
+                        ? validationScheme.password.minLength || ""
+                        : validationScheme.password.maxLength || "",
+                  })
+                : ""
             }
-            onBlur={(value) => handleBlur({ field: "password", value })}
-            error={errors.password ? t(`errors.${errors.password}`) : ""}
             label={t("password")}
             type="password"
             required
+            handleRegister={() =>
+              register("password", {
+                required: true,
+                // minLength: validationScheme.password.minLength,
+                // maxLength: validationScheme.password.maxLength,
+                pattern: validationScheme.password.pattern,
+              })
+            }
           />
           <Input
-            value={store.repeatedPassword}
-            onChange={(value) =>
-              handleChangeField({ field: "repeatedPassword", value })
-            }
-            onBlur={(value) => handleBlur({ field: "repeatedPassword", value })}
             error={
-              errors.repeatedPassword
-                ? t(`errors.${errors.repeatedPassword}`)
+              errors.repeatPassword
+                ? t(`errors.${errors.repeatPassword.message}`)
                 : ""
             }
             label={t("repeatPassword")}
             type="password"
             required
+            handleRegister={() =>
+              register("repeatPassword", {
+                validate: (value) => {
+                  if (value !== getValues("password")) {
+                    return "passwordMismatch";
+                  }
+
+                  return true;
+                },
+              })
+            }
           />
+          <ErrorTextWrapper>
+            {error && <ErrorText>{t(`errors.${error}`)}</ErrorText>}
+          </ErrorTextWrapper>
           <AuthBottomLink
             href="/login"
             linkText={t("haveAccount.title")}
             text={t("haveAccount.text")}
           />
           <Button
-            disabled={!!Object.values(errors).find((error) => error)}
+            disabled={!!Object.values(errors).length || !!error}
             type="submit"
             center
+            loading={isLoading}
           >
             {t("common:signUp")}
           </Button>
@@ -122,4 +212,11 @@ const MainWrapper = styled.div`
 const Wrapper = styled.div`
   max-width: 400px;
   margin: 0 auto;
+`;
+
+const ErrorTextWrapper = styled.span`
+  display: block;
+
+  margin-top: 8px;
+  margin-bottom: 30px;
 `;
