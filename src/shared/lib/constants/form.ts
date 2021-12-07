@@ -11,7 +11,8 @@ export const validationScheme: Record<string, ValidationSchemeValue> = {
     pattern: EMAIL_REGEX,
   },
   password: {
-    pattern: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,20}$/,
+    pattern:
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&\-_])[A-Za-z\d@$!%*?&\-_]{8,20}$/,
     minLength: 8,
     maxLength: 20,
   },
