@@ -3,7 +3,7 @@ import { useStore } from "effector-react";
 import Router from "next/router";
 
 import { RegisterStore, SubmitPayload } from "./model.types";
-import { login, register } from "@/shared/api/auth";
+import { register } from "@/shared/api/auth";
 import { actions, Auth } from "@/entities/profile";
 
 const handleChangeIsLoading = createEvent<boolean>();
@@ -17,7 +17,9 @@ const handleSubmitFx = createEffect(async (payload: SubmitPayload) => {
   try {
     handleChangeIsLoading(true);
 
-    await register({
+    const {
+      data: { message },
+    } = await register({
       email: payload.email,
       name: payload.name,
       surname: payload.surname,
@@ -25,15 +27,8 @@ const handleSubmitFx = createEffect(async (payload: SubmitPayload) => {
       password: payload.password,
     });
 
-    const {
-      data: { message },
-    } = await login({
-      email: payload.email,
-      password: payload.password,
-    });
-
     Auth.setAuth(message.access_token, true);
-    setProfile(message.user);
+    setProfile(message.profile);
 
     const returningUrl = localStorage.getItem("returningUrl");
 
@@ -49,7 +44,7 @@ const handleSubmitFx = createEffect(async (payload: SubmitPayload) => {
     const { message } = e.response.data;
 
     if (message === "alreadyExists") {
-      handleChangeError(e.response.data.message);
+      handleChangeError(message);
     } else {
       // handleChangeManyErrors(e.response.data.message);
     }

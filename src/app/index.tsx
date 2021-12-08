@@ -42,7 +42,7 @@ const Main = styled.main`
 
   @media (min-width: ${({ theme }) => theme.devices.desktop}) {
     width: 100%;
-    min-height: calc(100vh - 69px);
+    min-height: calc(100vh - 89px);
     margin: 0;
   }
 `;

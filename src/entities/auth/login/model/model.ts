@@ -24,7 +24,7 @@ const handleSubmitFx = createEffect(
       } = await login({ email, password });
 
       Auth.setAuth(message.access_token, isRemember);
-      setProfile(message.user);
+      setProfile(message.profile);
 
       const returningUrl = localStorage.getItem("returningUrl");
 

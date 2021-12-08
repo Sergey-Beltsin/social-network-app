@@ -18,8 +18,9 @@ type LoginResponse = {
   message: {
     // eslint-disable-next-line camelcase
     access_token: string;
-    user: RegisterPayload & {
+    profile: Omit<RegisterPayload, "password"> & {
       id: number;
+      created: Date;
     };
   };
 };
