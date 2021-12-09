@@ -53,7 +53,9 @@ export const LoginForm: FC = () => {
           <Input
             label={t("email")}
             error={
-              errors.email ? t(`errors.${errors.email.type}`) : !!error || ""
+              errors.email
+                ? t(`errors:errors.${errors.email.type}`)
+                : !!error || ""
             }
             autocomplete
             required
@@ -68,7 +70,7 @@ export const LoginForm: FC = () => {
             label={t("password")}
             error={
               errors.password
-                ? t(`errors.${errors.password.type}`, {
+                ? t(`errors:errors.${errors.password.type}`, {
                     count:
                       errors.password.type === "minLength"
                         ? validationScheme.password.minLength || ""
@@ -88,7 +90,7 @@ export const LoginForm: FC = () => {
             }
           />
           <ErrorTextWrapper>
-            {error && <ErrorText>{t(`errors.${error}`)}</ErrorText>}
+            {error && <ErrorText>{t(`errors:errors.${error}`)}</ErrorText>}
           </ErrorTextWrapper>
           <Checkbox
             checked={isRemember}

@@ -1,3 +1,4 @@
-export const postsRoutes: Record<string, string> = {
+export const postsRoutes = {
   posts: "/posts",
+  post: (id: string) => `/posts/${id}`,
 };

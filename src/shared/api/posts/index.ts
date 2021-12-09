@@ -10,6 +10,8 @@ export type Post = {
   likes: string[];
   content: string;
   profile: Profile;
+  isLiked: boolean;
+  likesCount: number;
 };
 
 type GetPostsResponse = {
@@ -29,3 +31,11 @@ export const getPosts = async (
       limit,
     },
   });
+
+export const createPost = async (content: string): Promise<AxiosPromise> =>
+  axios.post(postsRoutes.posts, { content });
+
+export const likePost = async (
+  postId: string,
+): Promise<AxiosPromise<{ message: Post }>> =>
+  axios.post(postsRoutes.post(postId));

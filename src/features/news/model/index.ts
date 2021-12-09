@@ -2,16 +2,18 @@ import { createEvent, createStore, forward, sample } from "effector";
 import { useStore } from "effector-react";
 
 import { createEffect } from "effector/effector.umd";
-import { getPosts, Post } from "@/shared/api/posts";
+import { getPosts, likePost } from "@/shared/api/posts";
 import { NewsStore } from "@/features/news/model/model.types";
+import { Posts } from "@/entities/post";
 
 const POSTS_BY_PAGE = 10;
 
 const handleGetNews = createEvent<void>();
-const handleLikeNews = createEvent<{ postId: string; isLiked: boolean }>();
+const handleLikePost = createEvent<string>();
 const handleChangePage = createEvent<"increment" | "decrement">();
 const changePage = createEvent<number>();
 const handleChangeIsLoading = createEvent<boolean>();
+const handleReset = createEvent<void>();
 
 const handleGetNewsFx = createEffect(async (page: number) => {
   try {
@@ -33,33 +35,34 @@ const handleGetNewsFx = createEffect(async (page: number) => {
   }
 });
 
+const handleLikePostFx = createEffect(
+  async ({ postId, news }: { postId: string; news: Posts }) => {
+    try {
+      const {
+        data: { message },
+      } = await likePost(postId);
+
+      news.splice(
+        news.findIndex((item) => item.id === postId),
+        1,
+        message,
+      );
+
+      return news;
+    } catch (e) {
+      console.log(e);
+
+      return null;
+    }
+  },
+);
+
 const $news = createStore<NewsStore>({
   page: 1,
   isLoading: false,
   pages: -1,
   news: [],
 })
-  .on(handleLikeNews, (store, { postId, isLiked }) => {
-    const postIndex: number = store.news.findIndex(
-      (item) => item.id === postId,
-    );
-    const newPost: Post = {
-      ...store.news[postIndex],
-      // isLiked,
-      // likesCount: isLiked
-      //   ? state[postIndex].likesCount + 1
-      //   : state[postIndex].likesCount - 1,
-    };
-
-    return {
-      ...store,
-      news: [
-        ...store.news.slice(0, postIndex),
-        newPost,
-        ...store.news.slice(postIndex + 1),
-      ],
-    };
-  })
   .on(handleGetNewsFx.doneData, (store, news) => {
     if (news) {
       return {
@@ -71,8 +74,19 @@ const $news = createStore<NewsStore>({
 
     return store;
   })
+  .on(handleLikePostFx.doneData, (store, news) => {
+    if (news) {
+      return {
+        ...store,
+        news: [...news],
+      };
+    }
+
+    return store;
+  })
   .on(changePage, (store, page) => ({ ...store, page }))
-  .on(handleChangeIsLoading, (store, isLoading) => ({ ...store, isLoading }));
+  .on(handleChangeIsLoading, (store, isLoading) => ({ ...store, isLoading }))
+  .reset(handleReset);
 
 sample({
   clock: handleGetNews,
@@ -97,6 +111,12 @@ forward({
   from: changePage,
   to: handleGetNewsFx,
 });
+sample({
+  clock: handleLikePost,
+  source: $news,
+  fn: ({ news }, postId) => ({ postId, news }),
+  target: handleLikePostFx,
+});
 
 const useNewsStore = () => useStore($news);
 
@@ -104,9 +124,10 @@ const store = {
   useNewsStore,
 };
 const actions = {
-  handleLikeNews,
+  handleLikePost,
   handleGetNews,
   handleChangePage,
+  handleReset,
 };
 
 export { store, actions };

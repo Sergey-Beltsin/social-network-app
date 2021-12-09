@@ -7,7 +7,7 @@ import { BottomActions } from "@/shared/ui/molecules/post";
 
 type Props = {
   post: Post;
-  handleLike: (postId: string, isLiked: boolean) => void;
+  handleLike: (postId: string) => void;
 };
 
 export const PostCard: FC<Props> = ({ post, handleLike }) => (
@@ -21,8 +21,8 @@ export const PostCard: FC<Props> = ({ post, handleLike }) => (
     <Content>{post.content}</Content>
     <BottomActions
       likes={{
-        count: 0,
-        isLiked: false,
+        count: post.likesCount,
+        isLiked: post.isLiked,
         handleLike,
         postId: post.id,
       }}

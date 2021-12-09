@@ -5,7 +5,7 @@ import { LikeIcon } from "@/shared/lib/icons/post";
 export type LikesCounterProps = {
   count: number;
   isLiked: boolean;
-  handleLike: (postId: string, isLiked: boolean) => void;
+  handleLike: (postId: string) => void;
   postId: string;
 };
 
@@ -19,11 +19,7 @@ export const LikesCounter: FC<LikesCounterProps> = ({
   handleLike,
   postId,
 }) => (
-  <Container
-    type="button"
-    onClick={() => handleLike(postId, !isLiked)}
-    isLiked={isLiked}
-  >
+  <Container type="button" onClick={() => handleLike(postId)} isLiked={isLiked}>
     <LikeIcon />
     <Text>{count}</Text>
   </Container>

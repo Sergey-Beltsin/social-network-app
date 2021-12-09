@@ -16,11 +16,13 @@ type InputProps = {
   type?: "text" | "password" | "email";
   autocomplete?: boolean;
   handleRegister?: () => UseFormRegisterReturn;
+  textarea?: boolean;
 };
 
 type ContainerProps = {
   isError: boolean;
   isEmpty: boolean;
+  isTextarea: boolean;
 };
 
 export const Input: FC<InputProps> = ({
@@ -33,6 +35,7 @@ export const Input: FC<InputProps> = ({
   type = "text",
   autocomplete = false,
   handleRegister,
+  textarea,
 }) => {
   const [isPasswordType, setIsPasswordType] = useState<boolean>(
     type === "password",
@@ -58,16 +61,29 @@ export const Input: FC<InputProps> = ({
     return {};
   };
 
+  const getTypeWithTextarea = () => {
+    if (textarea) {
+      return undefined;
+    }
+    if (isPasswordType) {
+      return "password";
+    }
+
+    return getType();
+  };
+
   return (
-    <Container isError={!!error} isEmpty={!value}>
+    <Container isError={!!error} isEmpty={!value} isTextarea={!!textarea}>
       <InputWrapper>
+        {/* @ts-ignore */}
         <StyledInput
-          type={isPasswordType ? "password" : getType()}
+          type={getTypeWithTextarea()}
           value={value}
           onChange={({ target }) => onChange && onChange(target.value)}
           onBlur={() => onBlur && onBlur(value || "")}
           required={required}
           autoComplete={autocomplete ? "on" : "new-password"}
+          as={textarea ? "textarea" : "input"}
           {...handleGetRegister()}
         />
         {type === "password" && (
@@ -89,6 +105,7 @@ const Container = styled.label<ContainerProps>`
 
   position: relative;
 
+  width: 100%;
   max-width: 400px;
 
   &:not(:last-of-type) {
@@ -99,7 +116,6 @@ const Container = styled.label<ContainerProps>`
     isError &&
     `
     & ${Label} {
-
       opacity: 1;
 
       color: ${theme.colors.red} !important;
@@ -114,6 +130,25 @@ const Container = styled.label<ContainerProps>`
     
     & ${Bar} {
       background-color: ${theme.colors.red};
+    }
+  `}
+
+  ${({ isTextarea }) =>
+    isTextarea &&
+    `
+    & ${Label} {
+      top: 6px;
+    }
+    
+    & ${StyledInput} {
+      height: 60px;
+      
+      &:focus,
+      &:valid {
+        & ~ ${Label} {
+          top: -18px !important;
+        } 
+      }
     }
   `}
 `;
@@ -161,8 +196,10 @@ const StyledInput = styled.input`
   background-color: transparent;
   border: none;
   outline: none;
+  resize: vertical;
 
   color: ${({ theme }) => theme.colors.text.primary};
+  font-family: sans-serif;
   font-size: 16px;
 
   &:focus,

@@ -44,7 +44,9 @@ export const RegisterForm: FC = () => {
         <Wrapper>
           <Input
             error={
-              errors.email ? t(`errors.${errors.email.type}`) : !!error || ""
+              errors.email
+                ? t(`errors:errors.${errors.email.type}`)
+                : !!error || ""
             }
             label={t("email")}
             required
@@ -58,7 +60,7 @@ export const RegisterForm: FC = () => {
           <Input
             error={
               errors.name
-                ? t(`errors.${errors.name.type}`, {
+                ? t(`errors:errors.${errors.name.type}`, {
                     count:
                       errors.name.type === "minLength"
                         ? validationScheme.name.minLength || ""
@@ -79,7 +81,7 @@ export const RegisterForm: FC = () => {
           <Input
             error={
               errors.surname
-                ? t(`errors.${errors.surname.type}`, {
+                ? t(`errors:errors.${errors.surname.type}`, {
                     count:
                       errors.surname.type === "minLength"
                         ? validationScheme.surname.minLength || ""
@@ -100,7 +102,7 @@ export const RegisterForm: FC = () => {
           <Input
             error={
               errors.username
-                ? t(`errors.${errors.username.type}`, {
+                ? t(`errors:errors.${errors.username.type}`, {
                     count:
                       errors.username.type === "minLength"
                         ? validationScheme.username.minLength || ""
@@ -144,7 +146,7 @@ export const RegisterForm: FC = () => {
           <Input
             error={
               errors.repeatPassword
-                ? t(`errors.${errors.repeatPassword.message}`)
+                ? t(`errors:errors.${errors.repeatPassword.message}`)
                 : ""
             }
             label={t("repeatPassword")}
@@ -163,7 +165,7 @@ export const RegisterForm: FC = () => {
             }
           />
           <ErrorTextWrapper>
-            {error && <ErrorText>{t(`errors.${error}`)}</ErrorText>}
+            {error && <ErrorText>{t(`errors:errors.${error}`)}</ErrorText>}
           </ErrorTextWrapper>
           <AuthBottomLink
             href="/login"

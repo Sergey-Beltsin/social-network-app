@@ -8,16 +8,21 @@ import { Container } from "@/shared/ui/atoms";
 
 export const NewsList: FC = () => {
   const { useNewsStore } = store;
-  const { handleLikeNews, handleGetNews, handleChangePage } = actions;
+  const { handleLikePost, handleGetNews, handleChangePage, handleReset } =
+    actions;
   const { news, isLoading, pages, page } = useNewsStore();
   const [ref, inView] = useInView();
 
-  const handleLike = (postId: string, isLiked: boolean): void => {
-    handleLikeNews({ postId, isLiked });
+  const handleLike = (postId: string): void => {
+    handleLikePost(postId);
   };
 
   useEffect(() => {
     handleGetNews();
+
+    return () => {
+      handleReset();
+    };
   }, []);
 
   useEffect(() => {
