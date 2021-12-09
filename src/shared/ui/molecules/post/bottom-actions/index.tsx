@@ -19,8 +19,9 @@ export const BottomActions: FC<BottomActionsProps> = ({ likes }) => (
 );
 
 const Container = styled.div`
-  margin-top: 30px;
   position: relative;
+
+  margin-top: 20px;
 
   &::after {
     content: "";

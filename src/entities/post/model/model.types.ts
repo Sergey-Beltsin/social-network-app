@@ -1,13 +1,3 @@
-export interface IPost {
-  title: string;
-  description: string;
-  created: Date;
-  authorName: string;
-  authorPhoto: string;
-  isLiked: boolean;
-  likesCount: number;
-  commentsCount: number;
-  id: string;
-}
+import { Post } from "@/shared/api/posts";
 
-export type Posts = Array<IPost>;
+export type Posts = Array<Post>;

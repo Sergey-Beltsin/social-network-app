@@ -1,6 +1,7 @@
 import { AxiosPromise } from "axios";
 import { axios } from "@/shared/api";
 import { authRoutes } from "./routes";
+import { Profile } from "@/shared/api/profile";
 
 type LoginPayload = {
   email: string;
@@ -18,10 +19,7 @@ type LoginResponse = {
   message: {
     // eslint-disable-next-line camelcase
     access_token: string;
-    profile: Omit<RegisterPayload, "password"> & {
-      id: number;
-      created: Date;
-    };
+    profile: Profile;
   };
 };
 

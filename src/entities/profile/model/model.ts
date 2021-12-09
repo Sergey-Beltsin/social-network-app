@@ -11,9 +11,11 @@ const resetProfile = createEvent<void>();
 
 const handleGetProfileFx = createEffect(async () => {
   try {
-    const { data } = await getProfileRequest();
+    const {
+      data: { message },
+    } = await getProfileRequest();
 
-    return data;
+    return message;
   } catch (e) {
     Auth.clear();
 
@@ -22,8 +24,9 @@ const handleGetProfileFx = createEffect(async () => {
 });
 
 const $profile = createStore<ProfileStore>({
-  id: -1,
-  email: "",
+  id: "",
+  created: new Date(),
+  bio: "",
   username: "",
   name: "",
   surname: "",

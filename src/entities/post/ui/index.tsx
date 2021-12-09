@@ -1,27 +1,28 @@
 import { FC } from "react";
 import styled from "styled-components";
 
-import { IPost } from "../model";
+import { Post } from "@/shared/api/posts";
 import { AuthorInfo } from "@/shared/ui/atoms/post";
 import { BottomActions } from "@/shared/ui/molecules/post";
 
 type Props = {
-  post: IPost;
+  post: Post;
   handleLike: (postId: string, isLiked: boolean) => void;
 };
 
 export const PostCard: FC<Props> = ({ post, handleLike }) => (
   <Card>
     <AuthorInfo
-      photo={post.authorPhoto}
-      name={post.authorName}
+      photo=""
+      name={`${post.profile.name} ${post.profile.surname}`}
+      username={post.profile.username}
       created={post.created}
     />
-    {post.description}
+    <Content>{post.content}</Content>
     <BottomActions
       likes={{
-        count: post.likesCount,
-        isLiked: post.isLiked,
+        count: 0,
+        isLiked: false,
         handleLike,
         postId: post.id,
       }}
@@ -29,13 +30,13 @@ export const PostCard: FC<Props> = ({ post, handleLike }) => (
   </Card>
 );
 
-const Card = styled.div`
+const Card = styled.article`
   padding: 20px 20px 10px;
 
   background-color: ${({ theme }) => theme.colors.secondary};
   border-radius: 6px;
+`;
 
-  &:not(:last-child) {
-    margin-bottom: 20px;
-  }
+const Content = styled.span`
+  font-size: 16px;
 `;

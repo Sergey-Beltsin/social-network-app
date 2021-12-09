@@ -1,1 +1,1 @@
-export type { Posts, IPost } from "./model.types";
+export type { Posts } from "./model.types";

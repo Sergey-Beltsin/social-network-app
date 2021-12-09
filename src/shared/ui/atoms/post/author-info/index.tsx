@@ -1,30 +1,45 @@
 import { FC } from "react";
 import styled from "styled-components";
+import Link from "next/link";
+import TimeAgo from "javascript-time-ago";
+import en from "javascript-time-ago/locale/en.json";
+import ru from "javascript-time-ago/locale/ru.json";
 
-import { getFormattedTime } from "@/shared/lib/utils";
+import { useRouter } from "next/router";
+
+TimeAgo.addLocale(en);
+TimeAgo.addLocale(ru);
 
 type AuthorInfoProps = {
   photo: string;
   name: string;
+  username: string;
   created: Date;
 };
 
-export const AuthorInfo: FC<AuthorInfoProps> = ({ photo, name, created }) => (
-  <Container>
-    <AuthorPhoto src={photo} alt={name} />
-    <AuthorInfoDescription>
-      <AuthorName href="#">{name}</AuthorName>
-      <AuthorCreated>
-        {`${getFormattedTime(created.getDate())}-${getFormattedTime(
-          created.getMonth(),
-        )}-${created.getFullYear()}`}{" "}
-        {`${getFormattedTime(created.getHours())}:${getFormattedTime(
-          created.getMinutes(),
-        )}:${getFormattedTime(created.getSeconds())}`}
-      </AuthorCreated>
-    </AuthorInfoDescription>
-  </Container>
-);
+export const AuthorInfo: FC<AuthorInfoProps> = ({
+  photo,
+  name,
+  username,
+  created,
+}) => {
+  const { locale } = useRouter();
+  const timeAgo = new TimeAgo(locale || "");
+
+  const date = new Date(created);
+
+  return (
+    <Container>
+      {/* <AuthorPhoto src={photo} alt="" /> */}
+      <AuthorInfoDescription>
+        <Link href={username} passHref>
+          <AuthorName>{name}</AuthorName>
+        </Link>
+        <AuthorCreated>{timeAgo.format(date)}</AuthorCreated>
+      </AuthorInfoDescription>
+    </Container>
+  );
+};
 
 const Container = styled.div`
   display: flex;
@@ -37,6 +52,7 @@ const AuthorPhoto = styled.img`
   display: block;
 
   width: 50px;
+  height: 50px;
   margin-right: 10px;
 
   border-radius: 50%;

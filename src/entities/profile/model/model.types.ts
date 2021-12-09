@@ -1,3 +1,3 @@
-import { User } from "@/entities/user";
+import { Profile } from "@/shared/api/profile";
 
-export type ProfileStore = User;
+export type ProfileStore = Profile;

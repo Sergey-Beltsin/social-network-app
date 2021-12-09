@@ -1,7 +1,7 @@
 import { FC } from "react";
-
 import styled, { useTheme } from "styled-components";
 import useTranslation from "next-translate/useTranslation";
+
 import {
   Header as HeaderComponent,
   HeaderLoginButtons,
