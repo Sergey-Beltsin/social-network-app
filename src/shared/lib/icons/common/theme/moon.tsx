@@ -1,6 +1,6 @@
 import { FC } from "react";
 
-export const MenuIcon: FC = () => (
+export const MoonIcon: FC = () => (
   <svg
     fill="none"
     height="24"
@@ -12,8 +12,6 @@ export const MenuIcon: FC = () => (
     width="24"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <line x1="3" x2="21" y1="12" y2="12" />
-    <line x1="3" x2="21" y1="6" y2="6" />
-    <line x1="3" x2="21" y1="18" y2="18" />
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
   </svg>
 );

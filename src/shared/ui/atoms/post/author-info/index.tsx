@@ -63,17 +63,25 @@ const AuthorName = styled.a`
 
   margin-bottom: 4px;
 
-  font-size: 14px;
+  font-size: 12px;
   text-decoration: none;
 
   &:hover {
     text-decoration: underline;
+  }
+
+  @media (min-width: ${({ theme }) => theme.devices.desktop}) {
+    font-size: 14px;
   }
 `;
 
 const AuthorCreated = styled.span`
   display: block;
 
-  font-size: 12px;
   color: ${({ theme }) => theme.colors.text.secondary};
+  font-size: 10px;
+
+  @media (min-width: ${({ theme }) => theme.devices.desktop}) {
+    font-size: 12px;
+  }
 `;

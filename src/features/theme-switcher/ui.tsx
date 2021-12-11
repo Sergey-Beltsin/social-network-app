@@ -1,157 +1,120 @@
-import { ChangeEvent, FC } from "react";
+import { FC, ReactNode } from "react";
 import styled from "styled-components";
 import useTranslation from "next-translate/useTranslation";
+
 import { handleChangeTheme, useTheme } from "@/shared/lib/hooks";
+import { AutoIcon, MoonIcon, SunIcon } from "@/shared/lib/icons/common/theme";
 
 type SwitchType = "light" | "auto" | "dark";
-type SwitcherProps = {
-  switchType: SwitchType;
+type ThemeItem = {
+  label: string;
+  value: SwitchType;
+  icon: ReactNode;
+};
+type ButtonProps = {
+  isActive: boolean;
 };
 
-const getIconBySwitchType = (type: SwitchType): string => {
-  if (type === "light") {
-    return "sun";
-  }
-  if (type === "auto") {
-    return "auto";
-  }
-
-  return "moon";
-};
-
-const getMarginBySwitchType = (type: SwitchType): number => {
-  if (type === "light") {
-    return 2;
-  }
-  if (type === "auto") {
-    return 34;
-  }
-
-  return 66;
-};
+const themes: ThemeItem[] = [
+  {
+    label: "light",
+    value: "light",
+    icon: <SunIcon />,
+  },
+  {
+    label: "auto",
+    value: "auto",
+    icon: <AutoIcon />,
+  },
+  {
+    label: "dark",
+    value: "dark",
+    icon: <MoonIcon />,
+  },
+];
 
 export const ThemeSwitcher: FC = () => {
   const { value } = useTheme();
   const { t } = useTranslation("common");
 
-  const onChange = (event: ChangeEvent<HTMLInputElement>) => {
-    handleChangeTheme(event.target.value as SwitchType);
+  const onChange = (currentValue: SwitchType) => {
+    handleChangeTheme(currentValue);
   };
 
   return (
     <Container>
-      <Fieldset>
-        <Legend className="visually-hidden">
-          {t("header.themeSwitcher.scheme")}
-        </Legend>
-        <Switcher
-          type="radio"
-          name="color-scheme"
-          value="light"
-          aria-label={t("header.themeSwitcher.light")}
-          onChange={onChange}
-          checked={value === "light"}
-          switchType="light"
-        />
-        <Switcher
-          type="radio"
-          name="color-scheme"
-          value="auto"
-          aria-label={t("header.themeSwitcher.auto")}
-          onChange={onChange}
-          checked={value === "auto"}
-          switchType="auto"
-        />
-        <Switcher
-          type="radio"
-          name="color-scheme"
-          value="dark"
-          aria-label={t("header.themeSwitcher.dark")}
-          onChange={onChange}
-          checked={value === "dark"}
-          switchType="dark"
-        />
-        <Status />
-      </Fieldset>
+      {themes.map(({ label, value: themeValue, icon }) => (
+        <Button
+          aria-label={t(`header.themeSwitcher.${label}`)}
+          onClick={() => onChange(themeValue)}
+          isActive={themeValue === value}
+        >
+          {icon}
+        </Button>
+      ))}
     </Container>
   );
 };
 
-const Container = styled.div``;
-
-const Fieldset = styled.fieldset`
+const Container = styled.div`
   display: flex;
   align-items: center;
 
   position: relative;
 
   width: fit-content;
-  padding: 2px;
   margin: 0;
 
   border: none;
   border-radius: 4px;
+
+  background-color: ${({ theme }) => theme.colors.secondaryLight};
 `;
 
-const Legend = styled.legend``;
+const Button = styled.button<ButtonProps>`
+  padding: 2px 6px;
 
-const Switcher = styled.input<SwitcherProps>`
-  width: 32px;
-  height: 32px;
-  margin: 0;
-
-  position: relative;
-  z-index: 1;
-
-  appearance: none;
-  filter: invert(0);
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: 24px;
+  background-color: transparent;
+  border: none;
   cursor: pointer;
 
-  transition: 0.2s ease-in-out;
+  transition: 0.2s ease;
 
-  &:checked {
-    filter: invert(1);
+  &:first-child {
+    border-radius: 4px 0 0 4px;
   }
 
-  ${({ switchType }) => `
-    background-image: url('/assets/icons/header/${getIconBySwitchType(
-      switchType,
-    )}.svg');
+  &:last-child {
+    border-radius: 0 4px 4px 0;
+  }
 
-    &:checked ~ ${Status}::after {
-      left: ${getMarginBySwitchType(switchType)}px;
-    }
-  `}
-`;
+  & > svg {
+    position: relative;
+    top: 1px;
 
-const Status = styled.div`
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 0;
-  filter: invert(0);
+    width: 24px;
+    height: 24px;
 
-  background-color: ${({ theme }) => theme.colors.tertiary};
-  border-radius: 6px;
-
-  &::after {
-    content: "";
-
-    position: absolute;
-    top: 2px;
-
-    width: 32px;
-    height: 32px;
-
-    background-color: #000000;
-    border-radius: 50px;
     filter: invert(0);
 
-    transition: 0.2s ease-in-out;
+    color: ${({ theme }) => theme.colors.text.primary};
+
+    transition: 0.2s ease;
   }
+
+  ${({ isActive, theme }) =>
+    isActive
+      ? `
+    background-color: ${theme.colors.reversed};
+
+    & > svg {
+      filter: invert(1);
+    }
+  `
+      : `
+    &:hover,
+    &:focus {
+      background-color: ${theme.colors.tertiary};
+    }
+  `}
 `;

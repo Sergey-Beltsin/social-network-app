@@ -11,11 +11,13 @@ import {
   SettingsIcon,
   ProfileIcon,
   UsersIcon,
+  MenuIcon,
 } from "@/shared/lib/icons/navigation";
 import { store } from "@/entities/profile";
+import { useWindowSize } from "@/shared/lib/hooks";
 
 interface ILink {
-  href: string;
+  href: string | ((query: string) => string);
   title: string;
   icon: ReactElement;
 }
@@ -34,74 +36,109 @@ const getIsLinkActive = (
   if (href === pathname) {
     return true;
   }
-  if (index === 0 && getIsProfilePage(username, queryUsername)) {
+  if (index === 0 && username && getIsProfilePage(username, queryUsername)) {
     return true;
   }
 
   return (
     pathname === "/[username]" &&
     index === 3 &&
+    !!username &&
     !getIsProfilePage(username, queryUsername)
   );
 };
+
+const links: Array<ILink> = [
+  {
+    href: (username: string) => `/${username}`,
+    title: "profile",
+    icon: <ProfileIcon />,
+  },
+  {
+    href: "/news",
+    title: "news",
+    icon: <NewsIcon />,
+  },
+  {
+    href: "/messages",
+    title: "messages",
+    icon: <MessagesIcon />,
+  },
+  {
+    href: "/friends",
+    title: "users",
+    icon: <UsersIcon />,
+  },
+  {
+    href: "/groups",
+    title: "groups",
+    icon: <CommunityIcon />,
+  },
+  {
+    href: "/settings",
+    title: "settings",
+    icon: <SettingsIcon />,
+  },
+];
+
+const mobileLinks: Array<ILink> = [
+  {
+    href: (username) => `/${username}`,
+    title: "profile",
+    icon: <ProfileIcon />,
+  },
+  {
+    href: "/news",
+    title: "news",
+    icon: <NewsIcon />,
+  },
+  {
+    href: "/messages",
+    title: "messages",
+    icon: <MessagesIcon />,
+  },
+  {
+    href: "/friends",
+    title: "users",
+    icon: <UsersIcon />,
+  },
+  {
+    href: "/menu",
+    title: "menu",
+    icon: <MenuIcon />,
+  },
+];
 
 export const Navigation = () => {
   const { t } = useTranslation("navigation");
   const router = useRouter();
   const { useProfileStore } = store;
   const { username } = useProfileStore();
-
-  const links: Array<ILink> = [
-    {
-      href: `/${username}`,
-      title: t("profile"),
-      icon: <ProfileIcon />,
-    },
-    {
-      href: "/news",
-      title: t("news"),
-      icon: <NewsIcon />,
-    },
-    {
-      href: "/messages",
-      title: t("messages"),
-      icon: <MessagesIcon />,
-    },
-    {
-      href: "/friends",
-      title: t("users"),
-      icon: <UsersIcon />,
-    },
-    {
-      href: "/groups",
-      title: t("groups"),
-      icon: <CommunityIcon />,
-    },
-    {
-      href: "/settings",
-      title: t("settings"),
-      icon: <SettingsIcon />,
-    },
-  ];
+  const { isDesktop } = useWindowSize();
 
   return (
     <Nav>
       <List>
-        {links.map((link, index) => (
-          <NavigationLink
-            key={link.href}
-            href={link.href}
-            title={link.title}
-            icon={link.icon}
-            isActive={getIsLinkActive(
-              link.href,
-              router.pathname,
-              index,
-              username,
-              router.query.username || "",
-            )}
-          />
-        ))}
+        {(!isDesktop ? mobileLinks : links).map((link, index) => {
+          const href =
+            typeof link.href === "string" ? link.href : link.href(username);
+
+          return (
+            <NavigationLink
+              key={href}
+              href={href}
+              title={t(link.title)}
+              icon={link.icon}
+              isActive={getIsLinkActive(
+                href,
+                router.pathname,
+                index,
+                username,
+                router.query.username || "",
+              )}
+            />
+          );
+        })}
       </List>
     </Nav>
   );
@@ -121,7 +158,8 @@ const Nav = styled.nav`
     padding: 10px;
     margin-right: 20px;
 
-    position: relative;
+    position: sticky;
+    top: 68px;
     right: auto;
     bottom: auto;
     left: auto;

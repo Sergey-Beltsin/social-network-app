@@ -13,6 +13,10 @@ import { Auth, actions } from "@/entities/profile";
 TimeAgo.addLocale(en);
 TimeAgo.addLocale(ru);
 
+type MainWrapperProps = {
+  notPaddingBottom: boolean;
+};
+
 export const App: FC = ({ children }) => {
   const { getProfile } = actions;
 
@@ -26,7 +30,7 @@ export const App: FC = ({ children }) => {
     <ThemeProvider>
       <ProtectedRoute>
         <Header />
-        <MainWrapper>
+        <MainWrapper notPaddingBottom={!Auth.getIsAuth()}>
           <Wrapper>
             {Auth.getIsAuth() && <Navigation />}
             <Main>{children}</Main>
@@ -47,16 +51,21 @@ const Main = styled.main`
 
   @media (min-width: ${({ theme }) => theme.devices.desktop}) {
     width: 100%;
-    min-height: calc(100vh - 89px);
+    min-height: calc(100vh - 88px);
     margin: 0;
   }
 `;
 
-const MainWrapper = styled.div`
-  padding-top: 20px;
-  padding-bottom: 20px;
+const MainWrapper = styled.div<MainWrapperProps>`
+  padding-top: 68px;
+  padding-bottom: ${({ notPaddingBottom }) =>
+    notPaddingBottom ? "20px" : "68px"};
 
   background-color: ${({ theme }) => theme.colors.background};
+
+  @media (min-width: ${({ theme }) => theme.devices.desktop}) {
+    padding-bottom: 20px;
+  }
 `;
 
 const Wrapper = styled.div`

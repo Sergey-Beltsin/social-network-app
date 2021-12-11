@@ -17,13 +17,16 @@ declare module "styled-components" {
       };
       primary: string;
       secondary: string;
+      secondaryLight: string;
       tertiary: string;
       tertiaryLight: string;
+      reversed: string;
       border: string;
       borderSecondary: string;
       background: string;
       red: string;
       lightRed: string;
+      shadow: string;
     };
     devices: IDevices;
   }

@@ -11,11 +11,11 @@ import { ProfileIcon, SettingsIcon } from "@/shared/lib/icons/navigation";
 import { Auth, store } from "@/entities/profile";
 import { LangPicker } from "@/features/lang-picker";
 import { ThemeSwitcher } from "@/features/theme-switcher";
+import { useWindowSize } from "@/shared/lib/hooks";
 
 const RightElementContainer: FC = ({ children }) => (
   <Container>
     <LangPicker />
-    <ThemeSwitcher />
     {children}
   </Container>
 );
@@ -26,13 +26,17 @@ export const Header: FC = () => {
   const { name, surname } = useProfileStore();
   const { t } = useTranslation("common");
   const theme = useTheme();
+  const { isMobile } = useWindowSize();
 
   const dropdownItems: DropdownItems = [
     {
       icon: <SettingsIcon />,
       title: t("header.settings"),
-      lastOfType: true,
       link: "/settings",
+    },
+    {
+      render: () => <ThemeSwitcher />,
+      lastOfType: true,
     },
     {
       icon: <ProfileIcon fill={theme.colors.red} />,
@@ -44,12 +48,12 @@ export const Header: FC = () => {
   const rightElement = (
     <RightElementContainer>
       {Auth.getIsAuth() ? (
-        <Dropdown items={dropdownItems} trigger="hover">
+        <Dropdown items={dropdownItems} trigger={isMobile ? "click" : "hover"}>
           <DropdownTrigger>
             <DropdownTriggerImg src="https://place-hold.it/30x30" alt="" />
-            <span>
+            <Name>
               {name} {surname}
-            </span>
+            </Name>
           </DropdownTrigger>
         </Dropdown>
       ) : (
@@ -66,7 +70,13 @@ const Container = styled.div`
   align-items: center;
 
   & > div:not(:last-child) {
-    margin-right: 20px;
+    margin-right: 10px;
+  }
+
+  @media (min-width: ${({ theme }) => theme.devices.desktop}) {
+    & > div:not(:last-child) {
+      margin-right: 20px;
+    }
   }
 `;
 
@@ -87,4 +97,16 @@ const DropdownTriggerImg = styled.img`
 
 const RedText = styled.span`
   color: ${({ theme }) => theme.colors.red};
+`;
+
+const Name = styled.span`
+  overflow: hidden;
+
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  @media (min-width: ${({ theme }) => theme.devices.desktop}) {
+    font-size: 14px;
+  }
 `;

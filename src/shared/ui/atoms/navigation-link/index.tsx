@@ -28,8 +28,10 @@ const Item = styled.li`
   display: flex;
   flex-grow: 1;
 
-  &:not(:last-child) {
-    margin-bottom: 4px;
+  @media (min-width: ${({ theme }) => theme.devices.desktop}) {
+    &:not(:last-child) {
+      margin-bottom: 4px;
+    }
   }
 `;
 

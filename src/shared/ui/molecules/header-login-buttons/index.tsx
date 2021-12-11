@@ -12,7 +12,7 @@ export const HeaderLoginButtons: FC = () => {
     <Container>
       <Link href="/login" passHref>
         <Href>
-          <Button secondary>{t("signIn")}</Button>
+          <Button>{t("signIn")}</Button>
         </Href>
       </Link>
       <Link href="/register" passHref>

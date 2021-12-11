@@ -48,7 +48,7 @@ const Container = styled.button<ContainerProps>`
 
   position: relative;
 
-  padding: 10px 24px;
+  padding: 6px 16px;
   ${({ center }) =>
     center &&
     `
@@ -63,11 +63,13 @@ const Container = styled.button<ContainerProps>`
   overflow: hidden;
 
   color: ${({ theme }) => theme.colors.text.primary};
+  font-size: 11px;
   text-decoration: none;
 
   transition: 0.2s ease-in-out;
 
-  &:hover {
+  &:hover,
+  &:focus {
     background-color: ${({ theme }) => theme.colors.primary};
 
     color: ${({ theme }) => theme.colors.common.light};
@@ -76,9 +78,10 @@ const Container = styled.button<ContainerProps>`
   ${({ secondary, theme }) =>
     secondary &&
     `
-    border-color: transparent;
-    
-    &:hover {
+    background-color: ${theme.colors.primary};
+
+    &:hover,
+    &:focus {
       background-color: transparent;
       border-color: ${theme.colors.primary};
       
@@ -91,7 +94,8 @@ const Container = styled.button<ContainerProps>`
     opacity: 0.6;
     cursor: default;
 
-    &:hover {
+    &:hover,
+    &:focus {
       background-color: transparent;
       border-color: ${({ theme }) => theme.colors.border};
 
@@ -112,6 +116,13 @@ const Container = styled.button<ContainerProps>`
       opacity: 1;
     }
   `}
+  
+  @media (min-width: ${({ theme }) => theme.devices.tablet}) {
+    padding: 10px 24px;
+
+    font-size: 14px;
+  }
+}
 `;
 
 const LoaderWrapper = styled.div`

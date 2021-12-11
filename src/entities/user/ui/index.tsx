@@ -28,7 +28,7 @@ export const UserCard: FC<UserCardProps> = ({
 
 const Container = styled.li`
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
 
   position: relative;
 
@@ -50,20 +50,33 @@ const Container = styled.li`
       background-color: ${({ theme }) => theme.colors.border};
     }
   }
+
+  @media (min-width: ${({ theme }) => theme.devices.tablet}) {
+    flex-direction: row;
+    justify-content: space-between;
+  }
 `;
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  &:not(:last-child) {
+    margin-bottom: 10px;
+  }
+`;
 
 const Name = styled.a`
   display: block;
 
   margin-bottom: 4px;
 
-  font-size: 14px;
+  font-size: 12px;
   text-decoration: none;
 
   &:hover {
     text-decoration: underline;
+  }
+
+  @media (min-width: ${({ theme }) => theme.devices.desktop}) {
+    font-size: 14px;
   }
 `;
 
@@ -71,5 +84,9 @@ const Username = styled.span`
   display: block;
 
   color: ${({ theme }) => theme.colors.text.secondary};
-  font-size: 12px;
+  font-size: 10px;
+
+  @media (min-width: ${({ theme }) => theme.devices.desktop}) {
+    font-size: 12px;
+  }
 `;

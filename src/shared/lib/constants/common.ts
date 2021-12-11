@@ -1,3 +1,8 @@
+export const deviceWidths = {
+  mobile: 320,
+  tablet: 768,
+  desktop: 1200,
+};
 export interface IDevices {
   mobile: string;
   tablet: string;
@@ -5,9 +10,9 @@ export interface IDevices {
 }
 
 export const devices: IDevices = {
-  mobile: "320px",
-  tablet: "768px",
-  desktop: "1200px",
+  mobile: `${deviceWidths.mobile}px`,
+  tablet: `${deviceWidths.tablet}px`,
+  desktop: `${deviceWidths.desktop}px`,
 };
 
 export const publicRoutes: string[] = ["/login", "/register"];

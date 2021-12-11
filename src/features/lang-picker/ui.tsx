@@ -2,13 +2,16 @@ import { FC } from "react";
 import { useRouter } from "next/router";
 import useTranslation from "next-translate/useTranslation";
 import styled from "styled-components";
+
 import { Dropdown, DropdownItems } from "@/shared/ui/atoms";
 import { LangIcon } from "@/shared/lib/icons/common";
+import { useWindowSize } from "@/shared/lib/hooks";
 
 export const LangPicker: FC = () => {
   const router = useRouter();
   const { pathname, asPath, query } = router;
   const { t } = useTranslation("languages");
+  const { isMobile } = useWindowSize();
 
   const dropdownItems: DropdownItems =
     router.locales?.map((locale) => ({
@@ -19,7 +22,7 @@ export const LangPicker: FC = () => {
   return (
     <Dropdown
       items={dropdownItems}
-      trigger="hover"
+      trigger={isMobile ? "click" : "hover"}
       selectedItem={dropdownItems.findIndex(
         (item) => item.title === t(router.locale || ""),
       )}
@@ -42,5 +45,14 @@ const Title = styled.span`
 
   margin-left: 6px;
 
+  overflow: hidden;
+
+  font-size: 10px;
   font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  @media (min-width: ${({ theme }) => theme.devices.desktop}) {
+    font-size: 14px;
+  }
 `;

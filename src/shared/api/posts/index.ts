@@ -32,7 +32,9 @@ export const getPosts = async (
     },
   });
 
-export const createPost = async (content: string): Promise<AxiosPromise> =>
+export const createPost = async (
+  content: string,
+): Promise<AxiosPromise<{ message: Post }>> =>
   axios.post(postsRoutes.posts, { content });
 
 export const likePost = async (

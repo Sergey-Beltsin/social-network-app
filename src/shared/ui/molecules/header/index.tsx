@@ -19,6 +19,12 @@ export const Header: FC<HeaderProps> = ({ rightElement }) => (
 const HeaderComponent = styled.header`
   display: flex;
 
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 11;
+
   height: 48px;
 
   background-color: ${({ theme }) => theme.colors.secondary};

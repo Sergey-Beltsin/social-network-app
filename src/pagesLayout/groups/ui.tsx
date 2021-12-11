@@ -1,3 +1,7 @@
 import { NextPage } from "next";
 
-export const GroupsPage: NextPage = () => <div>groups page</div>;
+import { Container } from "@/shared/ui/atoms";
+
+export const GroupsPage: NextPage = () => (
+  <Container stretchDesktop>groups page</Container>
+);

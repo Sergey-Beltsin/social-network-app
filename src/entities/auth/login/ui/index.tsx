@@ -142,7 +142,6 @@ const MainWrapper = styled.div`
   align-items: center;
 
   width: 100%;
-  margin-bottom: 20px;
 `;
 
 const Wrapper = styled.div`

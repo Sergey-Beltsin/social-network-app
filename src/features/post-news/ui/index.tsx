@@ -4,9 +4,13 @@ import useTranslation from "next-translate/useTranslation";
 import styled from "styled-components";
 
 import { Button, Input } from "@/shared/ui/atoms";
-import { createPost } from "@/shared/api/posts";
+import { createPost, Post } from "@/shared/api/posts";
 
-export const PostNews: FC = () => {
+type PostNewsProps = {
+  handleAddPost: (post: Post) => void;
+};
+
+export const PostNews: FC<PostNewsProps> = ({ handleAddPost }) => {
   const {
     register,
     formState: { errors },
@@ -20,7 +24,11 @@ export const PostNews: FC = () => {
     try {
       setIsLoading(true);
 
-      await createPost(content);
+      const {
+        data: { message },
+      } = await createPost(content);
+
+      handleAddPost(message);
     } catch (e) {
       console.log(e);
     } finally {
@@ -33,18 +41,22 @@ export const PostNews: FC = () => {
   return (
     <Container>
       <Form onSubmit={handleSubmitForm(handleSubmit)}>
-        <Input
-          label={t("writePost")}
-          textarea
-          handleRegister={() => register("content", { required: true })}
-          error={
-            errors.content ? t(`errors:errors.${errors.content.type}`) : ""
-          }
-          required
-        />
-        <Button type="submit" loading={isLoading}>
-          {t("publish")}
-        </Button>
+        <InputWrapper>
+          <Input
+            label={t("writePost")}
+            textarea
+            handleRegister={() => register("content", { required: true })}
+            error={
+              errors.content ? t(`errors:errors.${errors.content.type}`) : ""
+            }
+            required
+          />
+        </InputWrapper>
+        <ButtonWrapper>
+          <Button type="submit" loading={isLoading}>
+            {t("publish")}
+          </Button>
+        </ButtonWrapper>
       </Form>
     </Container>
   );
@@ -52,7 +64,7 @@ export const PostNews: FC = () => {
 
 const Container = styled.div`
   width: 100%;
-  padding: 30px 20px 20px;
+  padding: 30px 20px 0;
   margin-bottom: 20px;
 
   background-color: ${({ theme }) => theme.colors.secondary};
@@ -63,8 +75,20 @@ const Container = styled.div`
 const Form = styled.form`
   display: flex;
   align-items: flex-end;
+  flex-wrap: wrap;
+`;
 
-  & > label {
-    margin-right: 20px;
-  }
+const InputWrapper = styled.div`
+  flex-grow: 1;
+
+  min-width: 220px;
+  max-width: 400px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+`;
+
+const ButtonWrapper = styled.div`
+  flex-grow: 1;
+
+  margin-bottom: 20px;
 `;

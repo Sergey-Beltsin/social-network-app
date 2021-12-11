@@ -49,6 +49,7 @@ const changePage = createEvent<{
 }>();
 const handleChangeIsLoading = createEvent<boolean>();
 const handleSetPost = createEvent<Post>();
+const handleAddPost = createEvent<Post>();
 const handleReset = createEvent<void>();
 
 const handleGetNewsFx = createEffect(
@@ -142,6 +143,10 @@ const $news = createStore<NewsStore>({
 
     return newStore;
   })
+  .on(handleAddPost, (store, post) => ({
+    ...store,
+    news: [post, ...store.news],
+  }))
   .reset(handleReset);
 
 sample({
@@ -183,6 +188,7 @@ const actions = {
   handleLikePost,
   handleGetNews,
   handleChangePage,
+  handleAddPost,
   handleReset,
 };
 

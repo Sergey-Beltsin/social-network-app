@@ -4,12 +4,12 @@ import styled from "styled-components";
 import { useRouter } from "next/router";
 import { AxiosPromise } from "axios";
 
+import { Container, Loader } from "@/shared/ui/atoms";
 import { store as profileStore } from "@/entities/profile";
+import { actions as newsActions, NewsList } from "@/features/news";
 import { actions, store } from "../model";
 import { ProfileCard } from "@/shared/ui/molecules";
 import { PostNews } from "@/features/post-news";
-import { Loader } from "@/shared/ui/atoms";
-import { NewsList } from "@/features/news";
 import { getPostsByUserId } from "@/shared/api/users";
 import { GetPostsResponse } from "@/shared/api/posts";
 
@@ -17,6 +17,7 @@ export const ProfilePage: NextPage = () => {
   const { useProfileStore } = profileStore;
   const { useUserPageStore } = store;
   const { handleGetUser, handleSetUser, handleReset } = actions;
+  const { handleAddPost } = newsActions;
 
   const profile = useProfileStore();
   const userPage = useUserPageStore();
@@ -60,7 +61,7 @@ export const ProfilePage: NextPage = () => {
   };
 
   return (
-    <Container>
+    <Container stretchDesktop>
       {userPage.isLoading ? (
         <LoaderWrapper>
           <Loader />
@@ -68,17 +69,15 @@ export const ProfilePage: NextPage = () => {
       ) : (
         <>
           <ProfileCard user={isOwnerPage ? profile : userPage.profile} />
-          {username === profile.username && <PostNews />}
+          {username === profile.username && (
+            <PostNews handleAddPost={handleAddPost} />
+          )}
           <NewsList handleGetNews={getPosts} />
         </>
       )}
     </Container>
   );
 };
-
-const Container = styled.div`
-  width: 100%;
-`;
 
 const LoaderWrapper = styled.div`
   display: flex;

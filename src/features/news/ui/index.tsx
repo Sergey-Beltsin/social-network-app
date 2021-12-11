@@ -2,9 +2,10 @@ import { FC, useEffect } from "react";
 import styled from "styled-components";
 import { useInView } from "react-intersection-observer";
 
+import { useRouter } from "next/router";
 import { actions, HandleGetPostsResponse, store } from "../model";
 import { PostCard } from "@/entities/post";
-import { Container, Loader } from "@/shared/ui/atoms";
+import { Loader } from "@/shared/ui/atoms";
 import { store as profileStore } from "@/entities/profile";
 
 type NewsListProps = {
@@ -22,6 +23,7 @@ export const NewsList: FC<NewsListProps> = ({
   const { news, isLoading, pages, page } = useNewsStore();
   const { id } = useProfileStore();
   const [ref, inView] = useInView();
+  const router = useRouter();
 
   const handleLike = (postId: string): void => {
     handleLikePost({ postId, userId: id });
@@ -33,7 +35,7 @@ export const NewsList: FC<NewsListProps> = ({
     return () => {
       handleReset();
     };
-  }, []);
+  }, [router.query.username]);
 
   useEffect(() => {
     if (inView && !isLoading && page < pages) {
@@ -66,14 +68,10 @@ export const NewsList: FC<NewsListProps> = ({
   );
 };
 
+const Container = styled.div``;
+
 const Wrapper = styled.div`
   width: 100%;
-
-  @media (min-width: ${({ theme }) => theme.devices.desktop}) {
-    & > ${Container} {
-      width: 100%;
-    }
-  }
 `;
 
 const PostCardWrapper = styled.div`

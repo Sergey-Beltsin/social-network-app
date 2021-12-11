@@ -1,5 +1,12 @@
 /* eslint-disable react/no-array-index-key */
-import { FC, KeyboardEvent, ReactElement, useRef, useState } from "react";
+import {
+  FC,
+  KeyboardEvent,
+  ReactElement,
+  ReactNode,
+  useRef,
+  useState,
+} from "react";
 import styled from "styled-components";
 import { CSSTransition } from "react-transition-group";
 
@@ -10,10 +17,11 @@ import { ArrowIcon } from "@/shared/lib/icons/common";
 
 interface IDropdownItem {
   icon?: ReactElement;
-  title: string | ReactElement;
+  title?: string | ReactElement;
   onClick?: () => void;
   link?: string;
   lastOfType?: boolean;
+  render?: () => ReactNode;
 }
 
 export type DropdownItems = Array<IDropdownItem>;
@@ -35,6 +43,7 @@ type DropdownTriggerProps = {
 type DropdownItemProps = {
   isSelected: boolean;
   lastOfType: boolean;
+  paddings: boolean;
 };
 
 export const Dropdown: FC<DropdownProps> = ({
@@ -47,6 +56,8 @@ export const Dropdown: FC<DropdownProps> = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation("common");
   const router = useRouter();
+  const dropdownWrapperRef = useRef(null);
+  console.log(dropdownWrapperRef.current);
 
   const handleChangeOpen = (isCurrentOpen: boolean) => {
     setIsOpen(isCurrentOpen);
@@ -105,25 +116,31 @@ export const Dropdown: FC<DropdownProps> = ({
           onMouseLeave={
             trigger === "hover" ? () => handleChangeOpen(false) : undefined
           }
+          ref={dropdownWrapperRef}
         >
           <DropdownContent>
             <DropdownList>
               {items.map(
-                ({ title, lastOfType, onClick, icon, link }, index) => (
+                ({ title, lastOfType, onClick, icon, link, render }, index) => (
                   <DropdownItem
                     key={`${index}-${link}-${lastOfType}-dropdown`}
                     isSelected={selectedItem === index}
                     lastOfType={lastOfType || false}
+                    paddings={!!render}
                   >
-                    <DropdownButton
-                      onClick={() => handleClickItem(onClick, link)}
-                      aria-label={link ? t("goToLink", { link }) : ""}
-                    >
-                      <DropdownButtonInfo>
-                        {icon}
-                        <DropdownButtonTitle>{title}</DropdownButtonTitle>
-                      </DropdownButtonInfo>
-                    </DropdownButton>
+                    {render ? (
+                      render()
+                    ) : (
+                      <DropdownButton
+                        onClick={() => handleClickItem(onClick, link)}
+                        aria-label={link ? t("goToLink", { link }) : ""}
+                      >
+                        <DropdownButtonInfo>
+                          {icon}
+                          <DropdownButtonTitle>{title}</DropdownButtonTitle>
+                        </DropdownButtonInfo>
+                      </DropdownButton>
+                    )}
                   </DropdownItem>
                 ),
               )}
@@ -172,7 +189,7 @@ const DropdownWrapper = styled.div`
 `;
 
 const DropdownContent = styled.div`
-  min-width: 200px;
+  min-width: 140px;
   padding: 10px;
 
   position: relative;
@@ -180,8 +197,12 @@ const DropdownContent = styled.div`
 
   background-color: ${({ theme }) => theme.colors.secondary};
   border-radius: 4px;
-  box-shadow: 0 4px 20px -5px rgba(34, 60, 80, 0.4);
+  box-shadow: 0 4px 20px -5px ${({ theme }) => theme.colors.shadow};
   overflow: hidden;
+
+  @media (min-width: ${({ theme }) => theme.devices.tablet}) {
+    min-width: 200px;
+  }
 `;
 
 const DropdownList = styled.ul`
@@ -216,7 +237,14 @@ const DropdownItem = styled.li<DropdownItemProps>`
     lastOfType &&
     `
     border-bottom: 1px solid ${theme.colors.border};
+    
+    &:not(:first-child) {
+      padding-bottom: 8px;
+      margin-bottom: 4px;
+    }
   `}
+  
+  ${({ paddings }) => paddings && "padding: 6px 14px;"}
 `;
 
 const DropdownButton = styled.button`

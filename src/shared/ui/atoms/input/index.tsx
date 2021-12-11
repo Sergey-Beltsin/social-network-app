@@ -163,15 +163,21 @@ const InputWrapper = styled.div`
 
 const Label = styled.span`
   position: absolute;
-  top: 14px;
+  top: 18px;
   left: 10px;
 
   pointer-events: none;
 
   color: ${({ theme }) => theme.colors.text.secondary};
-  font-size: 18px;
+  font-size: 14px;
 
   transition: 0.2s ease-in-out;
+
+  @media (min-width: ${({ theme }) => theme.devices.desktop}) {
+    top: 14px;
+
+    font-size: 18px;
+  }
 `;
 
 const Bar = styled.div`
@@ -200,22 +206,32 @@ const StyledInput = styled.input`
 
   color: ${({ theme }) => theme.colors.text.primary};
   font-family: sans-serif;
-  font-size: 16px;
+  font-size: 12px;
 
   &:focus,
   &:valid {
     & ~ ${Label} {
-      top: -14px;
+      top: -10px;
 
       opacity: 1;
 
       color: ${({ theme }) => theme.colors.primary};
-      font-size: 14px;
+      font-size: 10px;
+
+      @media (min-width: ${({ theme }) => theme.devices.desktop}) {
+        top: -14px;
+
+        font-size: 14px;
+      }
     }
 
     & ~ ${Bar} {
       transform: scaleX(1);
     }
+  }
+
+  @media (min-width: ${({ theme }) => theme.devices.desktop}) {
+    font-size: 16px;
   }
 `;
 

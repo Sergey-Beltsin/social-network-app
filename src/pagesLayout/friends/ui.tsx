@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 import { store, UserCard, actions } from "@/entities/user";
 import { UserCardActionButton } from "@/features/user-card-action-button";
+import { Container } from "@/shared/ui/atoms";
 
 export const FriendsPage: FC = () => {
   const { useUsersStore } = store;
@@ -15,23 +16,25 @@ export const FriendsPage: FC = () => {
   }, []);
 
   return (
-    <Container>
-      <List>
-        {users.map((user) => (
-          <UserCard
-            key={`${user.username}-${user.id}`}
-            name={`${user.name} ${user.surname}`}
-            username={user.username}
-            link={user.username}
-            actionButton={<UserCardActionButton isFriend />}
-          />
-        ))}
-      </List>
+    <Container stretchDesktop>
+      <Wrapper>
+        <List>
+          {users.map((user) => (
+            <UserCard
+              key={`${user.username}-${user.id}`}
+              name={`${user.name} ${user.surname}`}
+              username={user.username}
+              link={user.username}
+              actionButton={<UserCardActionButton isFriend />}
+            />
+          ))}
+        </List>
+      </Wrapper>
     </Container>
   );
 };
 
-const Container = styled.div`
+const Wrapper = styled.div`
   width: 100%;
 
   background-color: ${({ theme }) => theme.colors.secondary};
