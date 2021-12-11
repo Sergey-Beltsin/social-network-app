@@ -32,6 +32,7 @@ const Container = styled.div`
 
   background-color: ${({ theme }) => theme.colors.secondary};
   border-radius: 8px;
+  box-sizing: border-box;
 `;
 
 const Title = styled.h1``;

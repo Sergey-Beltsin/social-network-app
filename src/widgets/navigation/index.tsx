@@ -12,6 +12,7 @@ import {
   ProfileIcon,
   UsersIcon,
 } from "@/shared/lib/icons/navigation";
+import { store } from "@/entities/profile";
 
 interface ILink {
   href: string;
@@ -19,13 +20,40 @@ interface ILink {
   icon: ReactElement;
 }
 
+const getIsProfilePage = (username: string, queryUsername: string | string[]) =>
+  username ===
+  (Array.isArray(queryUsername) ? queryUsername.join("") : queryUsername);
+
+const getIsLinkActive = (
+  href: string,
+  pathname: string,
+  index: number,
+  username: string,
+  queryUsername: string | string[],
+): boolean => {
+  if (href === pathname) {
+    return true;
+  }
+  if (index === 0 && getIsProfilePage(username, queryUsername)) {
+    return true;
+  }
+
+  return (
+    pathname === "/[username]" &&
+    index === 3 &&
+    !getIsProfilePage(username, queryUsername)
+  );
+};
+
 export const Navigation = () => {
   const { t } = useTranslation("navigation");
   const router = useRouter();
+  const { useProfileStore } = store;
+  const { username } = useProfileStore();
 
   const links: Array<ILink> = [
     {
-      href: "/profile",
+      href: `/${username}`,
       title: t("profile"),
       icon: <ProfileIcon />,
     },
@@ -59,13 +87,19 @@ export const Navigation = () => {
   return (
     <Nav>
       <List>
-        {links.map((link) => (
+        {links.map((link, index) => (
           <NavigationLink
             key={link.href}
             href={link.href}
             title={link.title}
             icon={link.icon}
-            isActive={link.href === router.pathname}
+            isActive={getIsLinkActive(
+              link.href,
+              router.pathname,
+              index,
+              username,
+              router.query.username || "",
+            )}
           />
         ))}
       </List>

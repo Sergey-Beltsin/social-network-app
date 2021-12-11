@@ -123,7 +123,7 @@ export const RegisterForm: FC = () => {
           <Input
             error={
               errors.password
-                ? t("errors.passwordPattern", {
+                ? t("errors:errors.passwordPattern", {
                     count:
                       errors.password.type === "minLength"
                         ? validationScheme.password.minLength || ""

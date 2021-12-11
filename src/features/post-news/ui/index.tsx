@@ -22,6 +22,7 @@ export const PostNews: FC = () => {
 
       await createPost(content);
     } catch (e) {
+      console.log(e);
     } finally {
       setIsLoading(false);
     }
@@ -52,9 +53,11 @@ export const PostNews: FC = () => {
 const Container = styled.div`
   width: 100%;
   padding: 30px 20px 20px;
+  margin-bottom: 20px;
 
   background-color: ${({ theme }) => theme.colors.secondary};
   border-radius: 8px;
+  box-sizing: border-box;
 `;
 
 const Form = styled.form`

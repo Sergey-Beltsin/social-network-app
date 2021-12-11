@@ -2,11 +2,13 @@ import { FC, ReactElement, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 import { publicRoutes } from "@/shared/lib/constants";
-import { Auth } from "@/entities/profile";
+import { Auth, store } from "@/entities/profile";
 
 export const ProtectedRoute: FC = ({ children }) => {
   const [isPageAccessed, setIsPageAccessed] = useState(false);
   const router = useRouter();
+  const { useProfileStore } = store;
+  const { username } = useProfileStore();
 
   useEffect(() => {
     authCheck(router.asPath);
@@ -37,7 +39,7 @@ export const ProtectedRoute: FC = ({ children }) => {
     } else if (publicRoutes.includes(path) && Auth.getIsAuth()) {
       setIsPageAccessed(false);
 
-      router.push("/profile");
+      router.push(username);
     } else {
       setIsPageAccessed(true);
     }

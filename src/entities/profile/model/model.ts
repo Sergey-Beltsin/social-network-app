@@ -44,6 +44,7 @@ const useProfileStore = (): ProfileStore => useStore($profile);
 
 const store = {
   useProfileStore,
+  $profile,
 };
 const actions = {
   getProfile,

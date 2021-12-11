@@ -36,7 +36,7 @@ const handleSubmitFx = createEffect(async (payload: SubmitPayload) => {
       Router.push(JSON.parse(returningUrl));
       localStorage.removeItem("returningUrl");
     } else {
-      Router.push("/profile");
+      Router.push(message.profile.username);
     }
   } catch (e) {
     console.log(e);

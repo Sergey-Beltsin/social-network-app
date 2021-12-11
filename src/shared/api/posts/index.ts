@@ -14,7 +14,7 @@ export type Post = {
   likesCount: number;
 };
 
-type GetPostsResponse = {
+export type GetPostsResponse = {
   message: {
     posts: Post[];
     pages: number;

@@ -1,12 +1,17 @@
 import { FC, useEffect } from "react";
 import styled from "styled-components";
 import Cookies from "js-cookie";
+import TimeAgo from "javascript-time-ago";
+import en from "javascript-time-ago/locale/en.json";
+import ru from "javascript-time-ago/locale/ru.json";
 
 import { ThemeProvider } from "@/shared/lib/theme";
-import { Navigation } from "@/shared/ui/molecules";
-import { Header } from "@/widgets";
+import { Navigation, Header } from "@/widgets";
 import { ProtectedRoute } from "@/shared/lib/hocs";
 import { Auth, actions } from "@/entities/profile";
+
+TimeAgo.addLocale(en);
+TimeAgo.addLocale(ru);
 
 export const App: FC = ({ children }) => {
   const { getProfile } = actions;

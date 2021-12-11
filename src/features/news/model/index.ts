@@ -1,58 +1,114 @@
-import { createEvent, createStore, forward, sample } from "effector";
+import {
+  createEvent,
+  createEffect,
+  createStore,
+  forward,
+  sample,
+} from "effector";
 import { useStore } from "effector-react";
+import { AxiosPromise } from "axios";
 
-import { createEffect } from "effector/effector.umd";
-import { getPosts, likePost } from "@/shared/api/posts";
+import { getPosts, GetPostsResponse, likePost, Post } from "@/shared/api/posts";
 import { NewsStore } from "@/features/news/model/model.types";
 import { Posts } from "@/entities/post";
 
-const POSTS_BY_PAGE = 10;
+export type HandleGetPostsResponse = Promise<AxiosPromise<GetPostsResponse>>;
+type GetExternalNews =
+  | ((page: number, limit: number) => HandleGetPostsResponse)
+  | undefined;
 
-const handleGetNews = createEvent<void>();
-const handleLikePost = createEvent<string>();
-const handleChangePage = createEvent<"increment" | "decrement">();
-const changePage = createEvent<number>();
+const mapLikedPost = (post: Post, userId: string): Post => {
+  const newPost = { ...post };
+
+  if (newPost.isLiked) {
+    newPost.likes.splice(post.likes.indexOf(userId), 1);
+    newPost.isLiked = !post.isLiked;
+    newPost.likesCount -= 1;
+
+    return newPost;
+  }
+
+  newPost.likes.push(userId);
+  newPost.isLiked = !post.isLiked;
+  newPost.likesCount += 1;
+
+  return newPost;
+};
+
+export const POSTS_BY_PAGE = 10;
+
+const handleGetNews = createEvent<GetExternalNews>();
+const handleLikePost = createEvent<{ postId: string; userId: string }>();
+const handleChangePage = createEvent<{
+  type: "increment" | "decrement";
+  getExternalNews: GetExternalNews;
+}>();
+const changePage = createEvent<{
+  page: number;
+  getExternalNews: GetExternalNews;
+}>();
 const handleChangeIsLoading = createEvent<boolean>();
+const handleSetPost = createEvent<Post>();
 const handleReset = createEvent<void>();
 
-const handleGetNewsFx = createEffect(async (page: number) => {
-  try {
-    handleChangeIsLoading(true);
-
-    const {
-      data: {
-        message: { posts, pages },
-      },
-    } = await getPosts(page, POSTS_BY_PAGE);
-
-    return { posts, pages };
-  } catch (e) {
-    console.log(e);
-
-    return null;
-  } finally {
-    handleChangeIsLoading(false);
-  }
-});
-
-const handleLikePostFx = createEffect(
-  async ({ postId, news }: { postId: string; news: Posts }) => {
+const handleGetNewsFx = createEffect(
+  async ({
+    page,
+    getExternalNews,
+  }: {
+    page: number;
+    getExternalNews: GetExternalNews;
+  }) => {
     try {
+      handleChangeIsLoading(true);
+
       const {
-        data: { message },
-      } = await likePost(postId);
+        data: {
+          message: { posts, pages },
+        },
+      } = await (getExternalNews || getPosts)(page, POSTS_BY_PAGE);
 
-      news.splice(
-        news.findIndex((item) => item.id === postId),
-        1,
-        message,
-      );
-
-      return news;
+      return { posts, pages };
     } catch (e) {
+      if (e.message === "No profile id provided") {
+        return null;
+      }
+
       console.log(e);
 
       return null;
+    } finally {
+      handleChangeIsLoading(false);
+    }
+  },
+);
+
+const handleLikePostFx = createEffect(
+  async ({
+    postId,
+    news,
+    userId,
+  }: {
+    postId: string;
+    news: Posts;
+    userId: string;
+  }) => {
+    const post = news.find((item) => item.id === postId);
+
+    if (!post) {
+      return;
+    }
+
+    const newPost = mapLikedPost(post, userId);
+
+    try {
+      handleSetPost(newPost);
+
+      await likePost(postId);
+    } catch (e) {
+      console.log(e);
+
+      handleSetPost(mapLikedPost(newPost, userId));
     }
   },
 );
@@ -74,36 +130,36 @@ const $news = createStore<NewsStore>({
 
     return store;
   })
-  .on(handleLikePostFx.doneData, (store, news) => {
-    if (news) {
-      return {
-        ...store,
-        news: [...news],
-      };
-    }
-
-    return store;
-  })
-  .on(changePage, (store, page) => ({ ...store, page }))
+  .on(changePage, (store, { page }) => ({ ...store, page }))
   .on(handleChangeIsLoading, (store, isLoading) => ({ ...store, isLoading }))
+  .on(handleSetPost, (store, post) => {
+    const newStore = { ...store };
+    newStore.news.splice(
+      newStore.news.findIndex((item) => item.id === post.id),
+      1,
+      post,
+    );
+
+    return newStore;
+  })
   .reset(handleReset);
 
 sample({
   clock: handleGetNews,
   source: $news,
-  fn: ({ page }) => page,
+  fn: ({ page }, payload) => ({ page, getExternalNews: payload }),
   target: handleGetNewsFx,
 });
 
 sample({
   clock: handleChangePage,
   source: $news,
-  fn: (store, payload) => {
-    if (payload === "increment") {
-      return store.page + 1;
+  fn: (store, { type, getExternalNews }) => {
+    if (type === "increment") {
+      return { page: store.page + 1, getExternalNews };
     }
 
-    return store.page - 1;
+    return { page: store.page - 1, getExternalNews };
   },
   target: changePage,
 });
@@ -114,7 +170,7 @@ forward({
 sample({
   clock: handleLikePost,
   source: $news,
-  fn: ({ news }, postId) => ({ postId, news }),
+  fn: ({ news }, { postId, userId }) => ({ postId, news, userId }),
   target: handleLikePostFx,
 });
 

@@ -1,7 +1,7 @@
 import { FC, ReactElement } from "react";
 import styled from "styled-components";
 
-import { Container } from "@/shared/ui/atoms";
+import { Container, SocialList } from "@/shared/ui/atoms";
 
 type HeaderProps = {
   rightElement: ReactElement;
@@ -10,7 +10,7 @@ type HeaderProps = {
 export const Header: FC<HeaderProps> = ({ rightElement }) => (
   <HeaderComponent>
     <Container>
-      <Title>My Social Network =)</Title>
+      <SocialList />
       {rightElement}
     </Container>
   </HeaderComponent>
@@ -29,8 +29,4 @@ const HeaderComponent = styled.header`
     align-items: center;
     justify-content: space-between;
   }
-`;
-
-const Title = styled.span`
-  color: ${({ theme }) => theme.colors.text.primary};
 `;

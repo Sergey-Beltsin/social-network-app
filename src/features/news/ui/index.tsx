@@ -1,24 +1,34 @@
 import { FC, useEffect } from "react";
 import styled from "styled-components";
-
 import { useInView } from "react-intersection-observer";
-import { actions, store } from "../model";
-import { PostCard } from "@/entities/post";
-import { Container } from "@/shared/ui/atoms";
 
-export const NewsList: FC = () => {
+import { actions, HandleGetPostsResponse, store } from "../model";
+import { PostCard } from "@/entities/post";
+import { Container, Loader } from "@/shared/ui/atoms";
+import { store as profileStore } from "@/entities/profile";
+
+type NewsListProps = {
+  handleGetNews?: (page: number, limit: number) => HandleGetPostsResponse;
+};
+
+export const NewsList: FC<NewsListProps> = ({
+  handleGetNews: handleGetExternalNews,
+}) => {
   const { useNewsStore } = store;
+  const { useProfileStore } = profileStore;
   const { handleLikePost, handleGetNews, handleChangePage, handleReset } =
     actions;
+
   const { news, isLoading, pages, page } = useNewsStore();
+  const { id } = useProfileStore();
   const [ref, inView] = useInView();
 
   const handleLike = (postId: string): void => {
-    handleLikePost(postId);
+    handleLikePost({ postId, userId: id });
   };
 
   useEffect(() => {
-    handleGetNews();
+    handleGetNews(handleGetExternalNews);
 
     return () => {
       handleReset();
@@ -27,7 +37,10 @@ export const NewsList: FC = () => {
 
   useEffect(() => {
     if (inView && !isLoading && page < pages) {
-      handleChangePage("increment");
+      handleChangePage({
+        type: "increment",
+        getExternalNews: handleGetExternalNews,
+      });
     }
   }, [inView]);
 
@@ -39,9 +52,15 @@ export const NewsList: FC = () => {
             ref={index + 1 === news.length ? ref : null}
             key={item.id}
           >
-            <PostCard key={item.id} post={item} handleLike={handleLike} />
+            <PostCard post={item} handleLike={handleLike} />
           </PostCardWrapper>
         ))}
+        {isLoading && (
+          <LoaderWrapper>
+            {" "}
+            <Loader />
+          </LoaderWrapper>
+        )}
       </Container>
     </Wrapper>
   );
@@ -61,4 +80,11 @@ const PostCardWrapper = styled.div`
   &:not(:last-child) {
     margin-bottom: 20px;
   }
+`;
+
+const LoaderWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+
+  margin: 20px 0;
 `;

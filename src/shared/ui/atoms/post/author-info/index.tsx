@@ -1,14 +1,8 @@
 import { FC } from "react";
 import styled from "styled-components";
 import Link from "next/link";
-import TimeAgo from "javascript-time-ago";
-import en from "javascript-time-ago/locale/en.json";
-import ru from "javascript-time-ago/locale/ru.json";
-
+import ReactTimeAgo from "react-time-ago";
 import { useRouter } from "next/router";
-
-TimeAgo.addLocale(en);
-TimeAgo.addLocale(ru);
 
 type AuthorInfoProps = {
   photo: string;
@@ -24,8 +18,6 @@ export const AuthorInfo: FC<AuthorInfoProps> = ({
   created,
 }) => {
   const { locale } = useRouter();
-  const timeAgo = new TimeAgo(locale || "");
-
   const date = new Date(created);
 
   return (
@@ -35,7 +27,9 @@ export const AuthorInfo: FC<AuthorInfoProps> = ({
         <Link href={username} passHref>
           <AuthorName>{name}</AuthorName>
         </Link>
-        <AuthorCreated>{timeAgo.format(date)}</AuthorCreated>
+        <AuthorCreated>
+          <ReactTimeAgo date={date} locale={locale} />
+        </AuthorCreated>
       </AuthorInfoDescription>
     </Container>
   );

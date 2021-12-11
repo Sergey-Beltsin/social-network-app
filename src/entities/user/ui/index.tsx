@@ -17,7 +17,7 @@ export const UserCard: FC<UserCardProps> = ({
 }) => (
   <Container>
     <Wrapper>
-      <Link href={`/users/${link}`} passHref>
+      <Link href={link} passHref>
         <Name>{name}</Name>
       </Link>
       <Username>@{username}</Username>

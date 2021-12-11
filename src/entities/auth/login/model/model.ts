@@ -32,7 +32,7 @@ const handleSubmitFx = createEffect(
         Router.push(JSON.parse(returningUrl));
         localStorage.removeItem("returningUrl");
       } else {
-        Router.push("/profile");
+        Router.push(message.profile.username);
       }
     } catch (e) {
       console.log(e);
