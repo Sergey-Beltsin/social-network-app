@@ -3,8 +3,9 @@ import { NextPage } from "next";
 import styled from "styled-components";
 import { useRouter } from "next/router";
 import { AxiosPromise } from "axios";
+import useTranslation from "next-translate/useTranslation";
 
-import { Container, Loader } from "@/shared/ui/atoms";
+import { Container, Loader, Title } from "@/shared/ui/atoms";
 import { store as profileStore } from "@/entities/profile";
 import { actions as newsActions, NewsList } from "@/features/news";
 import { actions, store } from "../model";
@@ -24,6 +25,7 @@ export const ProfilePage: NextPage = () => {
   const {
     query: { username },
   } = useRouter();
+  const { t } = useTranslation("profile");
 
   const isOwnerPage = username === profile.username;
 
@@ -68,11 +70,22 @@ export const ProfilePage: NextPage = () => {
         </LoaderWrapper>
       ) : (
         <>
+          <Title>
+            {isOwnerPage
+              ? t("yourProfile")
+              : t("userProfile", { user: `@${userPage.profile.username}` })}
+          </Title>
           <ProfileCard user={isOwnerPage ? profile : userPage.profile} />
-          {username === profile.username && (
-            <PostNews handleAddPost={handleAddPost} />
-          )}
-          <NewsList handleGetNews={getPosts} />
+          {isOwnerPage && <PostNews handleAddPost={handleAddPost} />}
+          <NewsList
+            handleGetNews={getPosts}
+            postsTitle={
+              isOwnerPage
+                ? t("yourPosts")
+                : t("userPosts", { user: `@${userPage.profile.username}` })
+            }
+            noPostsTitle={t("noPosts")}
+          />
         </>
       )}
     </Container>

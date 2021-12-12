@@ -106,7 +106,7 @@ const Name = styled.span`
   text-overflow: ellipsis;
   white-space: nowrap;
 
-  @media (min-width: ${({ theme }) => theme.devices.desktop}) {
+  @media (min-width: ${({ theme }) => theme.devices.tablet}) {
     font-size: 14px;
   }
 `;

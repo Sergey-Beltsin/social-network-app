@@ -75,7 +75,7 @@ const Name = styled.a`
     text-decoration: underline;
   }
 
-  @media (min-width: ${({ theme }) => theme.devices.desktop}) {
+  @media (min-width: ${({ theme }) => theme.devices.tablet}) {
     font-size: 14px;
   }
 `;
@@ -86,7 +86,7 @@ const Username = styled.span`
   color: ${({ theme }) => theme.colors.text.secondary};
   font-size: 10px;
 
-  @media (min-width: ${({ theme }) => theme.devices.desktop}) {
+  @media (min-width: ${({ theme }) => theme.devices.tablet}) {
     font-size: 12px;
   }
 `;

@@ -10,6 +10,7 @@ import {
   Checkbox,
   ErrorText,
   Input,
+  Title,
 } from "@/shared/ui/atoms";
 import { LoginFormType } from "../model/model.types";
 import { validationScheme } from "@/shared/lib/constants";
@@ -48,8 +49,12 @@ export const LoginForm: FC = () => {
 
   return (
     <MainWrapper>
+      <HiddenTitle className="visually-hidden">
+        {t("loginHiddenTitle")}
+      </HiddenTitle>
       <Form onSubmit={handleFormSubmit((data) => handleSubmit(data))}>
         <Wrapper>
+          <Title center>{t("loginTitle")}</Title>
           <Input
             label={t("email")}
             error={
@@ -149,7 +154,7 @@ const Wrapper = styled.div`
   margin: 0 auto;
 
   & > label {
-    &:nth-child(2) {
+    &:nth-of-type(2) {
       margin-bottom: 0;
     }
   }
@@ -161,3 +166,5 @@ const ErrorTextWrapper = styled.span`
   margin-top: 8px;
   margin-bottom: 30px;
 `;
+
+const HiddenTitle = styled.h1``;

@@ -40,7 +40,7 @@ const Card = styled.article`
 const Content = styled.span`
   font-size: 14px;
 
-  @media (min-width: ${({ theme }) => theme.devices.desktop}) {
+  @media (min-width: ${({ theme }) => theme.devices.tablet}) {
     font-size: 16px;
   }
 `;

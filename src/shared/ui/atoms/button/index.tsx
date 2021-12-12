@@ -106,7 +106,7 @@ const Container = styled.button<ContainerProps>`
   ${({ isLoading }) =>
     isLoading &&
     `
-    padding-left: 60px;
+    padding-left: 50px !important;
     
     opacity: 1 !important;
 
@@ -121,6 +121,12 @@ const Container = styled.button<ContainerProps>`
     padding: 10px 24px;
 
     font-size: 14px;
+
+  ${({ isLoading }) =>
+    isLoading &&
+    `
+    padding-left: 60px !important;
+  `}
   }
 }
 `;

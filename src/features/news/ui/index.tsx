@@ -5,15 +5,19 @@ import { useInView } from "react-intersection-observer";
 import { useRouter } from "next/router";
 import { actions, HandleGetPostsResponse, store } from "../model";
 import { PostCard } from "@/entities/post";
-import { Loader } from "@/shared/ui/atoms";
+import { Loader, Title } from "@/shared/ui/atoms";
 import { store as profileStore } from "@/entities/profile";
 
 type NewsListProps = {
   handleGetNews?: (page: number, limit: number) => HandleGetPostsResponse;
+  postsTitle?: string;
+  noPostsTitle?: string;
 };
 
 export const NewsList: FC<NewsListProps> = ({
   handleGetNews: handleGetExternalNews,
+  postsTitle,
+  noPostsTitle,
 }) => {
   const { useNewsStore } = store;
   const { useProfileStore } = profileStore;
@@ -49,19 +53,26 @@ export const NewsList: FC<NewsListProps> = ({
   return (
     <Wrapper>
       <Container>
-        {news.map((item, index) => (
-          <PostCardWrapper
-            ref={index + 1 === news.length ? ref : null}
-            key={item.id}
-          >
-            <PostCard post={item} handleLike={handleLike} />
-          </PostCardWrapper>
-        ))}
-        {isLoading && (
-          <LoaderWrapper>
-            {" "}
-            <Loader />
-          </LoaderWrapper>
+        {!news.length && !isLoading ? (
+          <>{noPostsTitle && <Title>{noPostsTitle}</Title>}</>
+        ) : (
+          <>
+            {postsTitle && <Title>{postsTitle}</Title>}
+            {news.map((item, index) => (
+              <PostCardWrapper
+                ref={index + 1 === news.length ? ref : null}
+                key={item.id}
+              >
+                <PostCard post={item} handleLike={handleLike} />
+              </PostCardWrapper>
+            ))}
+            {isLoading && (
+              <LoaderWrapper>
+                {" "}
+                <Loader />
+              </LoaderWrapper>
+            )}
+          </>
         )}
       </Container>
     </Wrapper>

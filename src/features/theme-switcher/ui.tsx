@@ -72,6 +72,7 @@ const Container = styled.div`
 `;
 
 const Button = styled.button<ButtonProps>`
+  margin: 0;
   padding: 2px 6px;
 
   background-color: transparent;

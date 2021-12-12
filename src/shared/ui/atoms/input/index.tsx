@@ -173,7 +173,7 @@ const Label = styled.span`
 
   transition: 0.2s ease-in-out;
 
-  @media (min-width: ${({ theme }) => theme.devices.desktop}) {
+  @media (min-width: ${({ theme }) => theme.devices.tablet}) {
     top: 14px;
 
     font-size: 18px;
@@ -218,7 +218,7 @@ const StyledInput = styled.input`
       color: ${({ theme }) => theme.colors.primary};
       font-size: 10px;
 
-      @media (min-width: ${({ theme }) => theme.devices.desktop}) {
+      @media (min-width: ${({ theme }) => theme.devices.tablet}) {
         top: -14px;
 
         font-size: 14px;
@@ -230,7 +230,7 @@ const StyledInput = styled.input`
     }
   }
 
-  @media (min-width: ${({ theme }) => theme.devices.desktop}) {
+  @media (min-width: ${({ theme }) => theme.devices.tablet}) {
     font-size: 16px;
   }
 `;

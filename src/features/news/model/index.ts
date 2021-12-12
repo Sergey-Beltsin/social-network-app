@@ -116,7 +116,7 @@ const handleLikePostFx = createEffect(
 
 const $news = createStore<NewsStore>({
   page: 1,
-  isLoading: false,
+  isLoading: true,
   pages: -1,
   news: [],
 })

@@ -1,5 +1,10 @@
 {
   "title": "User profile page {{user}}",
   "writePost": "What do you want to tell about?",
-  "publish": "Publish"
+  "publish": "Publish",
+  "yourProfile": "Your profile",
+  "userProfile": "User profile {{user}}",
+  "yourPosts": "Your posts",
+  "userPosts": "User posts {{user}}",
+  "noPosts": "No posts yet..."
 }

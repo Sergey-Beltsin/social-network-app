@@ -3,7 +3,13 @@ import styled from "styled-components";
 import useTranslation from "next-translate/useTranslation";
 import { useForm } from "react-hook-form";
 
-import { AuthBottomLink, Button, ErrorText, Input } from "@/shared/ui/atoms";
+import {
+  AuthBottomLink,
+  Button,
+  ErrorText,
+  Input,
+  Title,
+} from "@/shared/ui/atoms";
 import { registerModel } from "../model";
 import { RegisterFormType } from "../model/model.types";
 import { validationScheme } from "@/shared/lib/constants";
@@ -40,8 +46,12 @@ export const RegisterForm: FC = () => {
 
   return (
     <MainWrapper>
+      <HiddenTitle className="visually-hidden">
+        {t("regHiddenTitle")}
+      </HiddenTitle>
       <Form onSubmit={handleFormSubmit((data) => handleSubmit(data))}>
         <Wrapper>
+          <Title center>{t("regTitle")}</Title>
           <Input
             error={
               errors.email
@@ -221,3 +231,5 @@ const ErrorTextWrapper = styled.span`
   margin-top: 8px;
   margin-bottom: 30px;
 `;
+
+const HiddenTitle = styled.h1``;
