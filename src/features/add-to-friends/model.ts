@@ -15,9 +15,12 @@ const handleAddToFriends = createEvent<Profile>();
 const handleRespondToRequest =
   createEvent<{ user: Profile; onSuccess?: () => void }>();
 const handleDeleteFriendRequest = createEvent<Profile>();
+const handleSetLoadingId = createEvent<string>();
 
 const handleAddToFriendsFx = createEffect(async (user: Profile) => {
   if (user.friendRequest?.id) {
+    handleSetLoadingId(user.id);
+
     handleRespondToRequest({
       user: {
         ...user,
@@ -26,7 +29,7 @@ const handleAddToFriendsFx = createEffect(async (user: Profile) => {
           status: "waiting-for-response",
         },
       },
-      onSuccess: () =>
+      onSuccess: () => {
         handleSetSingleUser({
           ...user,
           friendRequest: {
@@ -34,7 +37,9 @@ const handleAddToFriendsFx = createEffect(async (user: Profile) => {
             status: "sent",
             isSentNow: true,
           },
-        }),
+        });
+        handleSetLoadingId("");
+      },
     });
 
     return;
@@ -101,6 +106,7 @@ const handleDeleteFriendRequestFx = createEffect(async (user: Profile) => {
 const $addToFriends = createStore<AddToFriendsStore>({
   loadingId: "",
 })
+  .on(handleSetLoadingId, (store, loadingId) => ({ ...store, loadingId }))
   .on(handleAddToFriends, (store, { id }) => ({ ...store, loadingId: id }))
   .on(handleAddToFriendsFx.doneData, (store) => ({ ...store, loadingId: "" }))
   .on(handleRespondToRequest, (store, { user: { id } }) => ({

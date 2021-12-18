@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { FC, useCallback, useEffect, useMemo, useState } from "react";
+import { FC, useMemo, useState } from "react";
 import styled from "styled-components";
 import { UseFormRegisterReturn } from "react-hook-form";
 import debounce from "lodash.debounce";
@@ -218,6 +218,7 @@ const Bar = styled.div`
 const StyledInput = styled.input`
   width: calc(100% - 20px);
   height: 40px;
+  min-height: 40px;
   padding: 0 10px;
 
   background-color: transparent;

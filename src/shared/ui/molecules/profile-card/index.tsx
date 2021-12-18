@@ -49,8 +49,6 @@ const Name = styled.h3`
 const Username = styled.span`
   display: block;
 
-  margin-bottom: 10px;
-
   color: ${({ theme }) => theme.colors.text.secondary};
   font-size: 12px;
 `;
@@ -58,6 +56,7 @@ const Username = styled.span`
 const Bio = styled.span`
   display: block;
 
+  margin-top: 10px;
   margin-bottom: 30px;
 
   font-size: 16px;

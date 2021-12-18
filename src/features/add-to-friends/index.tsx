@@ -28,6 +28,7 @@ export const AddToFriends: FC<AddToFriendsProps> = ({ user }) => {
   } = userActions;
 
   const { loadingId } = useAddToFriendsStore();
+  console.log(loadingId);
   const { t } = useTranslation("friends");
 
   const addToFriendsSubmit = () => {
@@ -204,5 +205,10 @@ const StyledButton = styled.button`
 
   &:disabled {
     opacity: 0.6;
+    cursor: default;
+
+    &:hover {
+      text-decoration: none;
+    }
   }
 `;
