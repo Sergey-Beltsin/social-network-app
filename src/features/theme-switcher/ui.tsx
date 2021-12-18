@@ -45,6 +45,7 @@ export const ThemeSwitcher: FC = () => {
     <Container>
       {themes.map(({ label, value: themeValue, icon }) => (
         <Button
+          key={label}
           aria-label={t(`header.themeSwitcher.${label}`)}
           onClick={() => onChange(themeValue)}
           isActive={themeValue === value}

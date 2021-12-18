@@ -1,10 +1,15 @@
 import { NextPage } from "next";
+import styled from "styled-components";
 
 import { RegisterForm } from "@/entities/auth/register";
-import { Container } from "@/shared/ui/atoms";
 
 export const RegisterPage: NextPage = () => (
-  <Container flexCenter>
+  <Container>
     <RegisterForm />
   </Container>
 );
+
+const Container = styled.div`
+  display: flex;
+  align-items: center;
+`;

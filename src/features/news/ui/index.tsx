@@ -66,12 +66,7 @@ export const NewsList: FC<NewsListProps> = ({
                 <PostCard post={item} handleLike={handleLike} />
               </PostCardWrapper>
             ))}
-            {isLoading && (
-              <LoaderWrapper>
-                {" "}
-                <Loader />
-              </LoaderWrapper>
-            )}
+            {isLoading && <Loader center />}
           </>
         )}
       </Container>
@@ -89,11 +84,4 @@ const PostCardWrapper = styled.div`
   &:not(:last-child) {
     margin-bottom: 20px;
   }
-`;
-
-const LoaderWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-
-  margin: 20px 0;
 `;

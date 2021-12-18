@@ -1,7 +1,7 @@
 import { FC } from "react";
 import styled from "styled-components";
 
-import { CheckIcon } from "@/shared/lib/icons/common";
+import { OkIcon } from "@/shared/lib/icons/common";
 
 type CheckboxProps = {
   checked: boolean;
@@ -18,7 +18,7 @@ export const Checkbox: FC<CheckboxProps> = ({ checked, onChange, label }) => (
       onChange={() => onChange(!checked)}
     />
     <CustomCheckbox>
-      <CheckIcon />
+      <OkIcon />
     </CustomCheckbox>
     <Text>{label}</Text>
   </Label>
@@ -51,7 +51,7 @@ const CustomCheckbox = styled.span`
     height: 16px;
 
     transform: translateY(-50px);
-    stroke: ${({ theme }) => theme.colors.primary};
+    color: ${({ theme }) => theme.colors.primary};
 
     transition: 0.2s ease-in-out;
   }

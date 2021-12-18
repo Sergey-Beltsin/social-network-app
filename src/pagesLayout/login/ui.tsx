@@ -1,10 +1,15 @@
 import { NextPage } from "next";
+import styled from "styled-components";
 
 import { LoginForm } from "@/entities/auth/login";
-import { Container } from "@/shared/ui/atoms";
 
 export const LoginPage: NextPage = () => (
-  <Container flexCenter>
+  <Container>
     <LoginForm />
   </Container>
 );
+
+const Container = styled.div`
+  display: flex;
+  align-items: center;
+`;

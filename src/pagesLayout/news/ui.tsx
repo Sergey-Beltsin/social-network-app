@@ -1,10 +1,21 @@
 import type { NextPage } from "next";
+import styled from "styled-components";
+import Head from "next/head";
 
-import { Container } from "@/shared/ui/atoms";
+import useTranslation from "next-translate/useTranslation";
 import { NewsList } from "@/features/news";
 
-export const NewsPage: NextPage = () => (
-  <Container stretchDesktop>
-    <NewsList />
-  </Container>
-);
+export const NewsPage: NextPage = () => {
+  const { t } = useTranslation("news");
+
+  return (
+    <Container>
+      <Head>
+        <title>{t("pageTitle")}</title>
+      </Head>
+      <NewsList />
+    </Container>
+  );
+};
+
+const Container = styled.div``;

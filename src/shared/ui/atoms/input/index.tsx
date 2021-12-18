@@ -1,7 +1,8 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { FC, useState } from "react";
+import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { UseFormRegisterReturn } from "react-hook-form";
+import debounce from "lodash.debounce";
 
 import { EyeIcon, EyeOffIcon } from "@/shared/lib/icons/auth";
 import { ErrorText } from "@/shared/ui/atoms";
@@ -17,6 +18,7 @@ type InputProps = {
   autocomplete?: boolean;
   handleRegister?: () => UseFormRegisterReturn;
   textarea?: boolean;
+  onDebounce?: () => void;
 };
 
 type ContainerProps = {
@@ -36,6 +38,7 @@ export const Input: FC<InputProps> = ({
   autocomplete = false,
   handleRegister,
   textarea,
+  onDebounce,
 }) => {
   const [isPasswordType, setIsPasswordType] = useState<boolean>(
     type === "password",
@@ -72,6 +75,24 @@ export const Input: FC<InputProps> = ({
     return getType();
   };
 
+  const handleChange = (currentValue: string) => {
+    if (onChange) {
+      debouncedChangeHandler();
+      onChange(currentValue);
+    }
+  };
+
+  const debounceChange = () => {
+    if (onDebounce) {
+      onDebounce();
+    }
+  };
+
+  const debouncedChangeHandler = useMemo(
+    () => debounce(debounceChange, 500),
+    [],
+  );
+
   return (
     <Container isError={!!error} isEmpty={!value} isTextarea={!!textarea}>
       <InputWrapper>
@@ -79,7 +100,7 @@ export const Input: FC<InputProps> = ({
         <StyledInput
           type={getTypeWithTextarea()}
           value={value}
-          onChange={({ target }) => onChange && onChange(target.value)}
+          onChange={({ target }) => handleChange(target.value)}
           onBlur={() => onBlur && onBlur(value || "")}
           required={required}
           autoComplete={autocomplete ? "on" : "new-password"}

@@ -1,6 +1,6 @@
 export { NavigationLink } from "./navigation-link";
 export { Container } from "./container";
-export { Dropdown } from "./dropdown";
+export { Dropdown, DropdownPosition, DropdownTrigger } from "./dropdown";
 export type { DropdownItems } from "./dropdown";
 export { Input } from "./input";
 export { Checkbox } from "./checkbox";
@@ -10,3 +10,6 @@ export { Loader } from "./loader";
 export { ErrorText } from "./error-text";
 export { SocialList } from "./social-list";
 export { Title } from "./title";
+export { Tab } from "./tab";
+export type { TabProps } from "./tab";
+export { ListEmptyText } from "./list-empty-text";

@@ -2,10 +2,10 @@ import { AxiosPromise, AxiosRequestConfig } from "axios";
 
 import { axios } from "@/shared/api";
 import { usersRoutes } from "./routes";
-import { Profile } from "@/shared/api/profile";
-import { GetPostsResponse, Post } from "@/shared/api/posts";
+import { FriendRequestStatus, Profile } from "@/shared/api/profile";
+import { GetPostsResponse } from "@/shared/api/posts";
 
-type UserResponse = {
+type GetUserResponse = {
   message: {
     id: string;
     email: string;
@@ -13,14 +13,26 @@ type UserResponse = {
   };
 };
 
+type GetUsersResponse = {
+  message: Profile[];
+};
+
+export type FriendRequest = {
+  id: string;
+  status: FriendRequestStatus;
+  creator: Profile;
+  receiver: Profile;
+};
+
 export const getUsers = async (
   query?: string,
   config?: AxiosRequestConfig,
-): Promise<AxiosPromise> => axios.get(usersRoutes.users(query), config);
+): Promise<AxiosPromise<GetUsersResponse>> =>
+  axios.get(usersRoutes.users(query), config);
 
 export const getUserById = async (
   id: string,
-): Promise<AxiosPromise<UserResponse>> => axios.get(usersRoutes.user(id));
+): Promise<AxiosPromise<GetUserResponse>> => axios.get(usersRoutes.user(id));
 
 export const getPostsByUserId = async (
   id: string,
@@ -33,3 +45,30 @@ export const getPostsByUserId = async (
       limit,
     },
   });
+
+export const getUserFriendsById = async (
+  id: string,
+): Promise<AxiosPromise<{ message: Profile[] }>> =>
+  axios.get(usersRoutes.friends(id));
+
+export const addUserToFriends = async (
+  receiverId: string,
+): Promise<AxiosPromise<{ message: FriendRequest }>> =>
+  axios.post(usersRoutes.friendRequests, { receiverId });
+
+export const respondOnFriendRequestById = async (
+  id: string,
+  status?: FriendRequestStatus,
+  config?: AxiosRequestConfig,
+): Promise<AxiosPromise<{ message: FriendRequest }>> =>
+  axios(usersRoutes.friendRequest(id), {
+    method: "PUT",
+    data: {
+      status,
+    },
+    ...config,
+  });
+
+export const getIncomingFriendRequests = async (): Promise<
+  AxiosPromise<{ message: Profile[] }>
+> => axios.get(usersRoutes.incomingRequests);

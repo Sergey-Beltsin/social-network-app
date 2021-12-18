@@ -15,6 +15,16 @@ import { useRouter } from "next/router";
 import { useOutsideAlerter } from "@/shared/lib/hooks";
 import { ArrowIcon } from "@/shared/lib/icons/common";
 
+export enum DropdownPosition {
+  left,
+  right,
+}
+
+export enum DropdownTrigger {
+  click,
+  hover,
+}
+
 interface IDropdownItem {
   icon?: ReactElement;
   title?: string | ReactElement;
@@ -28,8 +38,9 @@ export type DropdownItems = Array<IDropdownItem>;
 
 type DropdownProps = {
   items: DropdownItems;
-  trigger?: "click" | "hover";
+  trigger?: DropdownTrigger;
   selectedItem?: number;
+  position?: DropdownPosition;
 };
 
 type TriggerIconProps = {
@@ -40,6 +51,10 @@ type DropdownTriggerProps = {
   isOpen: boolean;
 };
 
+type DropdownWrapperProps = {
+  position: DropdownPosition;
+};
+
 type DropdownItemProps = {
   isSelected: boolean;
   lastOfType: boolean;
@@ -48,16 +63,15 @@ type DropdownItemProps = {
 
 export const Dropdown: FC<DropdownProps> = ({
   items,
-  trigger = "click",
+  trigger = DropdownTrigger.click,
   selectedItem,
+  position = DropdownPosition.right,
   children,
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation("common");
   const router = useRouter();
-  const dropdownWrapperRef = useRef(null);
-  console.log(dropdownWrapperRef.current);
 
   const handleChangeOpen = (isCurrentOpen: boolean) => {
     setIsOpen(isCurrentOpen);
@@ -86,14 +100,14 @@ export const Dropdown: FC<DropdownProps> = ({
     <MainWrapper ref={dropdownRef}>
       <Trigger
         isOpen={isOpen}
-        onClick={
-          trigger === "click" ? () => handleChangeOpen(!isOpen) : undefined
+        onClick={() =>
+          trigger === DropdownTrigger.click && handleChangeOpen(!isOpen)
         }
-        onMouseEnter={
-          trigger === "hover" ? () => handleChangeOpen(true) : undefined
+        onMouseEnter={() =>
+          trigger === DropdownTrigger.hover && handleChangeOpen(true)
         }
-        onMouseLeave={
-          trigger === "hover" ? () => handleChangeOpen(false) : undefined
+        onMouseLeave={() =>
+          trigger === DropdownTrigger.hover && handleChangeOpen(false)
         }
         onKeyUp={handleKeyUp}
         aria-label={isOpen ? t("closeMenu") : t("openMenu")}
@@ -111,12 +125,16 @@ export const Dropdown: FC<DropdownProps> = ({
       >
         <DropdownWrapper
           onMouseEnter={
-            trigger === "hover" ? () => handleChangeOpen(true) : undefined
+            trigger === DropdownTrigger.hover
+              ? () => handleChangeOpen(true)
+              : undefined
           }
           onMouseLeave={
-            trigger === "hover" ? () => handleChangeOpen(false) : undefined
+            trigger === DropdownTrigger.hover
+              ? () => handleChangeOpen(false)
+              : undefined
           }
-          ref={dropdownWrapperRef}
+          position={position}
         >
           <DropdownContent>
             <DropdownList>
@@ -153,14 +171,17 @@ export const Dropdown: FC<DropdownProps> = ({
 };
 
 const MainWrapper = styled.div`
+  width: fit-content;
+
   position: relative;
 `;
 
-const DropdownWrapper = styled.div`
+const DropdownWrapper = styled.div<DropdownWrapperProps>`
   position: absolute;
   z-index: 100;
   top: 100%;
-  right: 0;
+  ${({ position }) =>
+    position === DropdownPosition.left ? "left: 0;" : "right: 0;"}
   opacity: 1;
 
   transition: 0.2s ease;
@@ -308,6 +329,12 @@ const Trigger = styled.button<DropdownTriggerProps>`
 
 const TriggerContent = styled.span`
   display: flex;
+
+  font-size: 10px;
+
+  @media (min-width: ${({ theme }) => theme.devices.desktop}) {
+    font-size: 14px;
+  }
 `;
 
 const TriggerIcon = styled.span<TriggerIconProps>`

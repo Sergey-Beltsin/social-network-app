@@ -3,7 +3,11 @@ import { useRouter } from "next/router";
 import useTranslation from "next-translate/useTranslation";
 import styled from "styled-components";
 
-import { Dropdown, DropdownItems } from "@/shared/ui/atoms";
+import {
+  Dropdown,
+  DropdownItems,
+  DropdownTrigger as DropdownTriggerEnum,
+} from "@/shared/ui/atoms";
 import { LangIcon } from "@/shared/lib/icons/common";
 import { useWindowSize } from "@/shared/lib/hooks";
 
@@ -22,7 +26,7 @@ export const LangPicker: FC = () => {
   return (
     <Dropdown
       items={dropdownItems}
-      trigger={isMobile ? "click" : "hover"}
+      trigger={isMobile ? DropdownTriggerEnum.click : DropdownTriggerEnum.hover}
       selectedItem={dropdownItems.findIndex(
         (item) => item.title === t(router.locale || ""),
       )}

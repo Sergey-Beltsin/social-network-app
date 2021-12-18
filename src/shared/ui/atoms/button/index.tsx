@@ -79,6 +79,8 @@ const Container = styled.button<ContainerProps>`
     secondary &&
     `
     background-color: ${theme.colors.primary};
+    
+    color: ${theme.colors.text.white};
 
     &:hover,
     &:focus {
@@ -116,19 +118,22 @@ const Container = styled.button<ContainerProps>`
       opacity: 1;
     }
   `}
-  
+
   @media (min-width: ${({ theme }) => theme.devices.tablet}) {
     padding: 10px 24px;
 
     font-size: 14px;
 
-  ${({ isLoading }) =>
-    isLoading &&
-    `
-    padding-left: 60px !important;
-  `}
+    ${({ isLoading }) =>
+      isLoading &&
+      `
+      padding-left: 60px !important;
+    `}
   }
-}
+
+  & > svg {
+    margin-right: 4px;
+  }
 `;
 
 const LoaderWrapper = styled.div`

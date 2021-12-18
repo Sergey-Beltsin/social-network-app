@@ -5,6 +5,10 @@
   "signIn": "Sign in",
   "signUp": "Sign up",
   "goToLink": "Go to {{link}} page",
+  "listEmpty": "The list is still empty...",
+  "cancel": "Cancel",
+  "accept": "Accept",
+  "reject": "Reject",
   "header": {
     "theme": "Theme",
     "settings": "Settings",

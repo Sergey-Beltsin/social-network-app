@@ -1,4 +1,4 @@
-import { FC, ReactNode } from "react";
+import { FC, ReactElement } from "react";
 import styled from "styled-components";
 import Link from "next/link";
 
@@ -6,7 +6,7 @@ type UserCardProps = {
   name: string;
   username: string;
   link: string;
-  actionButton: ReactNode;
+  actionButton: ReactElement;
 };
 
 export const UserCard: FC<UserCardProps> = ({
@@ -58,8 +58,18 @@ const Container = styled.li`
 `;
 
 const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
   &:not(:last-child) {
     margin-bottom: 10px;
+  }
+
+  @media (min-width: ${({ theme }) => theme.devices.tablet}) {
+    &:not(:last-child) {
+      margin-bottom: 0;
+    }
   }
 `;
 

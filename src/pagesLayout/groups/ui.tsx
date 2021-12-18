@@ -1,7 +1,18 @@
 import { NextPage } from "next";
+import Head from "next/head";
+import styled from "styled-components";
+import useTranslation from "next-translate/useTranslation";
 
-import { Container } from "@/shared/ui/atoms";
+export const GroupsPage: NextPage = () => {
+  const { t } = useTranslation("groups");
 
-export const GroupsPage: NextPage = () => (
-  <Container stretchDesktop>groups page</Container>
-);
+  return (
+    <Container>
+      <Head>
+        <title>{t("pageTitle")}</title>
+      </Head>
+    </Container>
+  );
+};
+
+const Container = styled.div``;

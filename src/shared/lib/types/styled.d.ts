@@ -11,6 +11,7 @@ declare module "styled-components" {
       text: {
         primary: string;
         secondary: string;
+        white: string;
       };
       components: {
         likesCounterBg: string;

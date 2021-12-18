@@ -1,49 +1,104 @@
 import { FC, useEffect } from "react";
+import Head from "next/head";
 import styled from "styled-components";
+import useTranslation from "next-translate/useTranslation";
 
-import { store, UserCard, actions } from "@/entities/user";
-import { UserCardActionButton } from "@/features/user-card-action-button";
-import { Container } from "@/shared/ui/atoms";
+import { store, actions, UsersList } from "@/entities/user";
+import { store as profileStore } from "@/entities/profile";
+import { AddToFriends } from "@/features/add-to-friends";
+import { Input, Tab, Title } from "@/shared/ui/atoms";
+import { DropdownTabs } from "@/shared/ui/molecules";
 
 export const FriendsPage: FC = () => {
   const { useUsersStore } = store;
-  const { getUsers } = actions;
+  const { useProfileStore } = profileStore;
+  const {
+    handleGetFriends,
+    handleSetSearch,
+    handleSearch,
+    handleReset,
+    handleGetIncomingRequests,
+  } = actions;
 
-  const users = useUsersStore();
+  const { friends, users, incoming, search } = useUsersStore();
+  const profile = useProfileStore();
+  const { t } = useTranslation("friends");
 
   useEffect(() => {
-    getUsers();
-  }, []);
+    if (profile.id) {
+      handleGetFriends(profile.id);
+    }
+  }, [profile.id]);
+
+  useEffect(
+    () => () => {
+      handleReset();
+    },
+    [],
+  );
+
+  const handleChangeActiveTab = (activeTab: number) => {
+    if (activeTab === 0) {
+      handleGetFriends(profile.id);
+      handleSetSearch("");
+      handleSearch();
+
+      return;
+    }
+
+    handleGetIncomingRequests();
+  };
 
   return (
-    <Container stretchDesktop>
-      <Wrapper>
-        <List>
-          {users.map((user) => (
-            <UserCard
-              key={`${user.username}-${user.id}`}
-              name={`${user.name} ${user.surname}`}
-              username={user.username}
-              link={user.username}
-              actionButton={<UserCardActionButton isFriend />}
+    <Container>
+      <Head>
+        <title>{t("pageTitle")}</title>
+      </Head>
+      <DropdownTabs onChange={handleChangeActiveTab}>
+        <Tab title={t("yourFriends")}>
+          <InputWrapper>
+            <Input
+              label={t("findUsers")}
+              value={search}
+              onChange={handleSetSearch}
+              onDebounce={handleSearch}
+              required
             />
-          ))}
-        </List>
-      </Wrapper>
+          </InputWrapper>
+          <UsersList
+            isLoading={friends.isLoading}
+            users={friends.list}
+            getActionButton={(user) => <AddToFriends user={user} />}
+          />
+          {search && (
+            <>
+              <Title>{t("otherUsers")}</Title>
+              <UsersList
+                isLoading={users.isLoading}
+                users={users.list}
+                getActionButton={(user) => <AddToFriends user={user} />}
+              />
+            </>
+          )}
+        </Tab>
+        <Tab title={t("friendRequests")}>
+          <UsersList
+            isLoading={incoming.isLoading}
+            users={incoming.list}
+            getActionButton={(user) => <AddToFriends user={user} />}
+          />
+        </Tab>
+      </DropdownTabs>
     </Container>
   );
 };
 
-const Wrapper = styled.div`
-  width: 100%;
+const Container = styled.div``;
 
-  background-color: ${({ theme }) => theme.colors.secondary};
-  border-radius: 8px;
-`;
+const InputWrapper = styled.div`
+  margin-bottom: 20px;
 
-const List = styled.ul`
-  margin: 0;
-  padding: 10px 20px;
-
-  list-style: none;
+  & > label {
+    max-width: none;
+  }
 `;

@@ -5,6 +5,7 @@ import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
 import ru from "javascript-time-ago/locale/ru.json";
 
+import { Container } from "@/shared/ui/atoms";
 import { ThemeProvider } from "@/shared/lib/theme";
 import { Navigation, Header } from "@/widgets";
 import { ProtectedRoute } from "@/shared/lib/hocs";
@@ -31,10 +32,10 @@ export const App: FC = ({ children }) => {
       <ProtectedRoute>
         <Header />
         <MainWrapper notPaddingBottom={!Auth.getIsAuth()}>
-          <Wrapper>
+          <Container>
             {Auth.getIsAuth() && <Navigation />}
             <Main>{children}</Main>
-          </Wrapper>
+          </Container>
         </MainWrapper>
       </ProtectedRoute>
     </ThemeProvider>
@@ -44,7 +45,7 @@ export const App: FC = ({ children }) => {
 const Main = styled.main`
   display: flex;
 
-  min-height: calc(100vh - 116px);
+  min-height: calc(100vh - 136px);
   margin: 0 auto;
 
   color: ${({ theme }) => theme.colors.text.primary};
@@ -53,6 +54,10 @@ const Main = styled.main`
     width: 100%;
     min-height: calc(100vh - 88px);
     margin: 0;
+  }
+
+  & > div {
+    width: 100%;
   }
 `;
 
@@ -65,16 +70,10 @@ const MainWrapper = styled.div<MainWrapperProps>`
 
   @media (min-width: ${({ theme }) => theme.devices.desktop}) {
     padding-bottom: 20px;
-  }
-`;
 
-const Wrapper = styled.div`
-  @media (min-width: ${({ theme }) => theme.devices.desktop}) {
-    display: flex;
-    align-items: flex-start;
-
-    width: 95%;
-    max-width: 1200px;
-    margin: 0 auto;
+    & > ${Container} {
+      display: flex;
+      align-items: flex-start;
+    }
   }
 `;

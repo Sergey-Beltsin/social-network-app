@@ -31,8 +31,8 @@ const $profile = createStore<ProfileStore>({
   name: "",
   surname: "",
 })
-  .on(handleGetProfileFx.doneData, (state, profile) => profile || state)
-  .on(setProfile, (state, profile) => profile)
+  .on(handleGetProfileFx.doneData, (store, profile) => profile || store)
+  .on(setProfile, (store, profile) => profile)
   .reset(resetProfile);
 
 forward({

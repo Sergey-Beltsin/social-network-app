@@ -1,11 +1,12 @@
 import { useEffect } from "react";
 import { NextPage } from "next";
-import styled from "styled-components";
 import { useRouter } from "next/router";
+import Head from "next/head";
 import { AxiosPromise } from "axios";
 import useTranslation from "next-translate/useTranslation";
+import styled from "styled-components";
 
-import { Container, Loader, Title } from "@/shared/ui/atoms";
+import { Loader, Title } from "@/shared/ui/atoms";
 import { store as profileStore } from "@/entities/profile";
 import { actions as newsActions, NewsList } from "@/features/news";
 import { actions, store } from "../model";
@@ -63,11 +64,14 @@ export const ProfilePage: NextPage = () => {
   };
 
   return (
-    <Container stretchDesktop>
+    <Container>
+      <Head>
+        <title>
+          {userPage.profile.name} {userPage.profile.surname}
+        </title>
+      </Head>
       {userPage.isLoading ? (
-        <LoaderWrapper>
-          <Loader />
-        </LoaderWrapper>
+        <Loader center />
       ) : (
         <>
           <Title>
@@ -92,9 +96,4 @@ export const ProfilePage: NextPage = () => {
   );
 };
 
-const LoaderWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-
-  margin: 20px 0;
-`;
+const Container = styled.div``;

@@ -40,6 +40,7 @@ const themes = {
       text: {
         primary: textWhite,
         secondary: textSecondary,
+        white: textWhite,
       },
       components: {
         likesCounterBg,
@@ -68,6 +69,7 @@ const themes = {
       text: {
         primary: text,
         secondary: textSecondary,
+        white: textWhite,
       },
       components: {
         likesCounterBg: likesCounterBgWhite,

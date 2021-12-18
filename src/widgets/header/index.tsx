@@ -6,7 +6,11 @@ import {
   Header as HeaderComponent,
   HeaderLoginButtons,
 } from "@/shared/ui/molecules";
-import { Dropdown, DropdownItems } from "@/shared/ui/atoms";
+import {
+  Dropdown,
+  DropdownItems,
+  DropdownTrigger as DropdownTriggerEnum,
+} from "@/shared/ui/atoms";
 import { ProfileIcon, SettingsIcon } from "@/shared/lib/icons/navigation";
 import { Auth, store } from "@/entities/profile";
 import { LangPicker } from "@/features/lang-picker";
@@ -48,7 +52,12 @@ export const Header: FC = () => {
   const rightElement = (
     <RightElementContainer>
       {Auth.getIsAuth() ? (
-        <Dropdown items={dropdownItems} trigger={isMobile ? "click" : "hover"}>
+        <Dropdown
+          items={dropdownItems}
+          trigger={
+            isMobile ? DropdownTriggerEnum.click : DropdownTriggerEnum.hover
+          }
+        >
           <DropdownTrigger>
             <DropdownTriggerImg src="https://place-hold.it/30x30" alt="" />
             <Name>
