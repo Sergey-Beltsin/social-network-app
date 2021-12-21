@@ -35,7 +35,7 @@ const handleAddToFriendsFx = createEffect(async (user: Profile) => {
           friendRequest: {
             id: user.friendRequest?.id || "",
             status: "sent",
-            isSentNow: true,
+            isActionSentNow: true,
           },
         });
         handleSetLoadingId("");
@@ -54,7 +54,7 @@ const handleAddToFriendsFx = createEffect(async (user: Profile) => {
       friendRequest: {
         id: message.id,
         status: "sent",
-        isSentNow: true,
+        isActionSentNow: true,
       },
     });
   } catch (e) {
@@ -70,7 +70,7 @@ const handleRespondToRequestFx = createEffect(
 
     try {
       await respondOnFriendRequestById(
-        user.friendRequest?.id,
+        user.friendRequest?.id || "",
         user.friendRequest?.status,
       );
 
@@ -89,7 +89,7 @@ const handleDeleteFriendRequestFx = createEffect(async (user: Profile) => {
   }
 
   try {
-    await respondOnFriendRequestById(user.friendRequest.id, "not-sent");
+    await respondOnFriendRequestById(user.friendRequest.id || "", "not-sent");
 
     handleSetSingleUser({
       ...user,

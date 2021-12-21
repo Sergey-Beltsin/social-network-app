@@ -11,9 +11,9 @@ export type FriendRequestStatus =
   | "sent";
 
 export type FriendRequest = {
-  status: FriendRequestStatus;
-  id: string;
-  isSentNow?: boolean;
+  status?: FriendRequestStatus;
+  id?: string;
+  isActionSentNow?: boolean;
 };
 
 export type Profile = {

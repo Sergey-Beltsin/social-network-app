@@ -5,6 +5,8 @@
   "otherUsers": "Other users",
   "findUsers": "Search",
   "requestSent": "The offer to be friends has been sent.",
+  "friendRemoved": "The user has been removed from friends.",
+  "friendAdded": "The user has been added as a friend.",
   "removeFriend": "Remove from friends",
   "viewProfile": "View profile",
   "addToFriends": "Add to friends",

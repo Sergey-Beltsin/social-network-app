@@ -1,17 +1,13 @@
 import { Profile } from "@/shared/api/profile";
 
+export type UsersEntityStore = {
+  isLoading: boolean;
+  list: Profile[];
+};
+
 export type UsersStore = {
   search: string;
-  friends: {
-    isLoading: boolean;
-    list: Profile[];
-  };
-  users: {
-    isLoading: boolean;
-    list: Profile[];
-  };
-  incoming: {
-    isLoading: boolean;
-    list: Profile[];
-  };
+  friends: UsersEntityStore;
+  users: UsersEntityStore;
+  incoming: UsersEntityStore;
 };

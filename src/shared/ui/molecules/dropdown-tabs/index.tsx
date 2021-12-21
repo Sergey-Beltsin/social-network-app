@@ -25,6 +25,10 @@ export const DropdownTabs: FC<DropdownTabsProps> = ({
   const [activeTab, setActiveTab] = useState<number>(0);
 
   const handleChangeActiveTab = (tab: number) => {
+    if (activeTab === tab) {
+      return;
+    }
+
     setActiveTab(tab);
 
     if (onChange) {

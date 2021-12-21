@@ -18,7 +18,7 @@ const handleGetUserFx = createEffect(async (userId: string) => {
       data: { message },
     } = await getUserById(userId);
 
-    handleSetUser(message.profile);
+    handleSetUser(message);
   } catch (e) {
     console.log(e);
   } finally {

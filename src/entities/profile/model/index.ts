@@ -1,1 +1,1 @@
-export { store, actions } from "./model";
+export { store, actions, $profile } from "./model";

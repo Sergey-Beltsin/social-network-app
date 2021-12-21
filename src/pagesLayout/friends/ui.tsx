@@ -8,16 +8,20 @@ import { store as profileStore } from "@/entities/profile";
 import { AddToFriends } from "@/features/add-to-friends";
 import { Input, Tab, Title } from "@/shared/ui/atoms";
 import { DropdownTabs } from "@/shared/ui/molecules";
+import { Profile } from "@/shared/api/profile";
 
 export const FriendsPage: FC = () => {
   const { useUsersStore } = store;
   const { useProfileStore } = profileStore;
   const {
-    handleGetFriends,
+    handleGetFriendsFx,
     handleSetSearch,
     handleSearch,
     handleReset,
-    handleGetIncomingRequests,
+    handleGetIncomingRequestsFx,
+    handleSetSingleFriend,
+    handleSetSingleIncomingRequest,
+    handleSetSingleUser,
   } = actions;
 
   const { friends, users, incoming, search } = useUsersStore();
@@ -26,7 +30,7 @@ export const FriendsPage: FC = () => {
 
   useEffect(() => {
     if (profile.id) {
-      handleGetFriends(profile.id);
+      handleGetFriendsFx(profile.id);
     }
   }, [profile.id]);
 
@@ -39,14 +43,62 @@ export const FriendsPage: FC = () => {
 
   const handleChangeActiveTab = (activeTab: number) => {
     if (activeTab === 0) {
-      handleGetFriends(profile.id);
+      handleGetFriendsFx(profile.id);
       handleSetSearch("");
       handleSearch();
 
       return;
     }
 
-    handleGetIncomingRequests();
+    handleGetIncomingRequestsFx();
+  };
+
+  const handleAccept = (user: Profile) => {
+    if (user.friendRequest?.status !== "accepted") {
+      handleSetSingleUser({
+        ...user,
+        friendRequest: { ...user.friendRequest, isActionSentNow: true },
+      });
+      handleSetSingleIncomingRequest({
+        ...user,
+        friendRequest: { ...user.friendRequest, isActionSentNow: true },
+      });
+
+      return;
+    }
+
+    handleSetSingleFriend({
+      ...user,
+      friendRequest: { ...user.friendRequest, isActionSentNow: false },
+    });
+    handleSetSingleIncomingRequest({
+      ...user,
+      friendRequest: { ...user.friendRequest, isActionSentNow: false },
+    });
+  };
+
+  const handleReject = (user: Profile) => {
+    if (user.friendRequest?.status === "waiting-for-response") {
+      handleSetSingleUser({
+        ...user,
+        friendRequest: { ...user.friendRequest, isActionSentNow: false },
+      });
+      handleSetSingleIncomingRequest({
+        ...user,
+        friendRequest: { ...user.friendRequest, isActionSentNow: false },
+      });
+
+      return;
+    }
+
+    handleSetSingleFriend({
+      ...user,
+      friendRequest: { ...user.friendRequest, isActionSentNow: true },
+    });
+  };
+
+  const handleSetDefault = (user: Profile) => {
+    handleSetSingleUser(user);
   };
 
   return (
@@ -68,7 +120,14 @@ export const FriendsPage: FC = () => {
           <UsersList
             isLoading={friends.isLoading}
             users={friends.list}
-            getActionButton={(user) => <AddToFriends user={user} />}
+            getActionButton={(user) => (
+              <AddToFriends
+                user={user}
+                onAccept={handleAccept}
+                onReject={handleReject}
+                onSetDefault={handleSetDefault}
+              />
+            )}
           />
           {search && (
             <>
@@ -76,7 +135,14 @@ export const FriendsPage: FC = () => {
               <UsersList
                 isLoading={users.isLoading}
                 users={users.list}
-                getActionButton={(user) => <AddToFriends user={user} />}
+                getActionButton={(user) => (
+                  <AddToFriends
+                    user={user}
+                    onAccept={handleAccept}
+                    onReject={handleReject}
+                    onSetDefault={handleSetDefault}
+                  />
+                )}
               />
             </>
           )}
@@ -85,7 +151,14 @@ export const FriendsPage: FC = () => {
           <UsersList
             isLoading={incoming.isLoading}
             users={incoming.list}
-            getActionButton={(user) => <AddToFriends user={user} />}
+            getActionButton={(user) => (
+              <AddToFriends
+                user={user}
+                onAccept={handleAccept}
+                onReject={handleReject}
+                onSetDefault={handleSetDefault}
+              />
+            )}
           />
         </Tab>
       </DropdownTabs>

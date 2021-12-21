@@ -6,11 +6,7 @@ import { FriendRequestStatus, Profile } from "@/shared/api/profile";
 import { GetPostsResponse } from "@/shared/api/posts";
 
 type GetUserResponse = {
-  message: {
-    id: string;
-    email: string;
-    profile: Profile;
-  };
+  message: Profile;
 };
 
 type GetUsersResponse = {
@@ -48,8 +44,13 @@ export const getPostsByUserId = async (
 
 export const getUserFriendsById = async (
   id: string,
+  query?: string,
 ): Promise<AxiosPromise<{ message: Profile[] }>> =>
-  axios.get(usersRoutes.friends(id));
+  axios.get(usersRoutes.friends(id), {
+    params: {
+      q: query,
+    },
+  });
 
 export const addUserToFriends = async (
   receiverId: string,

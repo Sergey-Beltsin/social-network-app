@@ -23,7 +23,7 @@ const handleGetProfileFx = createEffect(async () => {
   }
 });
 
-const $profile = createStore<ProfileStore>({
+export const $profile = createStore<ProfileStore>({
   id: "",
   created: new Date(),
   bio: "",

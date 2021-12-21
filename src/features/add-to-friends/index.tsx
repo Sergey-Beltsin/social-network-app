@@ -5,30 +5,29 @@ import useTranslation from "next-translate/useTranslation";
 
 import { Button } from "@/shared/ui/atoms";
 import { store, actions } from "./model";
-import { actions as userActions } from "@/entities/user";
 import { Profile } from "@/shared/api/profile";
 
 type AddToFriendsProps = {
   user: Profile;
+  onAccept: (user: Profile) => void;
+  onReject: (user: Profile) => void;
+  onSetDefault: (user: Profile) => void;
 };
 
-export const AddToFriends: FC<AddToFriendsProps> = ({ user }) => {
+export const AddToFriends: FC<AddToFriendsProps> = ({
+  user,
+  onAccept,
+  onReject,
+  onSetDefault,
+}) => {
   const { useAddToFriendsStore } = store;
   const {
     handleAddToFriends,
     handleRespondToRequest,
     handleDeleteFriendRequest,
   } = actions;
-  const {
-    handleDeleteIncomingRequest,
-    handleSetSingleUser,
-    handleDeleteUser,
-    handleAddFriend,
-    handleDeleteFriend,
-  } = userActions;
 
   const { loadingId } = useAddToFriendsStore();
-  console.log(loadingId);
   const { t } = useTranslation("friends");
 
   const addToFriendsSubmit = () => {
@@ -38,56 +37,62 @@ export const AddToFriends: FC<AddToFriendsProps> = ({ user }) => {
   const handleAcceptRequest = () => {
     const newUser: Profile = {
       ...user,
-      friendRequest: user.friendRequest
-        ? {
-            ...user.friendRequest,
-            status: "accepted",
-          }
-        : undefined,
+      friendRequest: {
+        ...user.friendRequest,
+        status: "accepted",
+      },
     };
 
     handleRespondToRequest({
       user: newUser,
-      onSuccess: () => {
-        handleDeleteIncomingRequest(user.id);
-        handleAddFriend(newUser);
-        handleDeleteUser(user.id);
-      },
+      onSuccess: () => onAccept(user),
     });
   };
 
   const handleRejectRequest = () => {
+    const newUser: Profile = {
+      ...user,
+      friendRequest: { ...user.friendRequest, status: "waiting-for-response" },
+    };
+
     handleRespondToRequest({
-      user: {
-        ...user,
-        friendRequest: user.friendRequest
-          ? { ...user.friendRequest, status: "waiting-for-response" }
-          : undefined,
-      },
-      onSuccess: () => {
-        handleDeleteFriend(user.id);
-      },
+      user: newUser,
+      onSuccess: () => onReject(user),
     });
   };
 
   const handleSetRequestToDefault = () => {
     const newUser: Profile = {
       ...user,
-      friendRequest: user.friendRequest
-        ? {
-            ...user.friendRequest,
-            status: "not-sent",
-          }
-        : undefined,
+      friendRequest: {
+        ...user.friendRequest,
+        status: "not-sent",
+      },
     };
 
     handleRespondToRequest({
       user: newUser,
-      onSuccess: () => handleSetSingleUser(newUser),
+      onSuccess: () => onSetDefault(newUser),
     });
   };
 
   const getButtonContent = () => {
+    if (
+      user.friendRequest?.status === "accepted" &&
+      user.friendRequest.isActionSentNow
+    ) {
+      return (
+        <StyledButton as={Text}>
+          {t("friendRemoved")}
+          <StyledButton
+            onClick={handleAcceptRequest}
+            disabled={loadingId === user.id}
+          >
+            {t("common:cancel")}
+          </StyledButton>
+        </StyledButton>
+      );
+    }
     if (user.friendRequest?.status === "accepted") {
       return (
         <ButtonsWrapper>
@@ -102,7 +107,10 @@ export const AddToFriends: FC<AddToFriendsProps> = ({ user }) => {
         </ButtonsWrapper>
       );
     }
-    if (user.friendRequest?.status === "sent" && user.friendRequest.isSentNow) {
+    if (
+      user.friendRequest?.status === "sent" &&
+      user.friendRequest.isActionSentNow
+    ) {
       return (
         <StyledButton as={Text}>
           {t("requestSent")}
@@ -129,6 +137,22 @@ export const AddToFriends: FC<AddToFriendsProps> = ({ user }) => {
         >
           {t("unsubscribe")}
         </Button>
+      );
+    }
+    if (
+      user.friendRequest?.status === "waiting-for-response" &&
+      user.friendRequest.isActionSentNow
+    ) {
+      return (
+        <StyledButton as={Text}>
+          {t("friendAdded")}
+          <StyledButton
+            onClick={handleRejectRequest}
+            disabled={loadingId === user.id}
+          >
+            {t("common:cancel")}
+          </StyledButton>
+        </StyledButton>
       );
     }
     if (user.friendRequest?.status === "waiting-for-response") {
