@@ -1,8 +1,8 @@
 import type { NextPage } from "next";
-import styled from "styled-components";
 import Head from "next/head";
-
+import styled from "styled-components";
 import useTranslation from "next-translate/useTranslation";
+
 import { NewsList } from "@/features/news";
 
 export const NewsPage: NextPage = () => {
@@ -13,7 +13,7 @@ export const NewsPage: NextPage = () => {
       <Head>
         <title>{t("pageTitle")}</title>
       </Head>
-      <NewsList />
+      <NewsList postsTitle={t("title")} />
     </Container>
   );
 };

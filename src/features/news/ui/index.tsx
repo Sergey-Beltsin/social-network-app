@@ -3,21 +3,20 @@ import styled from "styled-components";
 import { useInView } from "react-intersection-observer";
 
 import { useRouter } from "next/router";
+import useTranslation from "next-translate/useTranslation";
 import { actions, HandleGetPostsResponse, store } from "../model";
 import { PostCard } from "@/entities/post";
-import { Loader, Title } from "@/shared/ui/atoms";
+import { ListEmptyText, Loader, Title } from "@/shared/ui/atoms";
 import { store as profileStore } from "@/entities/profile";
 
 type NewsListProps = {
   handleGetNews?: (page: number, limit: number) => HandleGetPostsResponse;
   postsTitle?: string;
-  noPostsTitle?: string;
 };
 
 export const NewsList: FC<NewsListProps> = ({
   handleGetNews: handleGetExternalNews,
   postsTitle,
-  noPostsTitle,
 }) => {
   const { useNewsStore } = store;
   const { useProfileStore } = profileStore;
@@ -28,6 +27,7 @@ export const NewsList: FC<NewsListProps> = ({
   const { id } = useProfileStore();
   const [ref, inView] = useInView();
   const router = useRouter();
+  const { t } = useTranslation("common");
 
   const handleLike = (postId: string): void => {
     handleLikePost({ postId, userId: id });
@@ -53,20 +53,23 @@ export const NewsList: FC<NewsListProps> = ({
   return (
     <Wrapper>
       <Container>
-        {!news.length && !isLoading ? (
-          <>{noPostsTitle && <Title>{noPostsTitle}</Title>}</>
+        {postsTitle && <Title>{postsTitle}</Title>}
+        {isLoading ? (
+          <Loader center />
         ) : (
           <>
-            {postsTitle && <Title>{postsTitle}</Title>}
-            {news.map((item, index) => (
-              <PostCardWrapper
-                ref={index + 1 === news.length ? ref : null}
-                key={item.id}
-              >
-                <PostCard post={item} handleLike={handleLike} />
-              </PostCardWrapper>
-            ))}
-            {isLoading && <Loader center />}
+            {news.length ? (
+              news.map((item, index) => (
+                <PostCardWrapper
+                  ref={index + 1 === news.length ? ref : null}
+                  key={item.id}
+                >
+                  <PostCard post={item} handleLike={handleLike} />
+                </PostCardWrapper>
+              ))
+            ) : (
+              <ListEmptyText>{t("listEmpty")}</ListEmptyText>
+            )}
           </>
         )}
       </Container>

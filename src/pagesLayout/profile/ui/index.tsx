@@ -88,7 +88,6 @@ export const ProfilePage: NextPage = () => {
                 ? t("yourPosts")
                 : t("userPosts", { user: `@${userPage.profile.username}` })
             }
-            noPostsTitle={t("noPosts")}
           />
         </>
       )}
