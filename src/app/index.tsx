@@ -80,6 +80,8 @@ const AlertWrapper = styled.div`
 `;
 
 const MainWrapper = styled.div<MainWrapperProps>`
+  display: flex;
+  flex-direction: column;
   flex-grow: 1;
 
   padding-top: 49px;
@@ -94,6 +96,7 @@ const MainWrapper = styled.div<MainWrapperProps>`
     & > ${Container} {
       display: flex;
       align-items: flex-start;
+      flex-grow: 1;
     }
   }
 `;
