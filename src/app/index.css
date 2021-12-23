@@ -1,7 +1,15 @@
 body {
   margin: 0;
+  height: 100vh;
 
   font-family: sans-serif;
+}
+
+#__next {
+  display: flex;
+  flex-direction: column;
+
+  height: 100vh;
 }
 
 img {

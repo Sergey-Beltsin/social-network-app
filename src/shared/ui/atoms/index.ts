@@ -13,3 +13,4 @@ export { Title } from "./title";
 export { Tab } from "./tab";
 export type { TabProps } from "./tab";
 export { ListEmptyText } from "./list-empty-text";
+export { AlertMessage } from "./alert-message";

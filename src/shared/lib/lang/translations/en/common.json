@@ -9,6 +9,7 @@
   "cancel": "Cancel",
   "accept": "Accept",
   "reject": "Reject",
+  "devAlert": "At the moment, the project is still under development. What you see now could have already changed.",
   "header": {
     "theme": "Theme",
     "settings": "Settings",

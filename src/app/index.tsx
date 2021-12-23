@@ -1,11 +1,13 @@
 import { FC, useEffect } from "react";
 import styled from "styled-components";
+import Head from "next/head";
 import Cookies from "js-cookie";
+import useTranslation from "next-translate/useTranslation";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
 import ru from "javascript-time-ago/locale/ru.json";
 
-import { Container } from "@/shared/ui/atoms";
+import { AlertMessage, Container } from "@/shared/ui/atoms";
 import { ThemeProvider } from "@/shared/lib/theme";
 import { Navigation, Header } from "@/widgets";
 import { ProtectedRoute } from "@/shared/lib/hocs";
@@ -21,6 +23,8 @@ type MainWrapperProps = {
 export const App: FC = ({ children }) => {
   const { getProfile } = actions;
 
+  const { t } = useTranslation("common");
+
   useEffect(() => {
     if (Cookies.get("token")) {
       getProfile();
@@ -31,7 +35,18 @@ export const App: FC = ({ children }) => {
     <ThemeProvider>
       <ProtectedRoute>
         <Header />
+        <Head>
+          <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, maximum-scale=1"
+          />
+        </Head>
         <MainWrapper notPaddingBottom={!Auth.getIsAuth()}>
+          <AlertWrapper>
+            <AlertMessage name="devAlert" hideOnTime={86400}>
+              {t("devAlert")}
+            </AlertMessage>
+          </AlertWrapper>
           <Container>
             {Auth.getIsAuth() && <Navigation />}
             <Main>{children}</Main>
@@ -45,14 +60,13 @@ export const App: FC = ({ children }) => {
 const Main = styled.main`
   display: flex;
 
-  min-height: calc(100vh - 136px);
+  min-height: 100%;
   margin: 0 auto;
 
   color: ${({ theme }) => theme.colors.text.primary};
 
   @media (min-width: ${({ theme }) => theme.devices.desktop}) {
     width: 100%;
-    min-height: calc(100vh - 88px);
     margin: 0;
   }
 
@@ -61,8 +75,14 @@ const Main = styled.main`
   }
 `;
 
+const AlertWrapper = styled.div`
+  margin-bottom: 19px;
+`;
+
 const MainWrapper = styled.div<MainWrapperProps>`
-  padding-top: 68px;
+  flex-grow: 1;
+
+  padding-top: 49px;
   padding-bottom: ${({ notPaddingBottom }) =>
     notPaddingBottom ? "20px" : "68px"};
 

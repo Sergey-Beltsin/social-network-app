@@ -18,14 +18,13 @@ export const Header: FC<HeaderProps> = ({ rightElement }) => (
 
 const HeaderComponent = styled.header`
   display: flex;
+  flex-direction: column;
 
   position: fixed;
   top: 0;
   right: 0;
   left: 0;
   z-index: 11;
-
-  height: 48px;
 
   background-color: ${({ theme }) => theme.colors.secondary};
   border-bottom: 1px solid ${({ theme }) => theme.colors.border};
@@ -34,5 +33,7 @@ const HeaderComponent = styled.header`
     display: flex;
     align-items: center;
     justify-content: space-between;
+
+    height: 48px;
   }
 `;
