@@ -29,7 +29,7 @@ const Container = styled.button<ContainerProps>`
   display: flex;
   align-items: center;
 
-  padding: 6px 14px;
+  padding: 4px 10px;
 
   background-color: ${({ theme }) => theme.colors.components.likesCounterBg};
   border: none;
@@ -43,6 +43,8 @@ const Container = styled.button<ContainerProps>`
   }
 
   & > svg {
+    width: 16px;
+
     fill: ${({ theme }) => theme.colors.text.primary};
 
     transition: 0.2s ease;
@@ -61,6 +63,15 @@ const Container = styled.button<ContainerProps>`
       color: ${theme.colors.red};
     }
   `}
+  
+  @media (min-width: ${({ theme }) => theme.devices.tablet}) {
+    padding: 6px 14px;
+
+    & > svg {
+      width: 20px;
+    }
+  }
+}
 `;
 
 const Text = styled.span`
@@ -68,5 +79,11 @@ const Text = styled.span`
 
   margin-left: 6px;
 
+  font-size: 12px;
+
   transition: 0.2s ease;
+
+  @media (min-width: ${({ theme }) => theme.devices.tablet}) {
+    font-size: 14px;
+  }
 `;

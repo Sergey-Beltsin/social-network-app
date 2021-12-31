@@ -11,12 +11,14 @@ export const Title: FC<TitleProps> = ({ children, center }) => (
 
 const Container = styled.h3<TitleProps>`
   margin-top: 0;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 
   font-size: 16px;
   ${({ center }) => center && "text-align: center;"}
 
   @media (min-width: ${({ theme }) => theme.devices.tablet}) {
+    margin-bottom: 20px;
+
     font-size: 20px;
   }
 `;

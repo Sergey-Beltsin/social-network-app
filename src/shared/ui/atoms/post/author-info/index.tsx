@@ -39,7 +39,11 @@ const Container = styled.div`
   display: flex;
   align-items: center;
 
-  margin-bottom: 10px;
+  margin-bottom: 6px;
+
+  @media (min-width: ${({ theme }) => theme.devices.tablet}) {
+    margin-bottom: 10px;
+  }
 `;
 
 const AuthorPhoto = styled.img`
@@ -61,7 +65,7 @@ const AuthorInfoDescription = styled.div`
 const AuthorName = styled.a`
   display: block;
 
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 
   font-size: 12px;
   text-decoration: none;
@@ -71,6 +75,8 @@ const AuthorName = styled.a`
   }
 
   @media (min-width: ${({ theme }) => theme.devices.tablet}) {
+    margin-bottom: 4px;
+
     font-size: 14px;
   }
 `;

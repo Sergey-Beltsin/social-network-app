@@ -28,11 +28,15 @@ export const ProfileCard: FC<ProfileCardProps> = ({ user }) => {
 const Container = styled.div`
   width: 100%;
   padding: 20px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 
   background-color: ${({ theme }) => theme.colors.secondary};
   border-radius: 8px;
   box-sizing: border-box;
+
+  @media (min-width: ${({ theme }) => theme.devices.tablet}) {
+    margin-bottom: 20px;
+  }
 `;
 
 const Title = styled.h1``;
@@ -43,14 +47,22 @@ const Name = styled.h3`
   margin-top: 0;
   margin-bottom: 4px;
 
-  font-size: 18px;
+  font-size: 14px;
+
+  @media (min-width: ${({ theme }) => theme.devices.tablet}) {
+    font-size: 18px;
+  }
 `;
 
 const Username = styled.span`
   display: block;
 
   color: ${({ theme }) => theme.colors.text.secondary};
-  font-size: 12px;
+  font-size: 10px;
+
+  @media (min-width: ${({ theme }) => theme.devices.tablet}) {
+    font-size: 12px;
+  }
 `;
 
 const Bio = styled.span`

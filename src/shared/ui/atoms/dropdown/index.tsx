@@ -303,6 +303,12 @@ const DropdownButtonTitle = styled.span`
   display: block;
 
   margin-left: 6px;
+
+  font-size: 12px;
+
+  @media (min-width: ${({ theme }) => theme.devices.tablet}) {
+    font-size: 14px;
+  }
 `;
 
 const Trigger = styled.button<DropdownTriggerProps>`
@@ -330,9 +336,9 @@ const Trigger = styled.button<DropdownTriggerProps>`
 const TriggerContent = styled.span`
   display: flex;
 
-  font-size: 10px;
+  font-size: 12px;
 
-  @media (min-width: ${({ theme }) => theme.devices.desktop}) {
+  @media (min-width: ${({ theme }) => theme.devices.tablet}) {
     font-size: 14px;
   }
 `;

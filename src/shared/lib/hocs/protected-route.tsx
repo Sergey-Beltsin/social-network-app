@@ -33,7 +33,10 @@ export const ProtectedRoute: FC = ({ children }) => {
 
     if (!publicRoutes.includes(path) && !Auth.getIsAuth()) {
       setIsPageAccessed(false);
-      localStorage.setItem("returningUrl", JSON.stringify(path));
+
+      if (path !== "/") {
+        localStorage.setItem("returningUrl", JSON.stringify(path));
+      }
 
       router.push("/login");
     } else if (publicRoutes.includes(path) && Auth.getIsAuth()) {
