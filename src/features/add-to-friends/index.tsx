@@ -1,25 +1,26 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import Link from "next/link";
 import styled from "styled-components";
 import useTranslation from "next-translate/useTranslation";
 
 import { Button } from "@/shared/ui/atoms";
 import { store, actions } from "./model";
-import { Profile } from "@/shared/api/profile";
+import { FriendRequestStatus, Profile } from "@/shared/api/profile";
 
 type AddToFriendsProps = {
   user: Profile;
-  onAccept: (user: Profile) => void;
-  onReject: (user: Profile) => void;
-  onSetDefault: (user: Profile) => void;
+  hideProfileBtn?: boolean;
 };
 
 export const AddToFriends: FC<AddToFriendsProps> = ({
   user,
-  onAccept,
-  onReject,
-  onSetDefault,
+  hideProfileBtn = false,
 }) => {
+  const [friendStatus, setFriendStatus] = useState<FriendRequestStatus>(
+    user.friendRequest?.status || "not-sent",
+  );
+  const [isActionSentNow, setIsActionSentNow] = useState<boolean>(false);
+
   const { useAddToFriendsStore } = store;
   const {
     handleAddToFriends,
@@ -30,8 +31,21 @@ export const AddToFriends: FC<AddToFriendsProps> = ({
   const { loadingId } = useAddToFriendsStore();
   const { t } = useTranslation("friends");
 
+  const handleChangeStatus = (
+    status: FriendRequestStatus,
+    isActionSent: boolean,
+  ) => {
+    setFriendStatus(status);
+    setIsActionSentNow(isActionSent);
+  };
+
   const addToFriendsSubmit = () => {
-    handleAddToFriends(user);
+    handleAddToFriends({
+      user,
+      onSuccess: () => {
+        handleChangeStatus("sent", true);
+      },
+    });
   };
 
   const handleAcceptRequest = () => {
@@ -45,7 +59,9 @@ export const AddToFriends: FC<AddToFriendsProps> = ({
 
     handleRespondToRequest({
       user: newUser,
-      onSuccess: () => onAccept(user),
+      onSuccess: () => {
+        handleChangeStatus(friendStatus, friendStatus !== "accepted");
+      },
     });
   };
 
@@ -57,30 +73,47 @@ export const AddToFriends: FC<AddToFriendsProps> = ({
 
     handleRespondToRequest({
       user: newUser,
-      onSuccess: () => onReject(user),
+      onSuccess: () => {
+        handleChangeStatus(
+          friendStatus,
+          friendStatus !== "waiting-for-response",
+        );
+      },
     });
   };
 
   const handleSetRequestToDefault = () => {
-    const newUser: Profile = {
-      ...user,
-      friendRequest: {
-        ...user.friendRequest,
-        status: "not-sent",
-      },
-    };
-
     handleRespondToRequest({
-      user: newUser,
-      onSuccess: () => onSetDefault(newUser),
+      user: {
+        ...user,
+        friendRequest: {
+          ...user.friendRequest,
+          status: "not-sent",
+        },
+      },
+      onSuccess: () => {
+        handleChangeStatus("not-sent", false);
+      },
+    });
+  };
+
+  const handleCancelRequest = () => {
+    handleDeleteFriendRequest({
+      user: {
+        ...user,
+        friendRequest: {
+          ...user.friendRequest,
+          status: "not-sent",
+        },
+      },
+      onSuccess: () => {
+        handleChangeStatus("not-sent", false);
+      },
     });
   };
 
   const getButtonContent = () => {
-    if (
-      user.friendRequest?.status === "accepted" &&
-      user.friendRequest.isActionSentNow
-    ) {
+    if (friendStatus === "accepted" && isActionSentNow) {
       return (
         <StyledButton as={Text}>
           {t("friendRemoved")}
@@ -93,34 +126,28 @@ export const AddToFriends: FC<AddToFriendsProps> = ({
         </StyledButton>
       );
     }
-    if (user.friendRequest?.status === "accepted") {
+    if (friendStatus === "accepted") {
       return (
         <ButtonsWrapper>
           <Button onClick={handleRejectRequest} loading={loadingId === user.id}>
             {t("removeFriend")}
           </Button>
-          <Link href={user.username} passHref>
-            <Href>
-              <Button>{t("viewProfile")}</Button>
-            </Href>
-          </Link>
+          {!hideProfileBtn && (
+            <Link href={user.username} passHref>
+              <Href>
+                <Button>{t("viewProfile")}</Button>
+              </Href>
+            </Link>
+          )}
         </ButtonsWrapper>
       );
     }
-    if (
-      user.friendRequest?.status === "sent" &&
-      user.friendRequest.isActionSentNow
-    ) {
+    if (friendStatus === "sent" && isActionSentNow) {
       return (
         <StyledButton as={Text}>
           {t("requestSent")}
           <StyledButton
-            onClick={() =>
-              handleDeleteFriendRequest({
-                ...user,
-                friendRequest: user.friendRequest,
-              })
-            }
+            onClick={handleCancelRequest}
             disabled={loadingId === user.id}
           >
             {t("common:cancel")}
@@ -128,7 +155,7 @@ export const AddToFriends: FC<AddToFriendsProps> = ({
         </StyledButton>
       );
     }
-    if (user.friendRequest?.status === "sent") {
+    if (friendStatus === "sent") {
       return (
         <Button
           secondary
@@ -139,10 +166,7 @@ export const AddToFriends: FC<AddToFriendsProps> = ({
         </Button>
       );
     }
-    if (
-      user.friendRequest?.status === "waiting-for-response" &&
-      user.friendRequest.isActionSentNow
-    ) {
+    if (friendStatus === "waiting-for-response" && isActionSentNow) {
       return (
         <StyledButton as={Text}>
           {t("friendAdded")}
@@ -155,7 +179,7 @@ export const AddToFriends: FC<AddToFriendsProps> = ({
         </StyledButton>
       );
     }
-    if (user.friendRequest?.status === "waiting-for-response") {
+    if (friendStatus === "waiting-for-response") {
       return (
         <ButtonsWrapper>
           <Button onClick={handleAcceptRequest} loading={loadingId === user.id}>
@@ -215,6 +239,7 @@ const StyledButton = styled.button`
 
   width: fit-content;
   margin-top: 8px;
+  margin-left: auto;
 
   background-color: transparent;
   border: none;

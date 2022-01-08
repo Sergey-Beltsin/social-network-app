@@ -1,5 +1,5 @@
 export const usersRoutes = {
-  users: (query?: string) => `/users?q=${query || ""}`,
+  users: "/users",
   user: (id: string) => `/users/${id}`,
   posts: (id: string) => `/users/${id}/posts`,
   friends: (id: string) => `/users/${id}/friends`,

@@ -1,6 +1,6 @@
 import { createEffect, createEvent, createStore, forward } from "effector";
-
 import { useStore } from "effector-react";
+
 import { ProfileStore } from "./model.types";
 import { getProfile as getProfileRequest } from "@/shared/api/profile";
 import { Auth } from "@/entities/profile";

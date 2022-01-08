@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, ReactElement } from "react";
 import styled from "styled-components";
 import useTranslation from "next-translate/useTranslation";
 
@@ -6,26 +6,34 @@ import { Profile } from "@/shared/api/profile";
 
 type ProfileCardProps = {
   user: Profile;
+  friendsButton: ReactElement;
 };
 
-export const ProfileCard: FC<ProfileCardProps> = ({ user }) => {
+export const ProfileCard: FC<ProfileCardProps> = ({ user, friendsButton }) => {
   const { t } = useTranslation("profile");
 
   return (
     <Container>
-      <Title className="visually-hidden">
-        {t("title", { user: `${user.name} ${user.surname}` })}
-      </Title>
-      <Name>
-        {user.name} {user.surname}
-      </Name>
-      <Username>@{user.username}</Username>
-      {user.bio && <Bio>{user.bio}</Bio>}
+      <Wrapper>
+        <Title className="visually-hidden">
+          {t("title", { user: `${user.name} ${user.surname}` })}
+        </Title>
+        <Name>
+          {user.name} {user.surname}
+        </Name>
+        <Username>@{user.username}</Username>
+        {user.bio && <Bio>{user.bio}</Bio>}
+      </Wrapper>
+      <Wrapper>{friendsButton}</Wrapper>
     </Container>
   );
 };
 
 const Container = styled.div`
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
   width: 100%;
   padding: 20px;
   margin-bottom: 10px;
@@ -38,6 +46,8 @@ const Container = styled.div`
     margin-bottom: 20px;
   }
 `;
+
+const Wrapper = styled.div``;
 
 const Title = styled.h1``;
 

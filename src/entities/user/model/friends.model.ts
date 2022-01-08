@@ -2,15 +2,12 @@ import { attach, createEffect, createEvent, createStore } from "effector";
 
 import { Profile } from "@/shared/api/profile";
 import { getUserFriendsById } from "@/shared/api/users";
-import { deleteElementById } from "@/shared/lib/utils";
 import { handleSetIsUsersLoading } from "@/entities/user/model/users.model";
 import { $profile } from "@/entities/profile/model";
 import { $search } from "@/entities/user/model/search.model";
 import { UsersEntityStore } from "@/entities/user/model/model.types";
 
 const handleSetFriends = createEvent<Profile[]>();
-export const handleAddFriend = createEvent<Profile>();
-export const handleSetSingleFriend = createEvent<Profile>();
 export const handleResetFriends = createEvent<void>();
 export const handleSetIsFriendsLoading = createEvent<string | boolean>();
 
@@ -49,14 +46,6 @@ export const $friends = createStore<UsersEntityStore>({
   .on(handleGetFriendsFx.doneData, (store) => ({
     ...store,
     isLoading: false,
-  }))
-  .on(handleAddFriend, (store, friend) => ({
-    ...store,
-    list: [...store.list, friend],
-  }))
-  .on(handleSetSingleFriend, (store, friend) => ({
-    ...store,
-    list: deleteElementById<Profile>(store.list, friend.id, friend),
   }))
   .on(handleSetIsUsersLoading, (store, isLoading) => ({
     ...store,

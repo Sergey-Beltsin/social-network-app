@@ -4,26 +4,20 @@ import { useStore } from "effector-react";
 import { UsersStore } from "@/entities/user/model/model.types";
 import {
   $friends,
-  handleAddFriend,
-  handleSetSingleFriend,
   handleGetFriendsFx,
   handleResetFriends,
   handleSetIsFriendsLoading,
 } from "./friends.model";
 import {
   $searchUsers,
-  handleDeleteUser,
   handleGetUsersFx,
   handleResetUsers,
   handleSetIsUsersLoading,
-  handleSetSingleUser,
 } from "./users.model";
 import {
   $incoming,
-  handleDeleteIncomingRequest,
   handleGetIncomingRequestsFx,
   handleResetIncoming,
-  handleSetSingleIncomingRequest,
 } from "./incoming.model";
 import { $search, handleResetSearch, handleSetSearch } from "./search.model";
 
@@ -67,15 +61,8 @@ const store = {
   useUsersStore,
 };
 const actions = {
-  handleGetUsersFx,
   handleGetFriendsFx,
   handleGetIncomingRequestsFx,
-  handleSetSingleUser,
-  handleDeleteUser,
-  handleAddFriend,
-  handleSetSingleFriend,
-  handleSetSingleIncomingRequest,
-  handleDeleteIncomingRequest,
   handleSetSearch,
   handleSearch,
   handleReset,

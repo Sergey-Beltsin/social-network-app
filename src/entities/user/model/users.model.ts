@@ -1,15 +1,11 @@
-import { createEffect, createEvent, createStore } from "effector";
+import { createEffect, createEvent, createStore, attach } from "effector";
 
-import { attach } from "effector/effector.umd";
 import { Profile } from "@/shared/api/profile";
 import { getUsers } from "@/shared/api/users";
-import { deleteElementById } from "@/shared/lib/utils";
 import { $search } from "@/entities/user/model/search.model";
 import { UsersEntityStore } from "./model.types";
 
 const handleSetUsers = createEvent<Profile[]>();
-export const handleSetSingleUser = createEvent<Profile>();
-export const handleDeleteUser = createEvent<string>();
 export const handleResetUsers = createEvent<void>();
 export const handleSetIsUsersLoading = createEvent<string | boolean>();
 
@@ -52,14 +48,6 @@ export const $searchUsers = createStore<UsersEntityStore>({
   .on(handleGetUsersFx.doneData, (store) => ({
     ...store,
     isLoading: false,
-  }))
-  .on(handleSetSingleUser, (store, user) => ({
-    ...store,
-    list: deleteElementById<Profile>(store.list, user.id, user),
-  }))
-  .on(handleDeleteUser, (store, userId) => ({
-    ...store,
-    list: deleteElementById<Profile>(store.list, userId),
   }))
   .on(handleSetIsUsersLoading, (store, isLoading) => ({
     ...store,

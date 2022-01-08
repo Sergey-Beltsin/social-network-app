@@ -1,77 +1,62 @@
 import { createEvent, createStore, createEffect, forward } from "effector";
 import { useStore } from "effector-react";
 
-import { AddToFriendsStore } from "./model.types";
+import { ActionPayload, AddToFriendsStore } from "./model.types";
 import {
   addUserToFriends,
   respondOnFriendRequestById,
 } from "@/shared/api/users";
-import { Profile } from "@/shared/api/profile";
-import { actions as userActions } from "@/entities/user";
 
-const { handleSetSingleUser } = userActions;
-
-const handleAddToFriends = createEvent<Profile>();
-const handleRespondToRequest =
-  createEvent<{ user: Profile; onSuccess?: () => void }>();
-const handleDeleteFriendRequest = createEvent<Profile>();
+const handleAddToFriends = createEvent<ActionPayload>();
+const handleRespondToRequest = createEvent<ActionPayload>();
+const handleDeleteFriendRequest = createEvent<ActionPayload>();
 const handleSetLoadingId = createEvent<string>();
 
-const handleAddToFriendsFx = createEffect(async (user: Profile) => {
-  if (user.friendRequest?.id) {
-    handleSetLoadingId(user.id);
+const handleAddToFriendsFx = createEffect(
+  async ({ user, onSuccess }: ActionPayload) => {
+    if (user.friendRequest?.id) {
+      handleSetLoadingId(user.id);
 
-    handleRespondToRequest({
-      user: {
-        ...user,
-        friendRequest: {
-          ...user.friendRequest,
-          status: "waiting-for-response",
-        },
-      },
-      onSuccess: () => {
-        handleSetSingleUser({
+      handleRespondToRequest({
+        user: {
           ...user,
           friendRequest: {
-            id: user.friendRequest?.id || "",
-            status: "sent",
-            isActionSentNow: true,
+            ...user.friendRequest,
+            status: "waiting-for-response",
           },
-        });
-        handleSetLoadingId("");
-      },
-    });
+        },
+        onSuccess: () => {
+          if (onSuccess) {
+            onSuccess();
+          }
+          handleSetLoadingId("");
+        },
+      });
 
-    return;
-  }
-  try {
-    const {
-      data: { message },
-    } = await addUserToFriends(user.id);
+      return;
+    }
+    try {
+      await addUserToFriends(user.id);
 
-    handleSetSingleUser({
-      ...user,
-      friendRequest: {
-        id: message.id,
-        status: "sent",
-        isActionSentNow: true,
-      },
-    });
-  } catch (e) {
-    console.log(e);
-  }
-});
+      if (onSuccess) {
+        onSuccess();
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+);
 
 const handleRespondToRequestFx = createEffect(
-  async ({ user, onSuccess }: { user: Profile; onSuccess?: () => void }) => {
-    if (!user.friendRequest) {
+  async ({ user, onSuccess }: ActionPayload) => {
+    if (!user.friendRequest || !user.friendRequest.id) {
       return;
     }
 
     try {
       await respondOnFriendRequestById(
-        user.friendRequest?.id || "",
-        user.friendRequest?.status,
+        user.friendRequest.id,
+        user.friendRequest.status,
       );
 
       if (onSuccess) {
@@ -83,31 +68,32 @@ const handleRespondToRequestFx = createEffect(
   },
 );
 
-const handleDeleteFriendRequestFx = createEffect(async (user: Profile) => {
-  if (!user.friendRequest) {
-    return;
-  }
+const handleDeleteFriendRequestFx = createEffect(
+  async ({ user, onSuccess }: ActionPayload) => {
+    if (!user.friendRequest) {
+      return;
+    }
 
-  try {
-    await respondOnFriendRequestById(user.friendRequest.id || "", "not-sent");
+    try {
+      await respondOnFriendRequestById(user.friendRequest.id || "", "not-sent");
 
-    handleSetSingleUser({
-      ...user,
-      friendRequest: {
-        ...user.friendRequest,
-        status: "not-sent",
-      },
-    });
-  } catch (e) {
-    console.log(e);
-  }
-});
+      if (onSuccess) {
+        onSuccess();
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  },
+);
 
 const $addToFriends = createStore<AddToFriendsStore>({
   loadingId: "",
 })
   .on(handleSetLoadingId, (store, loadingId) => ({ ...store, loadingId }))
-  .on(handleAddToFriends, (store, { id }) => ({ ...store, loadingId: id }))
+  .on(handleAddToFriends, (store, { user: { id } }) => ({
+    ...store,
+    loadingId: id,
+  }))
   .on(handleAddToFriendsFx.doneData, (store) => ({ ...store, loadingId: "" }))
   .on(handleRespondToRequest, (store, { user: { id } }) => ({
     ...store,
@@ -117,7 +103,7 @@ const $addToFriends = createStore<AddToFriendsStore>({
     ...store,
     loadingId: "",
   }))
-  .on(handleDeleteFriendRequest, (store, { id }) => ({
+  .on(handleDeleteFriendRequest, (store, { user: { id } }) => ({
     ...store,
     loadingId: id,
   }))

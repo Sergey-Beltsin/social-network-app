@@ -22,9 +22,12 @@ export type FriendRequest = {
 
 export const getUsers = async (
   query?: string,
-  config?: AxiosRequestConfig,
 ): Promise<AxiosPromise<GetUsersResponse>> =>
-  axios.get(usersRoutes.users(query), config);
+  axios.get(usersRoutes.users, {
+    params: {
+      q: query,
+    },
+  });
 
 export const getUserById = async (
   id: string,

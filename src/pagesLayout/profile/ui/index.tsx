@@ -14,6 +14,7 @@ import { ProfileCard } from "@/shared/ui/molecules";
 import { PostNews } from "@/features/post-news";
 import { getPostsByUserId } from "@/shared/api/users";
 import { GetPostsResponse } from "@/shared/api/posts";
+import { AddToFriends } from "@/features/add-to-friends";
 
 export const ProfilePage: NextPage = () => {
   const { useProfileStore } = profileStore;
@@ -79,7 +80,15 @@ export const ProfilePage: NextPage = () => {
               ? t("yourProfile")
               : t("userProfile", { user: `@${userPage.profile.username}` })}
           </Title>
-          <ProfileCard user={isOwnerPage ? profile : userPage.profile} />
+          <ProfileCard
+            user={isOwnerPage ? profile : userPage.profile}
+            friendsButton={
+              <AddToFriends
+                user={isOwnerPage ? profile : userPage.profile}
+                hideProfileBtn
+              />
+            }
+          />
           {isOwnerPage && <PostNews handleAddPost={handleAddPost} />}
           <NewsList
             handleGetNews={getPosts}
