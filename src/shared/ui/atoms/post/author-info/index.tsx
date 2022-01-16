@@ -18,7 +18,6 @@ export const AuthorInfo: FC<AuthorInfoProps> = ({
   created,
 }) => {
   const { locale } = useRouter();
-  const date = new Date(created);
 
   return (
     <Container>
@@ -28,7 +27,7 @@ export const AuthorInfo: FC<AuthorInfoProps> = ({
           <AuthorName>{name}</AuthorName>
         </Link>
         <AuthorCreated>
-          <ReactTimeAgo date={date} locale={locale} />
+          <ReactTimeAgo date={created} locale={locale} />
         </AuthorCreated>
       </AuthorInfoDescription>
     </Container>

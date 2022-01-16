@@ -9,7 +9,7 @@ import styled from "styled-components";
 import { Loader, Title } from "@/shared/ui/atoms";
 import { store as profileStore } from "@/entities/profile";
 import { actions as newsActions, NewsList } from "@/features/news";
-import { actions, store } from "../model";
+import { actions, store } from "../model/model";
 import { ProfileCard } from "@/shared/ui/molecules";
 import { PostNews } from "@/features/post-news";
 import { getPostsByUserId } from "@/shared/api/users";
@@ -83,10 +83,14 @@ export const ProfilePage: NextPage = () => {
           <ProfileCard
             user={isOwnerPage ? profile : userPage.profile}
             friendsButton={
-              <AddToFriends
-                user={isOwnerPage ? profile : userPage.profile}
-                hideProfileBtn
-              />
+              !isOwnerPage ? (
+                <AddToFriends
+                  user={isOwnerPage ? profile : userPage.profile}
+                  hideProfileBtn
+                />
+              ) : (
+                <></>
+              )
             }
           />
           {isOwnerPage && <PostNews handleAddPost={handleAddPost} />}

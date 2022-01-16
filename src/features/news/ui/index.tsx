@@ -1,9 +1,9 @@
 import { FC, useEffect } from "react";
 import styled from "styled-components";
 import { useInView } from "react-intersection-observer";
-
 import { useRouter } from "next/router";
 import useTranslation from "next-translate/useTranslation";
+
 import { actions, HandleGetPostsResponse, store } from "../model";
 import { PostCard } from "@/entities/post";
 import { ListEmptyText, Loader, Title } from "@/shared/ui/atoms";

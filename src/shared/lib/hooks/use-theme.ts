@@ -9,7 +9,7 @@ export const handleChangeTheme = createEvent<Theme>();
 const handleChangeProvidedTheme = createEvent<"light" | "dark">();
 const handleCheckMedia = createEvent<MediaQueryListEvent>();
 
-const handleMedia = createEffect(
+const handleMediaFx = createEffect(
   ({ event, theme }: { event: MediaQueryListEvent; theme: Theme }) => {
     if (theme === "auto") {
       if (event.matches) {
@@ -51,7 +51,7 @@ sample({
     event,
     theme: store.value,
   }),
-  target: handleMedia,
+  target: handleMediaFx,
 });
 
 export const useTheme = () => {
