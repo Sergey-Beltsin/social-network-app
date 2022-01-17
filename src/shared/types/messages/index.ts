@@ -11,4 +11,5 @@ export type Message = {
 export type MessagesCard = {
   user: Profile;
   messages: Message[];
+  id: string;
 };

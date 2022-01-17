@@ -5,18 +5,19 @@ import useTranslation from "next-translate/useTranslation";
 import styled from "styled-components";
 
 import { Title } from "@/shared/ui/atoms";
-import { LastMessageCard } from "@/shared/ui/atoms/last-message-card";
-import { store, actions } from "../model";
+import { actions, LastMessages, store } from "@/entities/messages";
 
 export const MessagesPage: NextPage = () => {
-  const { useMessagesStore } = store;
   const { handleGetMessagesFx } = actions;
+  const { useMessagesStore } = store;
 
-  const { t } = useTranslation("messages");
   const conversations = useMessagesStore();
+  const { t } = useTranslation("messages");
 
   useEffect(() => {
-    handleGetMessagesFx();
+    if (!conversations.length) {
+      handleGetMessagesFx();
+    }
   }, []);
 
   return (
@@ -25,31 +26,9 @@ export const MessagesPage: NextPage = () => {
         <title>{t("pageTitle")}</title>
       </Head>
       <Title>{t("title")}</Title>
-      <List>
-        {conversations.map(({ user, messages }) => {
-          const lastMessage = messages[messages.length - 1];
-
-          return (
-            <LastMessageCard
-              user={user}
-              message={lastMessage.message}
-              created={lastMessage.created}
-              isOwnerMessage={lastMessage.isOwnerMessage}
-            />
-          );
-        })}
-      </List>
+      <LastMessages />
     </Container>
   );
 };
 
 const Container = styled.div``;
-
-const List = styled.ul`
-  margin: 0;
-  padding: 0;
-
-  background-color: ${({ theme }) => theme.colors.secondary};
-  border-radius: 4px;
-  list-style: none;
-`;

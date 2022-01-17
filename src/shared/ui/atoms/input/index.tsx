@@ -11,7 +11,8 @@ type InputProps = {
   value?: string;
   onChange?: (value: string) => void;
   onBlur?: (value: string) => void;
-  label: string;
+  label?: string;
+  placeholder?: string;
   required?: boolean;
   error?: string | boolean;
   type?: "text" | "password" | "email";
@@ -19,18 +20,21 @@ type InputProps = {
   handleRegister?: () => UseFormRegisterReturn;
   textarea?: boolean;
   onDebounce?: () => void;
+  stretch?: boolean;
 };
 
 type ContainerProps = {
   isError: boolean;
   isEmpty: boolean;
   isTextarea: boolean;
+  isStretch: boolean;
 };
 
 export const Input: FC<InputProps> = ({
   value,
   onChange,
   label,
+  placeholder,
   onBlur,
   required,
   error,
@@ -39,6 +43,7 @@ export const Input: FC<InputProps> = ({
   handleRegister,
   textarea,
   onDebounce,
+  stretch,
 }) => {
   const [isPasswordType, setIsPasswordType] = useState<boolean>(
     type === "password",
@@ -94,7 +99,12 @@ export const Input: FC<InputProps> = ({
   );
 
   return (
-    <Container isError={!!error} isEmpty={!value} isTextarea={!!textarea}>
+    <Container
+      isError={!!error}
+      isEmpty={!value}
+      isTextarea={!!textarea}
+      isStretch={!!stretch}
+    >
       <InputWrapper>
         {/* @ts-ignore */}
         <StyledInput
@@ -105,6 +115,7 @@ export const Input: FC<InputProps> = ({
           required={required}
           autoComplete={autocomplete ? "on" : "new-password"}
           as={textarea ? "textarea" : "input"}
+          placeholder={placeholder}
           {...handleGetRegister()}
         />
         {type === "password" && (
@@ -127,7 +138,7 @@ const Container = styled.label<ContainerProps>`
   position: relative;
 
   width: 100%;
-  max-width: 400px;
+  max-width: ${({ isStretch }) => (isStretch ? "none" : "400px")};
 
   &:not(:last-of-type) {
     margin-bottom: 30px;
@@ -148,7 +159,7 @@ const Container = styled.label<ContainerProps>`
       `
       }
     }
-    
+
     & ${Bar} {
       background-color: ${theme.colors.red};
     }
@@ -160,7 +171,7 @@ const Container = styled.label<ContainerProps>`
     & ${Label} {
       top: 6px;
     }
-    
+
     & ${StyledInput} {
       height: 60px;
       
