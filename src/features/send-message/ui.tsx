@@ -6,14 +6,16 @@ import { SendIcon } from "@/shared/lib/icons/common";
 import { Input } from "@/shared/ui/atoms";
 import { store, actions } from "./model";
 import { actions as conversationsActions } from "@/entities/messages";
+import { Profile } from "@/shared/api/profile";
 
 type SendMessageProps = {
-  conversationId: string;
+  conversationId: string | null;
+  user: Profile | null;
 };
 
-export const SendMessage: FC<SendMessageProps> = ({ conversationId }) => {
+export const SendMessage: FC<SendMessageProps> = ({ conversationId, user }) => {
   const { handleChange, handleReset } = actions;
-  const { handlePushMessage } = conversationsActions;
+  const { handleSendMessageFx } = conversationsActions;
   const { useMessageStore } = store;
 
   const { t } = useTranslation("messages");
@@ -26,7 +28,7 @@ export const SendMessage: FC<SendMessageProps> = ({ conversationId }) => {
       return;
     }
 
-    handlePushMessage({ conversationId, message });
+    handleSendMessageFx({ conversationId, message, user });
     handleReset();
   };
 

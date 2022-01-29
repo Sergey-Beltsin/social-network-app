@@ -32,7 +32,10 @@ export const LastMessageCard: FC<LastMessageCardProps> = ({
               {user.name} {user.surname}
             </Name>
             <Date>
-              <ReactTimeAgo date={created} locale={locale} />
+              <ReactTimeAgo
+                date={new (window.Date as any)(created)}
+                locale={locale}
+              />
             </Date>
           </NameWrapper>
           <Message>
@@ -70,6 +73,10 @@ const Container = styled.li`
 
   &:last-child ${Href} {
     border-radius: 0 0 4px 4px;
+  }
+
+  &:first-child:last-child ${Href} {
+    border-radius: 4px;
   }
 `;
 

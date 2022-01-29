@@ -1,3 +1,3 @@
-import type { MessagesCard } from "@/shared/types/messages";
+import type { ConversationCard } from "@/shared/lib/types/messages";
 
-export type MessagesStore = MessagesCard[];
+export type ConversationsStore = ConversationCard[];

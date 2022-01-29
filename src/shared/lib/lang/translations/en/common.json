@@ -11,6 +11,7 @@
   "reject": "Reject",
   "devAlert": "At the moment, the project is still under development. What you see now could have already changed.",
   "back": "Back",
+  "sendMessage": "Send message",
   "header": {
     "theme": "Theme",
     "settings": "Settings",

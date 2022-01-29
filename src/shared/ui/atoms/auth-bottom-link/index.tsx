@@ -14,7 +14,9 @@ export const AuthBottomLink: FC<AuthBottomLinkProps> = ({
   text,
 }) => (
   <Container>
-    <Link href={href}>{linkText}</Link>
+    <Link href={href} passHref>
+      <Href>{linkText}</Href>
+    </Link>
     {text}
   </Container>
 );
@@ -22,10 +24,19 @@ export const AuthBottomLink: FC<AuthBottomLinkProps> = ({
 const Container = styled.span`
   display: block;
 
-  margin-top: 18px;
-  margin-bottom: 20px;
+  margin-top: 14px;
+  margin-bottom: 14px;
 
-  & > a {
-    color: ${({ theme }) => theme.colors.primary};
+  font-size: 14px;
+
+  @media (min-width: ${({ theme }) => theme.devices.tablet}) {
+    margin-top: 18px;
+    margin-bottom: 20px;
+
+    font-size: 16px;
   }
+`;
+
+const Href = styled.a`
+  color: ${({ theme }) => theme.colors.primary};
 `;

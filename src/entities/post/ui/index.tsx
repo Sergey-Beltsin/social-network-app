@@ -16,7 +16,7 @@ export const PostCard: FC<Props> = ({ post, handleLike }) => (
       photo=""
       name={`${post.profile.name} ${post.profile.surname}`}
       username={post.profile.username}
-      created={post.created}
+      created={new (window.Date as any)(post.created)}
     />
     <Content>{post.content}</Content>
     <BottomActions

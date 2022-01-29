@@ -3,38 +3,53 @@ import Link from "next/link";
 import styled from "styled-components";
 import useTranslation from "next-translate/useTranslation";
 
+import { useRouter } from "next/router";
 import { Profile } from "@/shared/api/profile";
 import { ArrowIcon } from "@/shared/lib/icons/common";
+import { Loader } from "@/shared/ui/atoms";
 
 type ConversationHeaderProps = {
-  user: Profile;
+  user: Profile | null;
+};
+
+type ContainerProps = {
+  center: boolean;
 };
 
 export const ConversationHeader: FC<ConversationHeaderProps> = ({ user }) => {
   const { t } = useTranslation("common");
+  const { back } = useRouter();
+
+  const handleClickBackButton = () => {
+    back();
+  };
 
   return (
-    <Container>
-      <Link href="/messages" passHref>
-        <BackLink>
-          <ArrowIcon />
-          {t("back")}
-        </BackLink>
-      </Link>
-      <Link href={`/${user.username}`} passHref>
-        <Name>
-          {user.name} {user.surname}
-        </Name>
-      </Link>
-      <Wrapper />
+    <Container center={!user}>
+      {user ? (
+        <>
+          <BackLink onClick={handleClickBackButton}>
+            <ArrowIcon />
+            {t("back")}
+          </BackLink>
+          <Link href={`/${user.username}`} passHref>
+            <Name>
+              {user.name} {user.surname}
+            </Name>
+          </Link>
+          <Wrapper />
+        </>
+      ) : (
+        <Loader center />
+      )}
     </Container>
   );
 };
 
-const Container = styled.div`
+const Container = styled.div<ContainerProps>`
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: ${({ center }) => (center ? "center" : "space-between")};
 
   height: 50px;
 
@@ -43,12 +58,16 @@ const Container = styled.div`
   border-radius: 8px 8px 0 0;
 `;
 
-const BackLink = styled.a`
+const BackLink = styled.button`
   display: flex;
   align-items: center;
   align-self: stretch;
 
   padding: 0 20px;
+
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
 
   font-size: 12px;
   text-decoration: none;

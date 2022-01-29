@@ -1,7 +1,7 @@
 import { FC } from "react";
 import styled from "styled-components";
 
-import { Message } from "@/shared/types/messages";
+import { Message } from "@/shared/lib/types/messages";
 import { getFormattedTime } from "@/shared/lib/utils";
 
 type ConversationMessageProps = {
@@ -14,17 +14,21 @@ type ContainerProps = {
 
 export const ConversationMessage: FC<ConversationMessageProps> = ({
   message,
-}) => (
-  <Container isOwnerMessage={message.isOwnerMessage}>
-    <MainWrapper>
-      <MessageText>{message.message}</MessageText>
-      <Date>
-        {getFormattedTime(message.created.getHours())}:
-        {getFormattedTime(message.created.getMinutes())}
-      </Date>
-    </MainWrapper>
-  </Container>
-);
+}) => {
+  const date = new (window.Date as any)(message.created);
+
+  return (
+    <Container isOwnerMessage={message.isOwnerMessage}>
+      <MainWrapper>
+        <MessageText>{message.message}</MessageText>
+        <Date>
+          {getFormattedTime(date.getHours())}:
+          {getFormattedTime(date.getMinutes())}
+        </Date>
+      </MainWrapper>
+    </Container>
+  );
+};
 
 const Container = styled.div<ContainerProps>`
   display: flex;
@@ -33,6 +37,10 @@ const Container = styled.div<ContainerProps>`
 
   &:not(:last-child) {
     margin-bottom: 6px;
+  }
+
+  &:first-child {
+    margin-top: auto;
   }
 
   ${({ theme, isOwnerMessage }) =>
@@ -54,7 +62,7 @@ const MainWrapper = styled.div`
   padding: 6px;
 
   background-color: ${({ theme }) => theme.colors.tertiaryLight};
-  border-radius: 4px;
+  border-radius: 6px;
 `;
 
 const MessageText = styled.span`

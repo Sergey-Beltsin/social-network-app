@@ -1,12 +1,13 @@
 import { useEffect } from "react";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import Head from "next/head";
 import { AxiosPromise } from "axios";
 import useTranslation from "next-translate/useTranslation";
 import styled from "styled-components";
 
-import { Loader, Title } from "@/shared/ui/atoms";
+import { Button, Loader, Title } from "@/shared/ui/atoms";
 import { store as profileStore } from "@/entities/profile";
 import { actions as newsActions, NewsList } from "@/features/news";
 import { actions, store } from "../model/model";
@@ -87,6 +88,20 @@ export const ProfilePage: NextPage = () => {
                 <AddToFriends
                   user={isOwnerPage ? profile : userPage.profile}
                   hideProfileBtn
+                  extra={
+                    <Link
+                      href={`/messages/${
+                        isOwnerPage
+                          ? profile.username
+                          : userPage.profile.username
+                      }`}
+                      passHref
+                    >
+                      <Href>
+                        <Button>{t("common:sendMessage")}</Button>
+                      </Href>
+                    </Link>
+                  }
                 />
               ) : (
                 <></>
@@ -109,3 +124,7 @@ export const ProfilePage: NextPage = () => {
 };
 
 const Container = styled.div``;
+
+const Href = styled.a`
+  text-decoration: none;
+`;

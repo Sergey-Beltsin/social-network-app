@@ -141,7 +141,13 @@ const Container = styled.label<ContainerProps>`
   max-width: ${({ isStretch }) => (isStretch ? "none" : "400px")};
 
   &:not(:last-of-type) {
-    margin-bottom: 30px;
+    margin-bottom: 10px;
+  }
+
+  @media (min-width: ${({ theme }) => theme.devices.tablet}) {
+    &:not(:last-of-type) {
+      margin-bottom: 30px;
+    }
   }
 
   ${({ isError, isEmpty, theme }) =>
@@ -244,7 +250,7 @@ const StyledInput = styled.input`
   &:focus,
   &:valid {
     & ~ ${Label} {
-      top: -10px;
+      top: -4px;
 
       opacity: 1;
 

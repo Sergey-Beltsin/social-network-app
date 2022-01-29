@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, ReactElement, useState } from "react";
 import Link from "next/link";
 import styled from "styled-components";
 import useTranslation from "next-translate/useTranslation";
@@ -10,11 +10,13 @@ import { FriendRequestStatus, Profile } from "@/shared/api/profile";
 type AddToFriendsProps = {
   user: Profile;
   hideProfileBtn?: boolean;
+  extra?: ReactElement;
 };
 
 export const AddToFriends: FC<AddToFriendsProps> = ({
   user,
   hideProfileBtn = false,
+  extra,
 }) => {
   const [friendStatus, setFriendStatus] = useState<FriendRequestStatus>(
     user.friendRequest?.status || "not-sent",
@@ -115,15 +117,18 @@ export const AddToFriends: FC<AddToFriendsProps> = ({
   const getButtonContent = () => {
     if (friendStatus === "accepted" && isActionSentNow) {
       return (
-        <StyledButton as={Text}>
-          {t("friendRemoved")}
-          <StyledButton
-            onClick={handleAcceptRequest}
-            disabled={loadingId === user.id}
-          >
-            {t("common:cancel")}
+        <ButtonsWrapper>
+          <StyledButton as={Text}>
+            {t("friendRemoved")}
+            <StyledButton
+              onClick={handleAcceptRequest}
+              disabled={loadingId === user.id}
+            >
+              {t("common:cancel")}
+            </StyledButton>
           </StyledButton>
-        </StyledButton>
+          {extra}
+        </ButtonsWrapper>
       );
     }
     if (friendStatus === "accepted") {
@@ -139,44 +144,54 @@ export const AddToFriends: FC<AddToFriendsProps> = ({
               </Href>
             </Link>
           )}
+          {extra}
         </ButtonsWrapper>
       );
     }
     if (friendStatus === "sent" && isActionSentNow) {
       return (
-        <StyledButton as={Text}>
-          {t("requestSent")}
-          <StyledButton
-            onClick={handleCancelRequest}
-            disabled={loadingId === user.id}
-          >
-            {t("common:cancel")}
+        <ButtonsWrapper>
+          <StyledButton as={Text}>
+            {t("requestSent")}
+            <StyledButton
+              onClick={handleCancelRequest}
+              disabled={loadingId === user.id}
+            >
+              {t("common:cancel")}
+            </StyledButton>
           </StyledButton>
-        </StyledButton>
+          {extra}
+        </ButtonsWrapper>
       );
     }
     if (friendStatus === "sent") {
       return (
-        <Button
-          secondary
-          onClick={handleSetRequestToDefault}
-          loading={loadingId === user.id}
-        >
-          {t("unsubscribe")}
-        </Button>
+        <ButtonsWrapper>
+          <Button
+            secondary
+            onClick={handleSetRequestToDefault}
+            loading={loadingId === user.id}
+          >
+            {t("unsubscribe")}
+          </Button>
+          {extra}
+        </ButtonsWrapper>
       );
     }
     if (friendStatus === "waiting-for-response" && isActionSentNow) {
       return (
-        <StyledButton as={Text}>
-          {t("friendAdded")}
-          <StyledButton
-            onClick={handleRejectRequest}
-            disabled={loadingId === user.id}
-          >
-            {t("common:cancel")}
+        <ButtonsWrapper>
+          <StyledButton as={Text}>
+            {t("friendAdded")}
+            <StyledButton
+              onClick={handleRejectRequest}
+              disabled={loadingId === user.id}
+            >
+              {t("common:cancel")}
+            </StyledButton>
           </StyledButton>
-        </StyledButton>
+          {extra}
+        </ButtonsWrapper>
       );
     }
     if (friendStatus === "waiting-for-response") {
@@ -185,14 +200,18 @@ export const AddToFriends: FC<AddToFriendsProps> = ({
           <Button onClick={handleAcceptRequest} loading={loadingId === user.id}>
             {t("common:accept")}
           </Button>
+          {extra}
         </ButtonsWrapper>
       );
     }
 
     return (
-      <Button onClick={addToFriendsSubmit} loading={loadingId === user.id}>
-        {t("addToFriends")}
-      </Button>
+      <ButtonsWrapper>
+        <Button onClick={addToFriendsSubmit} loading={loadingId === user.id}>
+          {t("addToFriends")}
+        </Button>
+        {extra}
+      </ButtonsWrapper>
     );
   };
 
@@ -238,13 +257,15 @@ const StyledButton = styled.button`
   display: block;
 
   width: fit-content;
-  margin-top: 8px;
-  margin-left: auto;
+  margin-top: 4px;
+  margin-left: 0;
 
   background-color: transparent;
   border: none;
   padding: 0;
   cursor: pointer;
+
+  font-size: 10px;
 
   transition: 0.2s ease;
 
@@ -259,5 +280,12 @@ const StyledButton = styled.button`
     &:hover {
       text-decoration: none;
     }
+  }
+
+  @media (min-width: ${({ theme }) => theme.devices.desktop}) {
+    margin-top: 8px;
+    margin-left: auto;
+
+    font-size: 14px;
   }
 `;

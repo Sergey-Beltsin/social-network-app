@@ -3,7 +3,7 @@ import axiosInstance from "axios";
 import Cookies from "js-cookie";
 import Router from "next/router";
 
-const DEFAULT_BASE_URL: string = "https://social.belts.dev";
+export const DEFAULT_BASE_URL: string = "https://social.belts.dev";
 
 export const axios = axiosInstance.create({
   baseURL: `${process.env.NEXT_PUBLIC_BASE_URL || DEFAULT_BASE_URL}/api`,

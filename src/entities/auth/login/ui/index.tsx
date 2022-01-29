@@ -164,7 +164,11 @@ const ErrorTextWrapper = styled.span`
   display: block;
 
   margin-top: 8px;
-  margin-bottom: 30px;
+  margin-bottom: 14px;
+
+  @media (min-width: ${({ theme }) => theme.devices.tablet}) {
+    margin-bottom: 30px;
+  }
 `;
 
 const HiddenTitle = styled.h1``;

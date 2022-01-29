@@ -6,12 +6,18 @@ import useTranslation from "next-translate/useTranslation";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
 import ru from "javascript-time-ago/locale/ru.json";
+import { io } from "socket.io-client";
 
 import { AlertMessage, Container } from "@/shared/ui/atoms";
 import { ThemeProvider } from "@/shared/lib/theme";
 import { Navigation, Header } from "@/widgets";
 import { ProtectedRoute } from "@/shared/lib/hocs";
-import { Auth, actions } from "@/entities/profile";
+import { Auth, actions, store as profileStore } from "@/entities/profile";
+import { DEFAULT_BASE_URL } from "@/shared/api/base";
+import {
+  actions as messagesActions,
+  store as messagesStore,
+} from "@/entities/messages";
 
 TimeAgo.addLocale(en);
 TimeAgo.addLocale(ru);
@@ -22,7 +28,17 @@ type MainWrapperProps = {
 
 export const App: FC = ({ children }) => {
   const { getProfile } = actions;
+  const {
+    handleSetSocket,
+    handleSetConversations,
+    handlePrependConversation,
+    handlePushMessage,
+  } = messagesActions;
+  const { useMessagesSocketStore } = messagesStore;
+  const { useProfileStore } = profileStore;
 
+  const socket = useMessagesSocketStore();
+  const profile = useProfileStore();
   const { t } = useTranslation("common");
 
   useEffect(() => {
@@ -30,6 +46,39 @@ export const App: FC = ({ children }) => {
       getProfile();
     }
   }, []);
+
+  useEffect(() => {
+    if (socket) {
+      socket.emit("getConversations");
+
+      socket?.on("conversations", (currentConversations) => {
+        console.log("Get conversations! ", currentConversations);
+        handleSetConversations(currentConversations);
+      });
+      socket?.on("newMessage", (message) => {
+        console.log("New message! ", message);
+        handlePushMessage(message);
+      });
+      socket?.on("newConversation", (conversation) => {
+        console.log("new conversation!", conversation);
+        handlePrependConversation(conversation);
+      });
+    }
+  }, [socket]);
+
+  useEffect(() => {
+    if (!profile.id) {
+      socket?.disconnect();
+    } else {
+      handleSetSocket(
+        io(process.env.NEXT_PUBLIC_BASE_URL || DEFAULT_BASE_URL, {
+          extraHeaders: {
+            authorization: Cookies.get("token") || "",
+          },
+        }),
+      );
+    }
+  }, [profile.id]);
 
   return (
     <ThemeProvider>

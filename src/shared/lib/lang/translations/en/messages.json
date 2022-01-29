@@ -2,5 +2,6 @@
   "pageTitle": "Messages",
   "title": "Messages",
   "you": "You",
-  "yourMessage": "Your message"
+  "yourMessage": "Your message",
+  "noMessages": "Now your correspondence with the user {{ username }} is empty.\nTake the first step by sending a message!"
 }

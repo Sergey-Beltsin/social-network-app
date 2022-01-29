@@ -3,23 +3,26 @@ import styled from "styled-components";
 
 import { LastMessageCard } from "@/shared/ui/atoms/last-message-card";
 import { store } from "../model";
+import { store as profileStore } from "@/entities/profile";
 
 export const LastMessages: FC = () => {
   const { useMessagesStore } = store;
+  const { useProfileStore } = profileStore;
 
   const conversations = useMessagesStore();
+  const profile = useProfileStore();
 
   return (
     <Container>
-      {conversations.map(({ user, messages, id }) => {
+      {conversations.map(({ users, messages, id, lastUpdated }) => {
         const lastMessage = messages[messages.length - 1];
 
         return (
           <LastMessageCard
             key={id}
-            user={user}
+            user={users.find((user) => user.id !== profile.id) || users[0]}
             message={lastMessage.message}
-            created={lastMessage.created}
+            created={lastUpdated}
             isOwnerMessage={lastMessage.isOwnerMessage}
           />
         );
