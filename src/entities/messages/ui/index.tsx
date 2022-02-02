@@ -14,15 +14,19 @@ export const LastMessages: FC = () => {
 
   return (
     <Container>
-      {conversations.map(({ users, messages, id, lastUpdated }) => {
+      {conversations.map(({ users, messages, id }) => {
         const lastMessage = messages[messages.length - 1];
+
+        if (!lastMessage) {
+          return <></>;
+        }
 
         return (
           <LastMessageCard
             key={id}
             user={users.find((user) => user.id !== profile.id) || users[0]}
             message={lastMessage.message}
-            created={lastUpdated}
+            created={lastMessage.created}
             isOwnerMessage={lastMessage.isOwnerMessage}
           />
         );

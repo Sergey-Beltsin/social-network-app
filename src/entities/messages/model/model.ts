@@ -11,6 +11,7 @@ import { Socket } from "socket.io-client";
 import { ConversationsStore } from "./model.types";
 import { ConversationCard, Message } from "@/shared/lib/types/messages";
 import { Profile } from "@/shared/api/profile";
+import { deleteElementById } from "@/shared/lib/utils";
 
 const handleSendMessageEffectFx = createEffect(
   async ({
@@ -43,14 +44,18 @@ const $conversations = createStore<ConversationsStore>([])
     ...store,
   ])
   .on(handlePushMessage, (store, { conversation: { id }, ...message }) => {
-    const newStore = [...store];
+    const newStore = deleteElementById([...store], id);
+    const currentConversation = store.find(
+      (conversation) => conversation.id === id,
+    );
 
-    newStore
-      .find((conversation) => conversation.id === id)
-      ?.messages.push(message);
-    console.log(newStore.find((conversation) => conversation.id === id));
+    if (!currentConversation) {
+      throw new Error(`No conversation find with the same id: ${id}`);
+    }
 
-    return newStore;
+    currentConversation?.messages.push(message);
+
+    return [currentConversation, ...newStore];
   });
 
 const $activeConversation = createStore<ConversationCard | null>(null)

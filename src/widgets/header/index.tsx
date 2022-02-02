@@ -59,7 +59,7 @@ export const Header: FC = () => {
           }
         >
           <DropdownTrigger>
-            <DropdownTriggerImg src="https://place-hold.it/30x30" alt="" />
+            {/* <DropdownTriggerImg src="https://place-hold.it/30x30" alt="" /> */}
             <Name>
               {name} {surname}
             </Name>

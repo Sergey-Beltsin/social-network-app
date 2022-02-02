@@ -2,13 +2,16 @@ import { FC, useEffect } from "react";
 import styled from "styled-components";
 import Head from "next/head";
 import Cookies from "js-cookie";
-import useTranslation from "next-translate/useTranslation";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
 import ru from "javascript-time-ago/locale/ru.json";
 import { io } from "socket.io-client";
+import { useRouter } from "next/router";
+import { toast, ToastContainer } from "react-toastify";
 
-import { AlertMessage, Container } from "@/shared/ui/atoms";
+import "react-toastify/dist/ReactToastify.css";
+
+import { Container, Notify } from "@/shared/ui/atoms";
 import { ThemeProvider } from "@/shared/lib/theme";
 import { Navigation, Header } from "@/widgets";
 import { ProtectedRoute } from "@/shared/lib/hocs";
@@ -18,6 +21,7 @@ import {
   actions as messagesActions,
   store as messagesStore,
 } from "@/entities/messages";
+import { Profile } from "@/shared/api/profile";
 
 TimeAgo.addLocale(en);
 TimeAgo.addLocale(ru);
@@ -33,13 +37,16 @@ export const App: FC = ({ children }) => {
     handleSetConversations,
     handlePrependConversation,
     handlePushMessage,
+    handleSetActiveConversation,
   } = messagesActions;
   const { useMessagesSocketStore } = messagesStore;
   const { useProfileStore } = profileStore;
 
   const socket = useMessagesSocketStore();
   const profile = useProfileStore();
-  const { t } = useTranslation("common");
+  const {
+    query: { username },
+  } = useRouter();
 
   useEffect(() => {
     if (Cookies.get("token")) {
@@ -50,7 +57,11 @@ export const App: FC = ({ children }) => {
   useEffect(() => {
     if (socket) {
       socket.emit("getConversations");
+    }
+  }, [socket]);
 
+  useEffect(() => {
+    if (socket) {
       socket?.on("conversations", (currentConversations) => {
         console.log("Get conversations! ", currentConversations);
         handleSetConversations(currentConversations);
@@ -58,10 +69,35 @@ export const App: FC = ({ children }) => {
       socket?.on("newMessage", (message) => {
         console.log("New message! ", message);
         handlePushMessage(message);
+
+        if (message.user.username !== profile.username) {
+          toast(
+            <Notify
+              title={`${message.user.name} ${message.user.surname}`}
+              content={message.message}
+            />,
+            {
+              theme:
+                (localStorage.getItem("theme") as "light" | "dark") || "light",
+              position: "bottom-left",
+              style: {
+                bottom: "40px",
+              },
+            },
+          );
+        }
       });
       socket?.on("newConversation", (conversation) => {
         console.log("new conversation!", conversation);
         handlePrependConversation(conversation);
+
+        if (
+          conversation?.users.find(
+            (user: Profile) => user.username === username,
+          )
+        ) {
+          handleSetActiveConversation(conversation.id);
+        }
       });
     }
   }, [socket]);
@@ -91,11 +127,7 @@ export const App: FC = ({ children }) => {
           />
         </Head>
         <MainWrapper notPaddingBottom={!Auth.getIsAuth()}>
-          <AlertWrapper>
-            <AlertMessage name="devAlert" hideOnTime={86400}>
-              {t("devAlert")}
-            </AlertMessage>
-          </AlertWrapper>
+          <ToastContainer />
           <Container>
             {Auth.getIsAuth() && <Navigation />}
             <Main>{children}</Main>
@@ -124,16 +156,12 @@ const Main = styled.main`
   }
 `;
 
-const AlertWrapper = styled.div`
-  margin-bottom: 19px;
-`;
-
 const MainWrapper = styled.div<MainWrapperProps>`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
 
-  padding-top: 49px;
+  padding-top: 68px;
   padding-bottom: ${({ notPaddingBottom }) =>
     notPaddingBottom ? "20px" : "68px"};
 
@@ -149,3 +177,5 @@ const MainWrapper = styled.div<MainWrapperProps>`
     }
   }
 `;
+
+const NotifyContainer = styled.div``;

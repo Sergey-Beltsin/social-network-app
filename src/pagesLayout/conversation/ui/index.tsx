@@ -95,8 +95,12 @@ export const ConversationPage: FC = () => {
       />
       <Messages center={!activeConversation} ref={messagesRef}>
         {activeConversation ? (
-          activeConversation.messages?.map((message) => (
-            <ConversationMessage key={message.id} message={message} />
+          activeConversation.messages?.map((message, index) => (
+            <ConversationMessage
+              key={message.id}
+              message={message}
+              newDate={activeConversation.messages[index + 1]?.created || null}
+            />
           ))
         ) : (
           <NoMessagesText>

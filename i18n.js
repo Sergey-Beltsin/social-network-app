@@ -10,6 +10,7 @@ module.exports = {
       "errors",
       "friends",
       "messages",
+      "date",
     ],
     "/login": ["auth"],
     "/register": ["auth"],

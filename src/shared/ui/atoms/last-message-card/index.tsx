@@ -10,7 +10,7 @@ import { Profile } from "@/shared/api/profile";
 type LastMessageCardProps = {
   user: Profile;
   message: string;
-  created: Date;
+  created: string;
   isOwnerMessage: boolean;
 };
 
@@ -102,6 +102,7 @@ const Name = styled.span`
 `;
 
 const BoldText = styled.span`
+  color: ${({ theme }) => theme.colors.text.secondary};
   font-weight: 600;
 `;
 
