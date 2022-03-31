@@ -177,5 +177,3 @@ const MainWrapper = styled.div<MainWrapperProps>`
     }
   }
 `;
-
-const NotifyContainer = styled.div``;

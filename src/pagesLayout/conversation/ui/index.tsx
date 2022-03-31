@@ -1,4 +1,11 @@
-import { FC, useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  FC,
+  Fragment,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 
@@ -12,6 +19,8 @@ import { SendMessage } from "@/features/send-message";
 import { Profile } from "@/shared/api/profile";
 import { getUserById } from "@/shared/api/users";
 import { store as profileStore } from "@/entities/profile";
+import { compareDatesByDay } from "@/shared/lib/utils";
+import { months } from "@/shared/lib/constants";
 
 type MessagesProps = {
   center: boolean;
@@ -32,6 +41,10 @@ export const ConversationPage: FC = () => {
   const { t } = useTranslation("messages");
   const [user, setUser] = useState<Profile | null>(null);
   const messagesRef = useRef<HTMLDivElement>(null);
+  const lastMessageRef = useRef<HTMLDivElement>(null);
+  const firstMessageDate = new (window.Date as any)(
+    activeConversation?.messages[0]?.created,
+  );
 
   useLayoutEffect(() => {
     if (username) {
@@ -76,12 +89,55 @@ export const ConversationPage: FC = () => {
     if (messagesRef.current) {
       const maxScroll =
         messagesRef.current.scrollHeight - messagesRef.current.offsetHeight;
+      console.log(
+        "conversations",
+        messagesRef.current.scrollHeight,
+        messagesRef.current.offsetHeight,
+      );
 
       if (maxScroll - messagesRef.current.scrollTop < 100) {
         messagesRef.current.scrollTo(messagesRef.current.scrollLeft, maxScroll);
       }
     }
   }, [conversations, messagesRef]);
+
+  useEffect(() => {
+    if (messagesRef.current) {
+      const maxScroll =
+        messagesRef.current.scrollHeight - messagesRef.current.offsetHeight;
+      console.log(
+        messagesRef.current.scrollHeight,
+        messagesRef.current.offsetHeight,
+      );
+      messagesRef.current.scrollTo(messagesRef.current.scrollLeft, maxScroll);
+    }
+  }, [messagesRef]);
+
+  useEffect(() => {
+    console.log(lastMessageRef);
+  }, [lastMessageRef.current]);
+
+  const getMessages = () =>
+    activeConversation?.messages?.map((message, index) => {
+      const currentNewDate =
+        activeConversation.messages[index + 1]?.created &&
+        new (window.Date as any)(
+          activeConversation.messages[index + 1]?.created,
+        );
+
+      return (
+        <Fragment key={message.id}>
+          <ConversationMessage message={message} />
+          {currentNewDate &&
+            compareDatesByDay(message.created, currentNewDate) && (
+              <MessagesDate>
+                {t(`date:months.${months[currentNewDate.getMonth()]}`)},{" "}
+                {currentNewDate.getDate()}
+              </MessagesDate>
+            )}
+        </Fragment>
+      );
+    });
 
   return (
     <Container>
@@ -95,13 +151,13 @@ export const ConversationPage: FC = () => {
       />
       <Messages center={!activeConversation} ref={messagesRef}>
         {activeConversation ? (
-          activeConversation.messages?.map((message, index) => (
-            <ConversationMessage
-              key={message.id}
-              message={message}
-              newDate={activeConversation.messages[index + 1]?.created || null}
-            />
-          ))
+          <>
+            <MessagesDate>
+              {t(`date:months.${months[firstMessageDate?.getMonth()]}`)},{" "}
+              {firstMessageDate?.getDate()}
+            </MessagesDate>
+            {getMessages()}
+          </>
         ) : (
           <NoMessagesText>
             {t("noMessages", {
@@ -142,6 +198,21 @@ const NoMessagesText = styled.span`
   text-align: center;
   white-space: pre-wrap;
   line-height: 1.5;
+
+  @media (min-width: ${({ theme }) => theme.devices.tablet}) {
+    font-size: 14px;
+  }
+`;
+
+const MessagesDate = styled.span`
+  display: block;
+
+  margin: 10px 0;
+
+  color: ${({ theme }) => theme.colors.text.secondary};
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
 
   @media (min-width: ${({ theme }) => theme.devices.tablet}) {
     font-size: 14px;

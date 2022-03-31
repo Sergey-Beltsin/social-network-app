@@ -42,7 +42,7 @@ export const ProtectedRoute: FC = ({ children }) => {
     } else if (publicRoutes.includes(path) && Auth.getIsAuth()) {
       setIsPageAccessed(false);
 
-      router.push(username);
+      router.push(username || "/");
     } else {
       setIsPageAccessed(true);
     }

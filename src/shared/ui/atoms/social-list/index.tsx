@@ -12,7 +12,7 @@ type SocialItem = {
 export const SocialList: FC = () => {
   const socialItems: SocialItem[] = [
     {
-      link: "https://github.belts.dev",
+      link: "https://github.com/Sergey-Beltsin/social-network-app",
       icon: <GithubIcon />,
     },
   ];
