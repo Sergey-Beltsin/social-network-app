@@ -3,7 +3,8 @@ import Router from "next/router";
 
 import { actions } from "@/entities/profile";
 
-const { resetProfile } = actions;
+// TODO uncomment in prod
+// const { resetProfile } = actions;
 
 export const Auth = {
   getIsAuth: (): boolean =>
@@ -21,7 +22,7 @@ export const Auth = {
     }
   },
   clear: () => {
-    resetProfile();
+    // resetProfile();
     Cookies.remove("token");
     sessionStorage.removeItem("token");
     Router.push("/login");

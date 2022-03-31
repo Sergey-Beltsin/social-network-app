@@ -14,7 +14,6 @@ import "react-toastify/dist/ReactToastify.css";
 import { Container, Notify } from "@/shared/ui/atoms";
 import { ThemeProvider } from "@/shared/lib/theme";
 import { Navigation, Header } from "@/widgets";
-import { ProtectedRoute } from "@/shared/lib/hocs";
 import { Auth, actions, store as profileStore } from "@/entities/profile";
 import { DEFAULT_BASE_URL } from "@/shared/api/base";
 import {
@@ -118,22 +117,20 @@ export const App: FC = ({ children }) => {
 
   return (
     <ThemeProvider>
-      <ProtectedRoute>
-        <Header />
-        <Head>
-          <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1, maximum-scale=1"
-          />
-        </Head>
-        <MainWrapper notPaddingBottom={!Auth.getIsAuth()}>
-          <ToastContainer />
-          <Container>
-            {Auth.getIsAuth() && <Navigation />}
-            <Main>{children}</Main>
-          </Container>
-        </MainWrapper>
-      </ProtectedRoute>
+      <Header />
+      <Head>
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1"
+        />
+      </Head>
+      <MainWrapper notPaddingBottom={!Auth.getIsAuth()}>
+        <ToastContainer />
+        <Container>
+          {Auth.getIsAuth() && <Navigation />}
+          <Main>{children}</Main>
+        </Container>
+      </MainWrapper>
     </ThemeProvider>
   );
 };
@@ -160,6 +157,8 @@ const MainWrapper = styled.div<MainWrapperProps>`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+
+  position: relative;
 
   padding-top: 68px;
   padding-bottom: ${({ notPaddingBottom }) =>

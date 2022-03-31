@@ -27,6 +27,8 @@ export const HeaderLoginButtons: FC = () => {
 const Container = styled.div`
   display: flex;
   align-items: center;
+
+  position: relative;
 `;
 
 const Href = styled.a`
